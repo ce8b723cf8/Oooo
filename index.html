@@ -1,80 +1,541 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>اختبار - no-cors</title>
-</head>
-<body style="font-family:Arial;text-align:center;padding:50px;direction:rtl;">
+```javascript
+// ====================================================
+// GOOGLE APPS SCRIPT - BACKEND كامل ومستقر
+// H.L LeVance Store - جميع الوظائف
+// ====================================================
 
-  <h1>🧪 اختبار إرسال طلب (no-cors)</h1>
-  
-  <form id="testForm">
-    <input type="text" id="name" placeholder="الاسم" value="اختبار" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <input type="text" id="phone" placeholder="الهاتف" value="01012345678" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <input type="text" id="gov" placeholder="المحافظة" value="القاهرة" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <input type="text" id="city" placeholder="المدينة" value="مدينة نصر" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <input type="text" id="address" placeholder="العنوان" value="شارع 90" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <input type="text" id="amount" placeholder="المبلغ" value="100" style="padding:10px;width:300px;margin:5px;">
-    <br>
-    <button type="submit" style="padding:15px 50px;background:#0076ff;color:white;border:none;border-radius:8px;font-size:18px;margin-top:10px;cursor:pointer;">
-      إرسال
-    </button>
-  </form>
+// ====================================================
+// الإعدادات - عدل هذه القيم حسب بياناتك
+// ====================================================
 
-  <div id="result" style="margin-top:20px;padding:15px;border-radius:8px;display:none;"></div>
+// معرف جدول Google Sheets الخاص بك
+const SPREADSHEET_ID = '1NxKoUK77SUS5drxX_iGAjEl1WwtaFIrRvqDfU_GpnGE';
 
-  <script>
-    document.getElementById('testForm').onsubmit = async function(e) {
-      e.preventDefault();
-      
-      const resultDiv = document.getElementById('result');
-      resultDiv.style.display = 'block';
-      resultDiv.style.background = '#fff3cd';
-      resultDiv.style.border = '2px solid #ffc107';
-      resultDiv.innerHTML = '⏳ جاري الإرسال...';
+// معرف مجلد Google Drive لتخزين الصور والملفات
+// أنشئ مجلداً في Drive وانسخ معرفه من الرابط
+const DRIVE_FOLDER_ID = 'YOUR_DRIVE_FOLDER_ID_HERE';
 
-      const data = {
-        action: 'addOrder',
-        customerName: document.getElementById('name').value,
-        customerPhone: document.getElementById('phone').value,
-        governorate: document.getElementById('gov').value,
-        city: document.getElementById('city').value,
-        address: document.getElementById('address').value,
-        amount: document.getElementById('amount').value,
-        weight: '1',
-        notes: 'اختبار'
-      };
+// أسماء الأوراق (Sheets)
+const PRODUCT_SHEET = 'Products';
+const CATEGORY_SHEET = 'Categories';
+const USERS_SHEET = 'Users';
+const ORDERS_SHEET = 'Orders';
 
+// ====================================================
+// DO POST - نقطة استقبال جميع الطلبات
+// ====================================================
+function doPost(e) {
+  try {
+    let data = {};
+    
+    // قراءة البيانات من الطلب (دعم JSON و FormData)
+    if (e.postData && e.postData.type === 'application/json') {
+      data = JSON.parse(e.postData.contents);
+    } else if (e.parameter && e.parameter.payload) {
+      data = JSON.parse(e.parameter.payload);
+    } else if (e.postData && e.postData.contents) {
       try {
-        // استخدام FormData بدلاً من JSON
-        const formData = new FormData();
-        formData.append('payload', JSON.stringify(data));
-
-        const res = await fetch('https://script.google.com/macros/s/AKfycbxdhsaiJDo9RvwZcljGxmgbMpkyR96at3SaRZBCdvQYIhZySLPLR-bODSf6kyDJ90Gu/exec', {
-          method: 'POST',
-          mode: 'no-cors',
-          body: formData
-        });
-
-        // مع no-cors لا يمكن قراءة الرد، لكن الطلب يصل
-        resultDiv.style.background = '#d4edda';
-        resultDiv.style.border = '2px solid #28a745';
-        resultDiv.innerHTML = '✅ تم الإرسال! (تحقق من Google Sheets)';
-        
-        console.log('✅ تم الإرسال بنجاح (no-cors)');
-        
-      } catch(err) {
-        resultDiv.style.background = '#f8d7da';
-        resultDiv.style.border = '2px solid #dc3545';
-        resultDiv.innerHTML = '❌ خطأ: ' + err.message;
+        data = JSON.parse(e.postData.contents);
+      } catch (err) {
+        data = {};
       }
-    };
-  </script>
+    }
 
-</body>
-</html>
+    console.log('📥 Received data:', JSON.stringify(data));
+    
+    const action = data.action || '';
+    let result = {};
+
+    switch(action) {
+      // ===== المنتجات =====
+      case 'addProduct':
+        result = addProduct(data);
+        break;
+      case 'deleteProduct':
+        result = deleteProduct(data);
+        break;
+      
+      // ===== الأقسام =====
+      case 'addCategory':
+        result = addCategory(data);
+        break;
+      case 'deleteCategory':
+        result = deleteCategory(data);
+        break;
+      
+      // ===== المستخدمين =====
+      case 'registerUser':
+        result = registerUser(data);
+        break;
+      case 'loginUser':
+        result = loginUser(data);
+        break;
+      
+      // ===== الطلبات =====
+      case 'addOrder':
+        result = addOrder(data);
+        break;
+      
+      default:
+        result = { success: false, error: 'إجراء غير معروف: ' + action };
+    }
+
+    console.log('📤 Result:', JSON.stringify(result));
+
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    console.error('❌ Error in doPost:', err);
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        success: false, 
+        error: err.toString() 
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// ====================================================
+// DO GET - جلب البيانات
+// ====================================================
+function doGet(e) {
+  const action = e.parameter.action;
+  let result = {};
+
+  try {
+    switch(action) {
+      case 'getProducts':
+        result = getProducts();
+        break;
+      case 'getCategories':
+        result = getCategories();
+        break;
+      case 'getUsers':
+        result = getUsers();
+        break;
+      case 'getOrders':
+        result = getOrders();
+        break;
+      default:
+        result = { error: 'Invalid action' };
+    }
+  } catch(error) {
+    result = { error: error.toString() };
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify(result))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ====================================================
+// 1. PRODUCTS - إدارة المنتجات
+// ====================================================
+function getProducts() {
+  const sheet = getSheet(PRODUCT_SHEET);
+  if (!sheet) return { products: [] };
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return { products: [] };
+
+  const products = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+
+    products.push({
+      id: parseInt(row[0]) || 0,
+      name: row[1] || '',
+      price: parseFloat(row[2]) || 0,
+      discount: parseFloat(row[3]) || 0,
+      icon: row[4] || '📦',
+      sizes: row[5] ? JSON.parse(row[5]) : [],
+      media: row[6] ? JSON.parse(row[6]) : []
+    });
+  }
+  return { products };
+}
+
+function addProduct(data) {
+  const sheet = getSheet(PRODUCT_SHEET);
+  if (!sheet) return { success: false, error: 'Products sheet not found' };
+
+  if (!data.name || !data.price) {
+    return { success: false, error: 'اسم المنتج والسعر مطلوبان' };
+  }
+
+  const lastRow = sheet.getLastRow();
+  const newId = lastRow > 0 ? sheet.getRange(lastRow, 1).getValue() + 1 : 1;
+
+  // رفع الملفات إلى Drive
+  const mediaUrls = [];
+  if (data.media && data.media.length > 0) {
+    for (const item of data.media) {
+      try {
+        if (!item.data) continue;
+        const fileUrl = uploadFileToDrive(item.data, item.name);
+        if (fileUrl) {
+          mediaUrls.push({
+            type: item.type || 'image',
+            url: fileUrl,
+            name: item.name || 'ملف'
+          });
+        }
+      } catch(e) {
+        console.error('Error uploading file:', e);
+      }
+    }
+  }
+
+  sheet.appendRow([
+    newId,
+    data.name,
+    data.price,
+    data.discount || 0,
+    data.icon || '📦',
+    JSON.stringify(data.sizes || []),
+    JSON.stringify(mediaUrls)
+  ]);
+
+  return { success: true, id: newId, mediaCount: mediaUrls.length };
+}
+
+function deleteProduct(data) {
+  const sheet = getSheet(PRODUCT_SHEET);
+  if (!sheet) return { success: false, error: 'Products sheet not found' };
+
+  if (!data.id) {
+    return { success: false, error: 'معرف المنتج مطلوب' };
+  }
+
+  const dataRange = sheet.getDataRange().getValues();
+  for (let i = dataRange.length - 1; i >= 1; i--) {
+    if (dataRange[i][0] == data.id) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'المنتج غير موجود' };
+}
+
+// ====================================================
+// 2. CATEGORIES - إدارة الأقسام
+// ====================================================
+function getCategories() {
+  const sheet = getSheet(CATEGORY_SHEET);
+  if (!sheet) return { categories: [] };
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return { categories: [] };
+
+  const categories = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+
+    categories.push({
+      id: parseInt(row[0]) || 0,
+      name: row[1] || '',
+      icon: row[2] || '🏷️',
+      image: row[3] || null
+    });
+  }
+  return { categories };
+}
+
+function addCategory(data) {
+  const sheet = getSheet(CATEGORY_SHEET);
+  if (!sheet) return { success: false, error: 'Categories sheet not found' };
+
+  if (!data.name) {
+    return { success: false, error: 'اسم القسم مطلوب' };
+  }
+
+  const lastRow = sheet.getLastRow();
+  const newId = lastRow > 0 ? sheet.getRange(lastRow, 1).getValue() + 1 : 1;
+
+  let imageUrl = null;
+  if (data.image) {
+    imageUrl = uploadFileToDrive(data.image, 'category_' + newId + '.jpg');
+  }
+
+  sheet.appendRow([
+    newId,
+    data.name,
+    data.icon || '🏷️',
+    imageUrl
+  ]);
+
+  return { success: true, id: newId };
+}
+
+function deleteCategory(data) {
+  const sheet = getSheet(CATEGORY_SHEET);
+  if (!sheet) return { success: false, error: 'Categories sheet not found' };
+
+  if (!data.id) {
+    return { success: false, error: 'معرف القسم مطلوب' };
+  }
+
+  const dataRange = sheet.getDataRange().getValues();
+  for (let i = dataRange.length - 1; i >= 1; i--) {
+    if (dataRange[i][0] == data.id) {
+      sheet.deleteRow(i + 1);
+      return { success: true };
+    }
+  }
+  return { success: false, error: 'القسم غير موجود' };
+}
+
+// ====================================================
+// 3. USERS - إدارة المستخدمين
+// ====================================================
+function getUsers() {
+  const sheet = getSheet(USERS_SHEET);
+  if (!sheet) return { users: [] };
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return { users: [] };
+
+  const users = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+
+    users.push({
+      phone: row[0],
+      password: row[1],
+      name: row[2] || '',
+      joinDate: row[3] || new Date().toISOString()
+    });
+  }
+  return { users };
+}
+
+function registerUser(data) {
+  const sheet = getSheet(USERS_SHEET);
+  if (!sheet) return { success: false, error: 'Users sheet not found' };
+
+  if (!data.phone || !data.password) {
+    return { success: false, error: 'رقم الهاتف وكلمة المرور مطلوبان' };
+  }
+
+  const dataRange = sheet.getDataRange().getValues();
+  for (let i = 1; i < dataRange.length; i++) {
+    if (dataRange[i][0] == data.phone) {
+      return { success: false, error: 'المستخدم موجود بالفعل' };
+    }
+  }
+
+  sheet.appendRow([
+    data.phone,
+    data.password,
+    data.name || '',
+    new Date().toISOString()
+  ]);
+
+  return { success: true };
+}
+
+function loginUser(data) {
+  const sheet = getSheet(USERS_SHEET);
+  if (!sheet) return { success: false, error: 'Users sheet not found' };
+
+  if (!data.phone || !data.password) {
+    return { success: false, error: 'رقم الهاتف وكلمة المرور مطلوبان' };
+  }
+
+  const dataRange = sheet.getDataRange().getValues();
+  for (let i = 1; i < dataRange.length; i++) {
+    if (dataRange[i][0] == data.phone && dataRange[i][1] == data.password) {
+      return {
+        success: true,
+        user: {
+          phone: dataRange[i][0],
+          name: dataRange[i][2] || '',
+          joinDate: dataRange[i][3] || ''
+        }
+      };
+    }
+  }
+  return { success: false, error: 'بيانات الدخول غير صحيحة' };
+}
+
+// ====================================================
+// 4. ORDERS - طلبات العملاء (بتنسيق EUX)
+// ====================================================
+function getOrders() {
+  const sheet = getSheet(ORDERS_SHEET);
+  if (!sheet) return { orders: [] };
+
+  const data = sheet.getDataRange().getValues();
+  if (data.length < 2) return { orders: [] };
+
+  const orders = [];
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    if (!row[0]) continue;
+
+    orders.push({
+      orderId: row[0] || '',
+      customerName: row[1] || '',
+      customerPhone: row[2] || '',
+      customerPhone2: row[3] || '',
+      governorate: row[4] || '',
+      city: row[5] || '',
+      address: row[6] || '',
+      amount: row[7] || '',
+      weight: row[8] || '',
+      notes: row[9] || '',
+      products: row[10] || '',
+      totalPrice: row[11] || '',
+      orderDate: row[12] || ''
+    });
+  }
+  return { orders };
+}
+
+function addOrder(data) {
+  const sheet = getSheet(ORDERS_SHEET);
+  if (!sheet) {
+    // إنشاء الورقة إذا لم تكن موجودة
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const newSheet = spreadsheet.insertSheet(ORDERS_SHEET);
+    newSheet.appendRow([
+      'رقم الطلب',
+      'اسم المستلم',
+      'هاتف المستلم',
+      'هاتف آخر',
+      'المحافظة',
+      'المدينة',
+      'العنوان التفصيلي',
+      'المبلغ المطلوب تحصيله',
+      'الوزن',
+      'ملاحظات',
+      'المنتجات المطلوبة',
+      'السعر الإجمالي',
+      'تاريخ الطلب'
+    ]);
+  }
+
+  if (!data.customerName || !data.customerPhone || !data.governorate || !data.city || !data.address || !data.amount) {
+    return { success: false, error: 'جميع الحقول المطلوبة غير مكتملة' };
+  }
+
+  const sheet2 = getSheet(ORDERS_SHEET);
+  const lastRow = sheet2.getLastRow();
+  const orderId = 'ORD-' + String(lastRow + 1).padStart(4, '0');
+
+  sheet2.appendRow([
+    orderId,
+    data.customerName || '',
+    data.customerPhone || '',
+    data.customerPhone2 || '',
+    data.governorate || '',
+    data.city || '',
+    data.address || '',
+    data.amount || '',
+    data.weight || '',
+    data.notes || '',
+    data.products || '',
+    data.totalPrice || '',
+    new Date().toISOString()
+  ]);
+
+  return { success: true, orderId: orderId };
+}
+
+// ====================================================
+// 5. GOOGLE DRIVE UPLOAD - رفع الملفات
+// ====================================================
+function uploadFileToDrive(base64Data, fileName) {
+  try {
+    if (!base64Data) return null;
+
+    let mimeType = 'image/jpeg';
+    let base64Content = base64Data;
+    
+    const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (matches && matches.length === 3) {
+      mimeType = matches[1];
+      base64Content = matches[2];
+    }
+
+    const fileBlob = Utilities.newBlob(Utilities.base64Decode(base64Content), mimeType, fileName);
+    const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+    const file = folder.createFile(fileBlob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    return file.getUrl();
+  } catch(e) {
+    console.error('Error uploading to Drive:', e);
+    return null;
+  }
+}
+
+// ====================================================
+// 6. HELPER FUNCTIONS
+// ====================================================
+function getSheet(sheetName) {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    return spreadsheet.getSheetByName(sheetName);
+  } catch(e) {
+    console.error('Error opening sheet:', e);
+    return null;
+  }
+}
+
+// ====================================================
+// 7. SETUP - إنشاء جميع الأوراق
+// ====================================================
+function setupSheets() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  // Products Sheet
+  let sheet = spreadsheet.getSheetByName(PRODUCT_SHEET);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(PRODUCT_SHEET);
+    sheet.appendRow(['ID', 'Name', 'Price', 'Discount', 'Icon', 'Sizes', 'Media']);
+  }
+
+  // Categories Sheet
+  sheet = spreadsheet.getSheetByName(CATEGORY_SHEET);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(CATEGORY_SHEET);
+    sheet.appendRow(['ID', 'Name', 'Icon', 'Image']);
+  }
+
+  // Users Sheet
+  sheet = spreadsheet.getSheetByName(USERS_SHEET);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(USERS_SHEET);
+    sheet.appendRow(['Phone', 'Password', 'Name', 'JoinDate']);
+  }
+
+  // Orders Sheet
+  sheet = spreadsheet.getSheetByName(ORDERS_SHEET);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(ORDERS_SHEET);
+    sheet.appendRow([
+      'رقم الطلب',
+      'اسم المستلم',
+      'هاتف المستلم',
+      'هاتف آخر',
+      'المحافظة',
+      'المدينة',
+      'العنوان التفصيلي',
+      'المبلغ المطلوب تحصيله',
+      'الوزن',
+      'ملاحظات',
+      'المنتجات المطلوبة',
+      'السعر الإجمالي',
+      'تاريخ الطلب'
+    ]);
+  }
+
+  console.log('✅ All sheets created successfully!');
+}
+```
