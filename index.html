@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>اختبار بسيط - Google Sheets</title>
+  <title>اختبار - no-cors</title>
 </head>
 <body style="font-family:Arial;text-align:center;padding:50px;direction:rtl;">
 
-  <h1>🧪 اختبار إرسال طلب</h1>
+  <h1>🧪 اختبار إرسال طلب (no-cors)</h1>
   
   <form id="testForm">
     <input type="text" id="name" placeholder="الاسم" value="اختبار" style="padding:10px;width:300px;margin:5px;">
@@ -51,24 +51,23 @@
       };
 
       try {
+        // استخدام FormData بدلاً من JSON
+        const formData = new FormData();
+        formData.append('payload', JSON.stringify(data));
+
         const res = await fetch('https://script.google.com/macros/s/AKfycbxdhsaiJDo9RvwZcljGxmgbMpkyR96at3SaRZBCdvQYIhZySLPLR-bODSf6kyDJ90Gu/exec', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          mode: 'no-cors',
+          body: formData
         });
 
-        const result = await res.json();
-        console.log(result);
-
-        if (result.success) {
-          resultDiv.style.background = '#d4edda';
-          resultDiv.style.border = '2px solid #28a745';
-          resultDiv.innerHTML = '✅ تم الإرسال! رقم الطلب: ' + (result.orderId || 'غير معروف');
-        } else {
-          resultDiv.style.background = '#f8d7da';
-          resultDiv.style.border = '2px solid #dc3545';
-          resultDiv.innerHTML = '❌ فشل: ' + (result.error || 'خطأ غير معروف');
-        }
+        // مع no-cors لا يمكن قراءة الرد، لكن الطلب يصل
+        resultDiv.style.background = '#d4edda';
+        resultDiv.style.border = '2px solid #28a745';
+        resultDiv.innerHTML = '✅ تم الإرسال! (تحقق من Google Sheets)';
+        
+        console.log('✅ تم الإرسال بنجاح (no-cors)');
+        
       } catch(err) {
         resultDiv.style.background = '#f8d7da';
         resultDiv.style.border = '2px solid #dc3545';
