@@ -1,24 +1,233 @@
-fetch('https://script.google.com/macros/s/AKfycbxdhsaiJDo9RvwZcljGxmgbMpkyR96at3SaRZBCdvQYIhZySLPLR-bODSf6kyDJ90Gu/exec', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ 
-    action: 'addOrder', 
-    customerName: 'محمد أحمد', 
-    customerPhone: '01012345678', 
-    governorate: 'القاهرة', 
-    city: 'مدينة نصر', 
-    address: 'شارع التسعين', 
-    amount: '100',
-    weight: '1',
-    notes: 'اختبار'
-  })
-})
-.then(r => r.json())
-.then(data => {
-  console.log('✅ Response:', data);
-  alert('تم الإرسال! تحقق من Google Sheets');
-})
-.catch(err => {
-  console.error('❌ Error:', err);
-  alert('خطأ: ' + err);
-});
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار API - H.L LeVance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+      direction: rtl;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #57080E;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #57080E;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #6A1017;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+    #result.success {
+      display: block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 2px solid #2e7d32;
+    }
+    #result.error {
+      display: block;
+      background: #ffebee;
+      color: #c62828;
+      border: 2px solid #c62828;
+    }
+    #result.loading {
+      display: block;
+      background: #e3f2fd;
+      color: #0d47a1;
+      border: 2px solid #0d47a1;
+    }
+    .note {
+      background: #fff3e0;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 13px;
+      border-right: 4px solid #ff9800;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 اختبار API - Google Sheets</h1>
+    <p style="text-align:center;color:#666;">إرسال طلب جديد إلى Google Sheets</p>
+
+    <form id="testForm">
+      <div class="form-group">
+        <label>اسم المستلم *</label>
+        <input type="text" id="customerName" placeholder="أدخل اسم المستلم" value="محمد أحمد">
+      </div>
+
+      <div class="form-group">
+        <label>هاتف المستلم *</label>
+        <input type="tel" id="customerPhone" placeholder="01012345678" value="01012345678">
+      </div>
+
+      <div class="form-group">
+        <label>هاتف آخر</label>
+        <input type="tel" id="customerPhone2" placeholder="هاتف آخر (اختياري)">
+      </div>
+
+      <div class="form-group">
+        <label>المحافظة *</label>
+        <input type="text" id="governorate" placeholder="المحافظة" value="القاهرة">
+      </div>
+
+      <div class="form-group">
+        <label>المدينة *</label>
+        <input type="text" id="city" placeholder="المدينة" value="مدينة نصر">
+      </div>
+
+      <div class="form-group">
+        <label>العنوان التفصيلي *</label>
+        <input type="text" id="address" placeholder="العنوان بالتفصيل" value="شارع التسعين">
+      </div>
+
+      <div class="form-group">
+        <label>المبلغ المطلوب تحصيله *</label>
+        <input type="number" id="amount" placeholder="المبلغ بالجنيه" value="100">
+      </div>
+
+      <div class="form-group">
+        <label>وزن الشحنة</label>
+        <input type="number" id="weight" placeholder="الوزن بالكيلو" value="1">
+      </div>
+
+      <div class="form-group">
+        <label>ملاحظات</label>
+        <textarea id="notes" rows="2" placeholder="ملاحظات إضافية"></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn">📤 إرسال الطلب</button>
+    </form>
+
+    <div id="result"></div>
+
+    <div class="note">
+      <strong>🔗 رابط API:</strong><br>
+      <code style="font-size:12px;word-break:break-all;">
+        https://script.google.com/macros/s/AKfycbxdhsaiJDo9RvwZcljGxmgbMpkyR96at3SaRZBCdvQYIhZySLPLR-bODSf6kyDJ90Gu/exec
+      </code>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxdhsaiJDo9RvwZcljGxmgbMpkyR96at3SaRZBCdvQYIhZySLPLR-bODSf6kyDJ90Gu/exec';
+
+    document.getElementById('testForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const resultDiv = document.getElementById('result');
+      
+      // جمع البيانات
+      const data = {
+        action: 'addOrder',
+        customerName: document.getElementById('customerName').value.trim(),
+        customerPhone: document.getElementById('customerPhone').value.trim(),
+        customerPhone2: document.getElementById('customerPhone2').value.trim(),
+        governorate: document.getElementById('governorate').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        amount: document.getElementById('amount').value.trim(),
+        weight: document.getElementById('weight').value.trim() || '1',
+        notes: document.getElementById('notes').value.trim()
+      };
+
+      // التحقق من الحقول المطلوبة
+      if (!data.customerName || !data.customerPhone || !data.governorate || !data.city || !data.address || !data.amount) {
+        resultDiv.className = 'error';
+        resultDiv.textContent = '⚠️ يرجى ملء جميع الحقول المطلوبة';
+        resultDiv.style.display = 'block';
+        return;
+      }
+
+      // تعطيل الزر
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ جاري الإرسال...';
+      
+      resultDiv.className = 'loading';
+      resultDiv.textContent = '⏳ جاري إرسال الطلب...';
+      resultDiv.style.display = 'block';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        console.log('📤 Result:', result);
+
+        if (result && result.success) {
+          resultDiv.className = 'success';
+          resultDiv.innerHTML = `
+            ✅ <strong>تم الإرسال بنجاح!</strong><br>
+            رقم الطلب: <strong>${result.orderId || 'غير معروف'}</strong><br>
+            <span style="font-size:13px;">تحقق من Google Sheets → ورقة Orders</span>
+          `;
+        } else {
+          resultDiv.className = 'error';
+          resultDiv.textContent = '❌ فشل الإرسال: ' + (result?.error || 'خطأ غير معروف');
+        }
+      } catch (error) {
+        console.error('❌ Error:', error);
+        resultDiv.className = 'error';
+        resultDiv.textContent = '❌ خطأ في الاتصال: ' + error.message;
+      }
+
+      // إعادة تفعيل الزر
+      submitBtn.disabled = false;
+      submitBtn.textContent = '📤 إرسال الطلب';
+    });
+  </script>
+</body>
+</html>
