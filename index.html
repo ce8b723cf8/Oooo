@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,9 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
   
   <style>
-    /* ==========================================================================
-       GLOBAL VARIABLES & RESET (White - Black - Red Theme)
-       ========================================================================== */
     :root {
       --bg-main: #FFFFFF;
       --bg-alt: #F8F9FA;
@@ -59,59 +57,14 @@
       overflow-x: hidden;
     }
 
-    /* ==========================================================================
-       INTRO SCREEN
-       ========================================================================== */
-    #intro {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100dvh;
-      background: var(--black-main);
-      z-index: 99999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
-    }
-
-    #intro video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-    }
-
-    #intro.hide {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    /* ==========================================================================
-       MAIN STORE CONTAINER
-       ========================================================================== */
     #store {
       min-height: 100vh;
-      opacity: 0;
-      transform: translateY(20px);
-      visibility: hidden;
-      background: var(--bg-main);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-
-    #store.show {
       opacity: 1;
       transform: translateY(0);
       visibility: visible;
+      background: var(--bg-main);
     }
 
-    /* ==========================================================================
-       HEADER & NAVIGATION
-       ========================================================================== */
     header {
       position: sticky;
       top: 0;
@@ -204,7 +157,6 @@
       display: none !important;
     }
 
-    /* SEARCH BAR */
     .search-bar {
       padding: 0 6% 16px;
     }
@@ -256,9 +208,6 @@
       color: var(--red-main);
     }
 
-    /* ==========================================================================
-       SECTION TITLES
-       ========================================================================== */
     .section-title {
       font-size: clamp(22px, 3.5vw, 32px);
       font-weight: 900;
@@ -279,9 +228,6 @@
       border-radius: var(--radius-full);
     }
 
-    /* ==========================================================================
-       OFFERS SECTION
-       ========================================================================== */
     .offers-section {
       padding: 40px 6%;
       background: var(--bg-alt);
@@ -423,9 +369,6 @@
       color: #FFFFFF;
     }
 
-    /* ==========================================================================
-       PRODUCTS SECTION
-       ========================================================================== */
     .products {
       padding: 50px 6%;
       background: var(--bg-main);
@@ -667,9 +610,6 @@
       box-shadow: 0 6px 16px rgba(229, 9, 20, 0.3);
     }
 
-    /* ==========================================================================
-       ZOOM MODAL
-       ========================================================================== */
     .zoom-modal {
       display: none;
       position: fixed;
@@ -755,9 +695,6 @@
       padding: 0 12px;
     }
 
-    /* ==========================================================================
-       CHECKOUT / ORDER FORM PAGE
-       ========================================================================== */
     #orderFormPage {
       display: none;
       padding: 50px 6%;
@@ -917,9 +854,6 @@
       color: var(--black-main);
     }
 
-    /* ==========================================================================
-       MODALS (LOGIN & CART)
-       ========================================================================== */
     .modal-overlay, .cart-modal {
       display: none;
       position: fixed;
@@ -1087,9 +1021,6 @@
       color: var(--black-main);
     }
 
-    /* ==========================================================================
-       ADMIN PANEL
-       ========================================================================== */
     #adminPanel {
       display: none;
       padding: 40px 6%;
@@ -1239,9 +1170,6 @@
       color: #FFFFFF;
     }
 
-    /* ==========================================================================
-       FOOTER & FLOATING WHATSAPP
-       ========================================================================== */
     footer {
       padding: 40px 6%;
       background: var(--black-main);
@@ -1289,7 +1217,6 @@
       transform: scale(1.1);
     }
 
-    /* ANIMATIONS */
     @keyframes toastIn {
       from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -1299,7 +1226,6 @@
       to { opacity: 0; }
     }
 
-    /* MEDIA QUERIES */
     @media (max-width: 768px) {
       .top-header { padding: 12px 4%; }
       .logo { font-size: 22px; }
@@ -1312,13 +1238,6 @@
   </style>
 </head>
 <body>
-
-  <!-- INTRO OVERLAY -->
-  <div id="intro">
-    <video id="introVideo" playsinline muted autoplay>
-      <source src="" type="video/mp4">
-    </video>
-  </div>
 
   <!-- MAIN STORE -->
   <div id="store">
@@ -1344,7 +1263,6 @@
     <section id="adminPanel">
       <h2>لوحة التحكم الإدارية</h2>
       
-      <!-- OFFER MANAGEMENT -->
       <div class="admin-section">
         <h3>إضافة عرض جديد</h3>
         <div class="admin-controls">
@@ -1364,7 +1282,6 @@
         <div id="adminOfferList" class="admin-list"></div>
       </div>
 
-      <!-- PRODUCT MANAGEMENT -->
       <div class="admin-section">
         <h3>إضافة منتج جديد</h3>
         <div class="admin-controls">
@@ -1522,10 +1439,9 @@
     </div>
   </div>
 
-  <!-- SYSTEM JAVASCRIPT LOGIC (INTACT & CLEANED) -->
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxWYzlRqVSsZWIdJ_ghyi45jGobBrYgr70Fl5cK-4maMJDM5wPS4_ItYqj0W7xozsDr/exec, 
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxWYzlRqVSsZWIdJ_ghyi45jGobBrYgr70Fl5cK-4maMJDM5wPS4_ItYqj0W7xozsDr/exec',
       STORE_NAME: 'H.L LeVance', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -2101,32 +2017,15 @@
         gov.appendChild(opt); 
       });
 
-      const intro = document.getElementById('intro');
-      const video = document.getElementById('introVideo');
-
-      function transitionToStore() {
-        if(intro?.classList.contains('hide')) return;
-        intro?.classList.add('hide');
-        document.body.style.overflow='auto';
-        const store = document.getElementById('store');
-        store?.classList.add('show');
-        setTimeout(loadData, 500);
-      }
-
-      setTimeout(transitionToStore, 3000);
-
-      if(video) { 
-        video.addEventListener('ended', transitionToStore); 
-        video.addEventListener('error', transitionToStore); 
-        video.play().catch(transitionToStore); 
-      } else {
-        transitionToStore();
-      }
+      const store = document.getElementById('store');
+      if(store) store.classList.add('show');
+      
+      loadData();
 
       setTimeout(() => {
         const wa = document.querySelector('.whatsapp-float');
         if(wa) wa.classList.add('show');
-      }, 3000);
+      }, 1000);
 
       updateCartCount();
       renderOffers();
@@ -2149,3 +2048,4 @@
   </script>
 </body>
 </html>
+```
