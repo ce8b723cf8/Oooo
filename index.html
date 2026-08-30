@@ -85,75 +85,127 @@
       gap: 12px;
     }
 
-    .login-btn, .logout-btn, .cart {
-      border: none;
-      font-size: 15px;
+    /* ============ BUTTONS ============ */
+    .login-btn, .logout-btn, .cart, .add-cart, .offer-add-cart, .submit-order-btn, .cart-checkout-btn, .btn-login-submit {
+      position: relative;
+      border: 1px solid #E50914;
       cursor: pointer;
       white-space: nowrap;
-      padding: 10px 22px;
-      border-radius: var(--radius-full);
+      padding: 12px 22px;
+      border-radius: 12px;
       font-weight: 700;
+      font-size: 14px;
       transition: var(--transition);
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      background: #111215;
+      color: #FFFFFF;
+      overflow: hidden;
     }
 
-    .login-btn { background: var(--black-main); color: #FFFFFF; }
-    .login-btn:hover { background: var(--black-hover); transform: translateY(-2px); }
-
-    .logout-btn {
-      background: var(--red-light);
-      color: var(--red-main);
-      border: 1px solid rgba(229, 9, 20, 0.2);
+    .login-btn::before, .logout-btn::before, .cart::before, .add-cart::before, .offer-add-cart::before, .submit-order-btn::before, .cart-checkout-btn::before, .btn-login-submit::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(90deg, #E50914, #000000, #E50914);
+      z-index: -1;
+      animation: borderGlow 3s linear infinite;
     }
-    .logout-btn:hover { background: var(--red-main); color: #FFFFFF; }
+
+    @keyframes borderGlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .login-btn:hover, .logout-btn:hover, .cart:hover, .add-cart:hover, .offer-add-cart:hover, .submit-order-btn:hover, .cart-checkout-btn:hover, .btn-login-submit:hover {
+      background: #E50914;
+      color: #FFFFFF;
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+      transform: translateY(-2px);
+    }
 
     .cart {
-      background: var(--red-main);
-      color: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(229, 9, 20, 0.3);
+      background: #E50914;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
     }
-    .cart:hover { background: var(--red-hover); transform: translateY(-2px); }
+
+    .cart:hover {
+      background: #C1070F;
+    }
 
     .login-btn.hidden, .logout-btn.hidden { display: none !important; }
 
+    .close-modal, .cart-close-btn, .admin-controls button, .add-image-btn {
+      position: relative;
+      border: 1px solid #E50914;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #111215;
+      color: #FFFFFF;
+      overflow: hidden;
+    }
+
+    .close-modal:hover, .cart-close-btn:hover, .admin-controls button:hover, .add-image-btn:hover {
+      background: #E50914;
+      color: #FFFFFF;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
+    }
+
+    /* ============ SEARCH ============ */
     .search-bar { padding: 0 6% 16px; }
 
     .search-box {
       display: flex;
-      height: 50px;
+      height: 56px;
       max-width: 700px;
       margin: 0 auto;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-full);
+      border-radius: 12px;
       overflow: hidden;
-      background: var(--bg-alt);
+      background: #010201;
+      border: 1px solid #E50914;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.3), inset 0 0 10px rgba(229, 9, 20, 0.1);
       transition: var(--transition);
     }
 
-    .search-box:focus-within { border-color: var(--black-main); background: #FFFFFF; }
+    .search-box:focus-within {
+      border-color: #E50914;
+      box-shadow: 0 0 25px rgba(229, 9, 20, 0.5), inset 0 0 15px rgba(229, 9, 20, 0.2);
+    }
 
     .search-box input {
       width: 100%;
       border: none;
       outline: none;
       background: transparent;
-      color: var(--text-main);
+      color: #FFFFFF;
       padding: 0 24px;
       font-size: 15px;
       direction: rtl;
     }
 
-    .search-box input::placeholder { color: var(--text-muted); }
+    .search-box input::placeholder { color: #c0b9c0; }
 
     .search-box button {
-      width: 60px;
+      width: 50px;
       border: none;
-      background: transparent;
-      color: var(--black-main);
+      background: #E50914;
+      color: #FFFFFF;
       cursor: pointer;
       font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .section-title {
@@ -237,22 +289,6 @@
 
     .product-image .product-icon { font-size: 80px; }
 
-    .product-image .delete-prod, .offer-delete {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #FFFFFF;
-      color: var(--red-main);
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 32px;
-      height: 32px;
-      cursor: pointer;
-      font-size: 14px;
-      display: none;
-      z-index: 10;
-    }
-
     .offer-info, .product-info {
       padding: 18px;
       display: flex;
@@ -296,19 +332,20 @@
 
     .sizes .size-btn {
       padding: 6px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      background: var(--bg-alt);
-      color: var(--black-main);
+      border: 1px solid #E50914;
+      border-radius: 8px;
+      background: #111215;
+      color: #FFFFFF;
       cursor: pointer;
       font-weight: 700;
       font-size: 12px;
+      transition: var(--transition);
     }
 
     .sizes .size-btn:hover, .sizes .size-btn.selected {
-      background: var(--black-main);
+      background: #E50914;
       color: #FFFFFF;
-      border-color: var(--black-main);
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
     .colors-display {
@@ -319,8 +356,9 @@
     }
 
     .colors-display .color-tag {
-      background: var(--bg-alt);
-      border: 1px solid var(--border-color);
+      background: #111215;
+      border: 1px solid #E50914;
+      color: #FFFFFF;
       padding: 4px 12px;
       border-radius: 999px;
       font-size: 12px;
@@ -334,31 +372,21 @@
       gap: 6px;
       margin-bottom: 12px;
       padding: 8px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      background: var(--bg-alt);
-      color: var(--black-main);
+      border: 1px solid #E50914;
+      border-radius: 8px;
+      background: #111215;
+      color: #FFFFFF;
       cursor: pointer;
       font-weight: 700;
       font-size: 13px;
       text-decoration: none;
+      transition: var(--transition);
     }
 
-    .offer-add-cart, .add-cart {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: var(--radius-sm);
-      background: var(--red-main);
-      color: #FFFFFF;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      margin-top: auto;
+    .video-btn:hover {
+      background: #E50914;
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
-
-    .offer-add-cart { background: var(--black-main); }
-    .offer-add-cart:hover, .add-cart:hover { background: var(--red-hover); }
 
     .zoom-modal {
       display: none;
@@ -378,7 +406,7 @@
       position: absolute;
       top: 24px;
       left: 24px;
-      background: rgba(255, 255, 255, 0.15);
+      background: #E50914;
       color: #FFFFFF;
       border: none;
       border-radius: 50%;
@@ -412,14 +440,20 @@
     }
 
     .zoom-modal .zoom-nav button {
-      background: rgba(255, 255, 255, 0.15);
+      background: #111215;
+      border: 1px solid #E50914;
       color: #FFFFFF;
-      border: none;
       padding: 10px 24px;
-      border-radius: var(--radius-full);
+      border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
       font-weight: 700;
+      transition: var(--transition);
+    }
+
+    .zoom-modal .zoom-nav button:hover {
+      background: #E50914;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
     }
 
     .zoom-modal .zoom-nav .zoom-counter {
@@ -527,19 +561,6 @@
       gap: 16px;
     }
 
-    .order-form-container .submit-order-btn {
-      width: 100%;
-      padding: 16px;
-      background: var(--red-main);
-      color: #FFFFFF;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 18px;
-      font-weight: 900;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
     .order-form-container .back-to-store {
       display: block;
       text-align: center;
@@ -565,12 +586,12 @@
 
     .modal-box, .cart-box {
       background: var(--bg-card);
-      border: 1px solid var(--border-color);
+      border: 1px solid #E50914;
       border-radius: var(--radius-lg);
       padding: 32px 28px;
       width: 100%;
       max-width: 440px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 0 30px rgba(229, 9, 20, 0.3);
       text-align: center;
     }
 
@@ -593,29 +614,19 @@
       width: 100%;
       padding: 14px 16px;
       margin-bottom: 14px;
-      border: 1px solid var(--border-color);
+      border: 1px solid #E50914;
       border-radius: var(--radius-sm);
-      background: var(--bg-alt);
-      color: var(--text-main);
+      background: #111215;
+      color: #FFFFFF;
       font-size: 15px;
       direction: rtl;
       outline: none;
     }
 
-    .modal-box .btn-login-submit, .cart-checkout-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--black-main);
-      color: #FFFFFF;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 8px;
+    .modal-box input:focus {
+      border-color: #E50914;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
     }
-
-    .cart-checkout-btn { background: var(--red-main); }
 
     .modal-box .signup-link {
       display: block;
@@ -625,18 +636,6 @@
       cursor: pointer;
       text-decoration: underline;
       font-size: 14px;
-    }
-
-    .modal-box .close-modal, .cart-close-btn {
-      margin-top: 12px;
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      padding: 10px 24px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-weight: 700;
-      width: 100%;
     }
 
     .cart-items-list { margin-bottom: 16px; }
@@ -653,14 +652,20 @@
     .cart-item .item-price { font-size: 14px; font-weight: 700; color: var(--red-main); }
 
     .cart-item .remove-item {
-      background: var(--red-light);
-      color: var(--red-main);
-      border: none;
+      background: #111215;
+      border: 1px solid #E50914;
+      color: #E50914;
       border-radius: 50%;
       width: 28px;
       height: 28px;
       cursor: pointer;
       font-size: 12px;
+      transition: var(--transition);
+    }
+
+    .cart-item .remove-item:hover {
+      background: #E50914;
+      color: #FFFFFF;
     }
 
     .cart-total {
@@ -688,10 +693,11 @@
 
     .admin-section {
       background: var(--black-hover);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid #E50914;
       border-radius: var(--radius-md);
       padding: 24px;
       margin-bottom: 24px;
+      box-shadow: 0 0 15px rgba(229, 9, 20, 0.2);
     }
 
     .admin-section h3 { color: #FFFFFF; margin-bottom: 16px; font-size: 18px; }
@@ -705,25 +711,14 @@
 
     .admin-controls input, .admin-controls select {
       padding: 12px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid #E50914;
       border-radius: var(--radius-sm);
-      background: rgba(0, 0, 0, 0.4);
+      background: #111215;
       color: #FFFFFF;
       font-size: 14px;
       flex: 1;
       min-width: 160px;
       outline: none;
-    }
-
-    .admin-controls button, .add-image-btn {
-      background: var(--red-main);
-      color: #FFFFFF;
-      border: none;
-      padding: 12px 24px;
-      border-radius: var(--radius-sm);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
     }
 
     .admin-controls .size-checkboxes {
@@ -732,8 +727,9 @@
       gap: 10px;
       align-items: center;
       padding: 10px 14px;
-      background: rgba(0, 0, 0, 0.4);
+      background: #111215;
       border-radius: var(--radius-sm);
+      border: 1px solid #E50914;
       width: 100%;
     }
 
@@ -748,8 +744,8 @@
     }
 
     .admin-list {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #111215;
+      border: 1px solid #E50914;
       border-radius: var(--radius-sm);
       padding: 16px;
       max-height: 300px;
@@ -761,18 +757,7 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .admin-list-item button {
-      background: rgba(229, 9, 20, 0.2);
-      color: #FF4D4D;
-      border: 1px solid rgba(229, 9, 20, 0.4);
-      padding: 6px 14px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 12px;
+      border-bottom: 1px solid rgba(229, 9, 20, 0.2);
     }
 
     footer {
@@ -790,7 +775,7 @@
       bottom: 25px;
       left: -80px;
       z-index: 99999;
-      background: #25D366;
+      background: #E50914;
       color: #FFFFFF;
       width: 56px;
       height: 56px;
@@ -798,7 +783,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+      box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
       text-decoration: none;
       opacity: 0;
       font-size: 26px;
@@ -883,7 +868,6 @@
         <input type="text" id="newProductIcon" placeholder="رمز المنتج (Emoji)">
         <input type="text" id="newProductVideoUrl" placeholder="رابط فيديو">
         <select id="newProductCategory">
-          <option value="Products">منتجات عامة</option>
           <option value="Sherwal">شروال</option>
           <option value="Shirt">قميص</option>
           <option value="Tshirt">تيشيرت</option>
@@ -1066,7 +1050,7 @@
       const toast = document.createElement('div');
       toast.className = 'custom-toast';
       toast.textContent = message;
-      toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#0F0F11':'#E50914'};color:#FFFFFF;padding:14px 28px;border-radius:9999px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 10px 30px rgba(0,0,0,0.2);animation:toastIn .3s ease-out;text-align:center;direction:rtl;`;
+      toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#111215':'#E50914'};color:#FFFFFF;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 0 20px rgba(229,9,20,0.5);animation:toastIn .3s ease-out;text-align:center;direction:rtl;border:1px solid #E50914;`;
       document.body.appendChild(toast);
       setTimeout(() => { toast.remove(); }, 2500);
     }
@@ -1075,7 +1059,7 @@
       const container = document.getElementById('offerImagesContainer');
       const div = document.createElement('div');
       div.style.cssText = 'display:flex;gap:10px;margin-bottom:10px;';
-      div.innerHTML = `<input type="file" accept="image/*" class="offer-image-input" style="flex:1;padding:8px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(0,0,0,0.4);color:#FFF;">`;
+      div.innerHTML = `<input type="file" accept="image/*" class="offer-image-input" style="flex:1;padding:8px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;">`;
       container.appendChild(div);
     }
 
@@ -1083,7 +1067,7 @@
       const container = document.getElementById('productImagesContainer');
       const div = document.createElement('div');
       div.style.cssText = 'display:flex;gap:10px;margin-bottom:10px;';
-      div.innerHTML = `<input type="file" accept="image/*" class="product-image-input" style="flex:1;padding:8px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;background:rgba(0,0,0,0.4);color:#FFF;">`;
+      div.innerHTML = `<input type="file" accept="image/*" class="product-image-input" style="flex:1;padding:8px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;">`;
       container.appendChild(div);
     }
 
@@ -1306,13 +1290,6 @@
       }
     }
 
-    async function deleteOffer(id) {
-      if(!confirm('هل أنت متأكد من حذف هذا العرض؟')) return;
-      const result = await callAPI('deleteOffer', {id});
-      if(result.success) { showToast('تم حذف العرض.'); await loadData(); }
-      else showToast('فشل حذف العرض: '+(result.error||'خطأ'), 'error');
-    }
-
     async function addProduct() {
       const name = document.getElementById('newProductName').value.trim();
       const price = parseFloat(document.getElementById('newProductPrice').value.trim());
@@ -1325,7 +1302,7 @@
       if(!name || isNaN(price) || price<=0) return showToast('يرجى إدخال اسم المنتج وسعر صحيح.', 'error');
       const sizes = [...document.querySelectorAll('#adminPanel .size-checkboxes input[type="checkbox"]:checked')].map(cb=>cb.value);
       await uploadProductImages();
-      const actionMap = {Products:'addProduct', Sherwal:'addSherwal', Shirt:'addShirt', Tshirt:'addTshirt', Shoes:'addShoes'};
+      const actionMap = {Sherwal:'addSherwal', Shirt:'addShirt', Tshirt:'addTshirt', Shoes:'addShoes'};
       const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors, media: uploadedImages, videoUrl});
       if(result.success) { showToast('تم إضافة المنتج بنجاح!'); await loadData(); }
       else showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error');
@@ -1333,8 +1310,6 @@
 
     async function loadData() {
       try {
-        const p = await fetchFromAPI('getProducts');
-        if(p?.products) localStorage.setItem('hl_products_general', JSON.stringify(p.products));
         const s = await fetchFromAPI('getSherwal');
         if(s?.sherwal) localStorage.setItem('hl_products_sherwal', JSON.stringify(s.sherwal));
         const sh = await fetchFromAPI('getShirt');
@@ -1359,21 +1334,6 @@
       const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
       grid.innerHTML = items.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>' : '';
       items.forEach(item => renderProductCard(item, grid));
-    }
-
-    function searchProducts() {
-      const q = document.getElementById('search').value.trim().toLowerCase();
-      const allItems = [
-        ...JSON.parse(localStorage.getItem('hl_products_sherwal')||'[]'),
-        ...JSON.parse(localStorage.getItem('hl_products_shirt')||'[]'),
-        ...JSON.parse(localStorage.getItem('hl_products_tshirt')||'[]'),
-        ...JSON.parse(localStorage.getItem('hl_products_shoes')||'[]')
-      ];
-      const filtered = allItems.filter(p => !q || (p.name||'').toLowerCase().includes(q));
-      renderGrid('sherwalGrid', 'hl_products_sherwal');
-      renderGrid('shirtGrid', 'hl_products_shirt');
-      renderGrid('tshirtGrid', 'hl_products_tshirt');
-      renderGrid('shoesGrid', 'hl_products_shoes');
     }
 
     function selectSize(btn) {
