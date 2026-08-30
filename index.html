@@ -18,23 +18,18 @@
       --text-muted: #666666;
       --border-color: #E5E7EB;
       --border-dark: #111111;
-      
       --red-main: #E50914;
       --red-hover: #C1070F;
       --red-light: #FFF5F5;
-      
       --black-main: #0F0F11;
       --black-hover: #27272A;
-      
       --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
       --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
       --shadow-lg: 0 16px 40px rgba(0,0,0,0.12);
-      
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
       --radius-full: 9999px;
-      
       --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -92,7 +87,6 @@
       letter-spacing: -0.5px;
       white-space: nowrap;
       text-transform: uppercase;
-      position: relative;
     }
 
     .logo span {
@@ -127,7 +121,6 @@
     .login-btn:hover {
       background: var(--black-hover);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
     }
 
     .logout-btn {
@@ -150,7 +143,6 @@
     .cart:hover {
       background: var(--red-hover);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
     }
 
     .login-btn.hidden, .logout-btn.hidden {
@@ -175,7 +167,6 @@
 
     .search-box:focus-within {
       border-color: var(--black-main);
-      box-shadow: 0 0 0 3px rgba(15, 15, 17, 0.08);
       background: #FFFFFF;
     }
 
@@ -201,11 +192,6 @@
       color: var(--black-main);
       cursor: pointer;
       font-size: 18px;
-      transition: var(--transition);
-    }
-
-    .search-box button:hover {
-      color: var(--red-main);
     }
 
     .section-title {
@@ -216,7 +202,6 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      position: relative;
     }
 
     .section-title::before {
@@ -240,8 +225,6 @@
       overflow-x: auto;
       padding-bottom: 16px;
       scroll-snap-type: x mandatory;
-      scrollbar-width: thin;
-      scrollbar-color: var(--red-main) transparent;
     }
 
     .offer-card {
@@ -263,7 +246,6 @@
     .offer-card:hover {
       transform: translateY(-6px);
       box-shadow: var(--shadow-md);
-      border-color: rgba(15, 15, 17, 0.2);
     }
 
     .offer-image {
@@ -273,21 +255,14 @@
       align-items: center;
       justify-content: center;
       background: #F3F4F6;
-      border-bottom: 1px solid var(--border-color);
       overflow: hidden;
       cursor: pointer;
-      position: relative;
     }
 
     .offer-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .offer-card:hover .offer-image img {
-      transform: scale(1.05);
     }
 
     .offer-info {
@@ -301,14 +276,12 @@
       font-size: 17px;
       font-weight: 700;
       margin-bottom: 6px;
-      color: var(--black-main);
     }
 
     .offer-info p {
       font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 12px;
-      line-height: 1.5;
     }
 
     .offer-info .offer-price {
@@ -339,7 +312,6 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: 700;
-      transition: var(--transition);
     }
 
     .offer-add-cart:hover {
@@ -360,13 +332,6 @@
       font-size: 14px;
       display: none;
       z-index: 10;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-
-    .offer-delete:hover {
-      background: var(--red-main);
-      color: #FFFFFF;
     }
 
     .products {
@@ -396,7 +361,6 @@
     .product:hover {
       transform: translateY(-6px);
       box-shadow: var(--shadow-md);
-      border-color: rgba(15, 15, 17, 0.2);
     }
 
     .product-image {
@@ -406,7 +370,6 @@
       align-items: center;
       justify-content: center;
       background: #F8F9FA;
-      border-bottom: 1px solid var(--border-color);
       overflow: hidden;
       position: relative;
       cursor: pointer;
@@ -424,11 +387,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .product:hover .product-image .main-media img {
-      transform: scale(1.06);
     }
 
     .product-image .product-icon {
@@ -449,13 +407,6 @@
       font-size: 14px;
       display: none;
       z-index: 10;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-
-    .product-image .delete-prod:hover {
-      background: var(--red-main);
-      color: #FFFFFF;
     }
 
     .product-image .image-gallery {
@@ -466,12 +417,9 @@
       left: 50%;
       transform: translateX(-50%);
       background: rgba(15, 15, 17, 0.75);
-      backdrop-filter: blur(4px);
       padding: 4px 8px;
       border-radius: var(--radius-full);
       z-index: 5;
-      max-width: 90%;
-      overflow-x: auto;
     }
 
     .product-image .image-gallery img {
@@ -481,13 +429,10 @@
       border: 2px solid transparent;
       cursor: pointer;
       object-fit: cover;
-      flex-shrink: 0;
-      transition: var(--transition);
     }
 
     .product-image .image-gallery img.active {
       border-color: var(--red-main);
-      transform: scale(1.1);
     }
 
     .product-info {
@@ -501,7 +446,6 @@
       font-size: 17px;
       font-weight: 700;
       margin-bottom: 8px;
-      color: var(--black-main);
     }
 
     .price {
@@ -539,7 +483,6 @@
       cursor: pointer;
       font-weight: 700;
       font-size: 12px;
-      transition: var(--transition);
     }
 
     .sizes .size-btn:hover, .sizes .size-btn.selected {
@@ -561,11 +504,6 @@
       outline: none;
     }
 
-    .color-input:focus {
-      border-color: var(--black-main);
-      background: #FFFFFF;
-    }
-
     .video-btn {
       display: inline-flex;
       align-items: center;
@@ -581,13 +519,6 @@
       font-weight: 700;
       font-size: 13px;
       text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .video-btn:hover {
-      background: var(--red-light);
-      color: var(--red-main);
-      border-color: rgba(229, 9, 20, 0.2);
     }
 
     .add-cart {
@@ -600,14 +531,11 @@
       cursor: pointer;
       font-size: 14px;
       font-weight: 700;
-      transition: var(--transition);
       margin-top: auto;
-      box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
     }
 
     .add-cart:hover {
       background: var(--red-hover);
-      box-shadow: 0 6px 16px rgba(229, 9, 20, 0.3);
     }
 
     .zoom-modal {
@@ -615,13 +543,11 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.92);
-      backdrop-filter: blur(8px);
       z-index: 99999;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       padding: 20px;
-      touch-action: pan-y;
     }
 
     .zoom-modal.active {
@@ -640,12 +566,6 @@
       height: 44px;
       font-size: 20px;
       cursor: pointer;
-      z-index: 10;
-      transition: var(--transition);
-    }
-
-    .zoom-modal .zoom-close:hover {
-      background: var(--red-main);
     }
 
     .zoom-modal .zoom-content {
@@ -655,7 +575,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
 
     .zoom-modal .zoom-content img {
@@ -681,11 +600,6 @@
       font-size: 16px;
       cursor: pointer;
       font-weight: 700;
-      transition: var(--transition);
-    }
-
-    .zoom-modal .zoom-nav button:hover {
-      background: var(--red-main);
     }
 
     .zoom-modal .zoom-nav .zoom-counter {
@@ -743,7 +657,6 @@
       max-height: 160px;
       overflow-y: auto;
       font-size: 14px;
-      color: var(--text-main);
     }
 
     .order-form-container .order-summary .cart-items .item {
@@ -787,21 +700,12 @@
       font-size: 15px;
       background: var(--bg-main);
       color: var(--text-main);
-      transition: var(--transition);
       direction: rtl;
       outline: none;
     }
 
-    .order-form-container .form-group input:focus,
-    .order-form-container .form-group select:focus,
-    .order-form-container .form-group textarea:focus {
-      border-color: var(--black-main);
-      box-shadow: 0 0 0 3px rgba(15, 15, 17, 0.08);
-    }
-
     .order-form-container .form-group input[readonly] {
       background: var(--bg-alt);
-      cursor: not-allowed;
     }
 
     .order-form-container .form-group textarea {
@@ -825,18 +729,7 @@
       font-size: 18px;
       font-weight: 900;
       cursor: pointer;
-      transition: var(--transition);
       margin-top: 10px;
-      box-shadow: 0 4px 14px rgba(229, 9, 20, 0.3);
-    }
-
-    .order-form-container .submit-order-btn:hover {
-      background: var(--red-hover);
-    }
-
-    .order-form-container .submit-order-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
     }
 
     .order-form-container .back-to-store {
@@ -847,11 +740,6 @@
       cursor: pointer;
       font-weight: 700;
       text-decoration: underline;
-      transition: var(--transition);
-    }
-
-    .order-form-container .back-to-store:hover {
-      color: var(--black-main);
     }
 
     .modal-overlay, .cart-modal {
@@ -859,7 +747,6 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(6px);
       z-index: 10000;
       align-items: center;
       justify-content: center;
@@ -909,11 +796,6 @@
       outline: none;
     }
 
-    .modal-box input:focus {
-      border-color: var(--black-main);
-      background: #FFFFFF;
-    }
-
     .modal-box .btn-login-submit, .cart-checkout-btn {
       width: 100%;
       padding: 14px;
@@ -925,20 +807,10 @@
       font-weight: 700;
       cursor: pointer;
       margin-top: 8px;
-      transition: var(--transition);
-    }
-
-    .modal-box .btn-login-submit:hover {
-      background: var(--black-hover);
     }
 
     .cart-checkout-btn {
       background: var(--red-main);
-      box-shadow: 0 4px 14px rgba(229, 9, 20, 0.3);
-    }
-
-    .cart-checkout-btn:hover {
-      background: var(--red-hover);
     }
 
     .modal-box .signup-link {
@@ -961,12 +833,6 @@
       cursor: pointer;
       font-weight: 700;
       width: 100%;
-      transition: var(--transition);
-    }
-
-    .modal-box .close-modal:hover, .cart-close-btn:hover {
-      background: var(--bg-alt);
-      color: var(--black-main);
     }
 
     .cart-items-list {
@@ -984,7 +850,6 @@
     .cart-item .item-name {
       font-weight: 700;
       font-size: 14px;
-      color: var(--black-main);
     }
 
     .cart-item .item-price {
@@ -1002,15 +867,6 @@
       height: 28px;
       cursor: pointer;
       font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-
-    .cart-item .remove-item:hover {
-      background: var(--red-main);
-      color: #FFFFFF;
     }
 
     .cart-total {
@@ -1018,7 +874,6 @@
       font-weight: 900;
       text-align: center;
       margin: 18px 0;
-      color: var(--black-main);
     }
 
     #adminPanel {
@@ -1026,7 +881,6 @@
       padding: 40px 6%;
       background: var(--black-main);
       color: #FFFFFF;
-      border-bottom: 1px solid var(--border-color);
     }
 
     #adminPanel.active {
@@ -1061,7 +915,7 @@
       margin-bottom: 16px;
     }
 
-    .admin-controls input, .admin-controls select {
+    .admin-controls input {
       padding: 12px 16px;
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: var(--radius-sm);
@@ -1073,10 +927,6 @@
       outline: none;
     }
 
-    .admin-controls input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-
     .admin-controls button, .add-image-btn {
       background: var(--red-main);
       color: #FFFFFF;
@@ -1086,12 +936,6 @@
       font-weight: 700;
       cursor: pointer;
       font-size: 14px;
-      white-space: nowrap;
-      transition: var(--transition);
-    }
-
-    .admin-controls button:hover, .add-image-btn:hover {
-      background: var(--red-hover);
     }
 
     .admin-controls .size-checkboxes {
@@ -1102,7 +946,6 @@
       padding: 10px 14px;
       background: rgba(0, 0, 0, 0.4);
       border-radius: var(--radius-sm);
-      border: 1px solid rgba(255, 255, 255, 0.15);
       width: 100%;
     }
 
@@ -1114,13 +957,6 @@
       color: #FFFFFF;
       font-size: 13px;
       cursor: pointer;
-    }
-
-    .admin-controls .size-checkboxes input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--red-main);
-      min-width: auto;
     }
 
     .admin-list {
@@ -1140,20 +976,6 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .admin-list-item .item-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .admin-list-item .item-info img {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-sm);
-      object-fit: cover;
-    }
-
     .admin-list-item button {
       background: rgba(229, 9, 20, 0.2);
       color: #FF4D4D;
@@ -1163,11 +985,6 @@
       cursor: pointer;
       font-weight: 700;
       font-size: 12px;
-    }
-
-    .admin-list-item button:hover {
-      background: var(--red-main);
-      color: #FFFFFF;
     }
 
     footer {
@@ -1205,7 +1022,7 @@
       text-decoration: none;
       opacity: 0;
       font-size: 26px;
-      transition: left 0.5s ease-out, opacity 0.5s ease-out, transform 0.3s;
+      transition: left 0.5s, opacity 0.5s;
     }
 
     .whatsapp-float.show {
@@ -1213,17 +1030,9 @@
       opacity: 1;
     }
 
-    .whatsapp-float:hover {
-      transform: scale(1.1);
-    }
-
     @keyframes toastIn {
       from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    @keyframes toastOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
     }
 
     @media (max-width: 768px) {
@@ -1233,15 +1042,12 @@
       .cart::after { content: "🛒"; font-size: 18px; }
       .order-form-container .form-row { grid-template-columns: 1fr; gap: 0; }
       .whatsapp-float { width: 48px; height: 48px; font-size: 22px; }
-      .whatsapp-float.show { left: 16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- MAIN STORE -->
   <div id="store">
-    <!-- HEADER -->
     <header>
       <div class="top-header">
         <a href="#" class="logo">H.L <span>LeVance</span></a>
@@ -1259,10 +1065,8 @@
       </div>
     </header>
 
-    <!-- ADMIN PANEL -->
     <section id="adminPanel">
       <h2>لوحة التحكم الإدارية</h2>
-      
       <div class="admin-section">
         <h3>إضافة عرض جديد</h3>
         <div class="admin-controls">
@@ -1274,11 +1078,11 @@
         </div>
         <div id="offerImagesContainer"></div>
         <button type="button" class="add-image-btn" onclick="addOfferImageField()">+ إضافة صورة عرض</button>
-        <div id="offerUploadStatus" class="upload-status"></div>
+        <div id="offerUploadStatus"></div>
         <div id="offerImagesPreview"></div>
         <br>
         <button type="button" onclick="addOffer()">إضافة العرض</button>
-        <h4 style="margin: 20px 0 10px; color: #FFF;">قائمة العروض الحالية</h4>
+        <h4 style="margin:20px 0 10px;color:#FFF;">قائمة العروض</h4>
         <div id="adminOfferList" class="admin-list"></div>
       </div>
 
@@ -1290,7 +1094,6 @@
           <input type="number" id="newProductDiscount" placeholder="نسبة الخصم %">
           <input type="text" id="newProductIcon" placeholder="رمز المنتج (Emoji)">
           <input type="text" id="newProductVideoUrl" placeholder="رابط فيديو الشرح">
-          
           <div class="size-checkboxes">
             <label><input type="checkbox" value="S"> S</label>
             <label><input type="checkbox" value="M"> M</label>
@@ -1304,45 +1107,38 @@
         </div>
         <div id="productImagesContainer"></div>
         <button type="button" class="add-image-btn" onclick="addProductImageField()">+ إضافة صورة منتج</button>
-        <div id="uploadStatus" class="upload-status"></div>
+        <div id="uploadStatus"></div>
         <div id="uploadedImagesPreview"></div>
         <br>
         <button type="button" onclick="addProduct()">إضافة المنتج</button>
-        <h4 style="margin: 20px 0 10px; color: #FFF;">قائمة المنتجات الحالية</h4>
+        <h4 style="margin:20px 0 10px;color:#FFF;">قائمة المنتجات</h4>
         <div id="adminProductList" class="admin-list"></div>
       </div>
     </section>
 
-    <!-- OFFERS SECTION -->
     <section class="offers-section">
       <h2 class="section-title">أحدث العروض الحصرية</h2>
       <div id="offersGrid" class="offers-grid"></div>
     </section>
 
-    <!-- PRODUCTS SECTION -->
     <section class="products">
       <h2 class="section-title">تشكيلتنا المختارة</h2>
       <div id="productGrid" class="product-grid"></div>
     </section>
 
-    <!-- ORDER FORM PAGE -->
     <section id="orderFormPage">
       <div class="order-form-container">
         <h2>بيانات الشحن وتأكيد الطلب</h2>
-        
         <div class="order-summary">
           <h3>ملخص السلة</h3>
           <div id="orderCartItems" class="cart-items"></div>
           <div class="total-price">الإجمالي: <span id="orderTotalPrice">0</span> جنيه</div>
         </div>
-
-        <div id="orderError" style="color: var(--red-main); margin-bottom: 15px; font-weight: bold; text-align: center;"></div>
-
+        <div id="orderError" style="color:var(--red-main);margin-bottom:15px;font-weight:bold;text-align:center;"></div>
         <div class="form-group">
           <label>الاسم الكامل <span class="required">*</span></label>
           <input type="text" id="orderCustomerName" placeholder="أدخل اسمك الكامل">
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>رقم الهاتف <span class="required">*</span></label>
@@ -1353,7 +1149,6 @@
             <input type="tel" id="orderCustomerPhone2" placeholder="اختياري">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>المحافظة <span class="required">*</span></label>
@@ -1368,12 +1163,10 @@
             </select>
           </div>
         </div>
-
         <div class="form-group">
           <label>العنوان بالتفصيل <span class="required">*</span></label>
           <input type="text" id="orderAddress" placeholder="اسم الشارع - رقم المبنى - الشقة">
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>المبلغ المستحق (جنيه)</label>
@@ -1384,28 +1177,23 @@
             <input type="number" id="orderWeight" value="1">
           </div>
         </div>
-
         <div class="form-group">
           <label>ملاحظات التوصيل</label>
           <textarea id="orderNotes" placeholder="أي تعليمات خاصة بالسائق..."></textarea>
         </div>
-
         <button id="submitOrderBtn" class="submit-order-btn" onclick="submitOrder()">تأكيد الطلبية الآن</button>
         <span class="back-to-store" onclick="closeOrderForm()">← العودة للواجهة الرئيسية</span>
       </div>
     </section>
 
-    <!-- FOOTER -->
     <footer>
       <h2>H.L LeVance</h2>
       <p>© 2026 جميع الحقوق محفوظة | المتجر الرسمي</p>
     </footer>
   </div>
 
-  <!-- FLOATING WHATSAPP BUTTON -->
-  <a href="https://wa.me/" class="whatsapp-float" target="_blank" title="تواصل معنا عبر واتساب">💬</a>
+  <a href="https://wa.me/" class="whatsapp-float" target="_blank">💬</a>
 
-  <!-- LOGIN MODAL -->
   <div id="loginModal" class="modal-overlay">
     <div class="modal-box">
       <h2>تسجيل الدخول</h2>
@@ -1417,7 +1205,6 @@
     </div>
   </div>
 
-  <!-- CART MODAL -->
   <div id="cartModal" class="cart-modal">
     <div class="cart-box">
       <h2>سلة المشتريات</h2>
@@ -1428,7 +1215,6 @@
     </div>
   </div>
 
-  <!-- ZOOM MODAL -->
   <div id="zoomModal" class="zoom-modal">
     <button class="zoom-close" onclick="closeZoom()">✕</button>
     <div id="zoomContent" class="zoom-content"></div>
@@ -1440,8 +1226,12 @@
   </div>
 
   <script>
+    // مسح البيانات القديمة
+    localStorage.removeItem('hl_products');
+    localStorage.removeItem('hl_offers');
+
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxHczQT8u2dYFBXycve2b6VHpXE4D57EnNAPoWHq_O04d4n1zKYnr-Fw4v5Ipgmo29_/exec?action=getProducts',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxHczQT8u2dYFBXycve2b6VHpXE4D57EnNAPoWHq_O04d4n1zKYnr-Fw4v5Ipgmo29_/exec',
       STORE_NAME: 'H.L LeVance', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1475,10 +1265,7 @@
       toast.textContent = message;
       toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#0F0F11':'#E50914'};color:#FFFFFF;padding:14px 28px;border-radius:9999px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 10px 30px rgba(0,0,0,0.2);animation:toastIn .3s ease-out;text-align:center;direction:rtl;`;
       document.body.appendChild(toast);
-      setTimeout(() => { 
-        toast.style.animation = 'toastOut .3s ease-in'; 
-        setTimeout(() => toast.remove(), 300); 
-      }, 2500);
+      setTimeout(() => { toast.remove(); }, 2500);
     }
 
     function addOfferImageField() {
@@ -1555,8 +1342,7 @@
 
     function updateCartCount() { 
       const count = cart.reduce((sum,item)=>sum+item.quantity,0); 
-      const cartCount = document.getElementById('cartCount'); 
-      if(cartCount) cartCount.textContent = count; 
+      document.getElementById('cartCount').textContent = count; 
     }
 
     function addToCart(name, price, size, event, color = '') {
@@ -1583,9 +1369,8 @@
     function renderCart() {
       const cartItemsList = document.getElementById('cartItemsList');
       const cartTotal = document.getElementById('cartTotal');
-      if(!cartItemsList || !cartTotal) return;
       if(cart.length === 0) { 
-        cartItemsList.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 20px 0;">السلة فارغة حالياً</p>'; 
+        cartItemsList.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px 0;">السلة فارغة حالياً</p>'; 
         cartTotal.textContent = '0'; 
         return; 
       }
@@ -1615,17 +1400,15 @@
       if(cart.length === 0) { showToast('السلة فارغة', 'error'); return; }
       closeCart(); 
       populateOrderForm();
-      const orderFormPage = document.getElementById('orderFormPage');
-      orderFormPage.style.display = 'block'; 
-      orderFormPage.classList.add('active');
-      setTimeout(() => { orderFormPage.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 100);
+      document.getElementById('orderFormPage').style.display = 'block'; 
+      document.getElementById('orderFormPage').classList.add('active');
+      document.getElementById('orderFormPage').scrollIntoView({behavior: 'smooth'});
     }
 
     function populateOrderForm() {
       const orderCartItems = document.getElementById('orderCartItems');
       const orderTotalPrice = document.getElementById('orderTotalPrice');
       const orderAmount = document.getElementById('orderAmount');
-      if(!orderCartItems || !orderTotalPrice || !orderAmount) return;
       orderCartItems.innerHTML = '';
       let total = 0;
       cart.forEach(item => {
@@ -1647,21 +1430,19 @@
 
     function renderOffers() {
       const grid = document.getElementById('offersGrid');
-      if(!grid) return;
       const offers = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
       grid.innerHTML = offers.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد عروض حالياً</p>' : '';
       offers.forEach(offer => {
         const div = document.createElement('div');
         div.className = 'offer-card';
         const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
-        div.innerHTML = `<button class="offer-delete" onclick="deleteOffer(${offer.id})">🗑</button><div class="offer-image" onclick="openOfferZoom(${offer.id})">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">`: `<span style="font-size:40px;">${offer.icon||''}</span>` }</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div><button class="offer-add-cart" onclick="addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button></div>`;
+        div.innerHTML = `<button class="offer-delete" onclick="deleteOffer(${offer.id})">🗑</button><div class="offer-image" onclick="openOfferZoom(${offer.id})">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||''}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div><button class="offer-add-cart" onclick="addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button></div>`;
         grid.appendChild(div);
       });
     }
 
     function renderAdminOffers() {
       const list = document.getElementById('adminOfferList');
-      if(!list) return;
       const offers = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
       list.innerHTML = offers.length===0 ? '<p style="text-align:center;color:rgba(255,255,255,0.5);padding:10px 0;">لا توجد عروض</p>' : '';
       offers.forEach(offer => {
@@ -1739,11 +1520,7 @@
       const products = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_PRODUCTS)||'[]');
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
-      const filtered = products.filter(p => { 
-        if(!q) return true; 
-        const name = (p.name||'').toLowerCase(); 
-        return name.includes(q); 
-      });
+      const filtered = products.filter(p => !q || (p.name||'').toLowerCase().includes(q));
       if(filtered.length === 0) { 
         grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-size:16px;padding:40px 0;grid-column:1/-1;">لا توجد منتجات مطابقة</p>'; 
         return; 
@@ -1752,7 +1529,7 @@
     }
 
     function renderStoreProducts() {
-      const grid = document.getElementById('productGrid'); if(!grid) return;
+      const grid = document.getElementById('productGrid');
       const products = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_PRODUCTS)||'[]');
       grid.innerHTML = products.length===0 ? '<p style="text-align:center;color:var(--text-muted);font-size:16px;padding:40px 0;grid-column:1/-1;">لا توجد منتجات حالياً</p>' : '';
       products.forEach(p => renderProductCard(p, grid));
@@ -1784,15 +1561,15 @@
     }
 
     function renderAdminProducts() {
-      const list = document.getElementById('adminProductList'); if(!list) return;
+      const list = document.getElementById('adminProductList');
       const products = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_PRODUCTS)||'[]');
       list.innerHTML = products.length===0 ? '<p style="text-align:center;color:rgba(255,255,255,0.5);padding:10px 0;">لا توجد منتجات</p>' : '';
       products.forEach(p => {
         const price = p.price||0, disc = p.discount||0, final = disc>0 ? Math.round(price-(price*disc/100)) : price;
         const sizeTags = p.sizes?.length ? `<div style="display:flex;gap:4px;">${p.sizes.map(s=>`<span style="background:rgba(255,255,255,0.15);padding:2px 6px;border-radius:4px;font-size:11px;">${s}</span>`).join('')}</div>` : '';
-        const mediaHtml = p.media?.length ? p.media.map(m => `<img src="${m}" alt="صورة">`).join('') : '';
+        const mediaHtml = p.media?.length ? p.media.map(m => `<img src="${m}" alt="صورة" style="width:40px;height:40px;border-radius:6px;object-fit:cover;">`).join('') : '';
         const div = document.createElement('div'); div.className='admin-list-item';
-        div.innerHTML = `<div class="item-info">${mediaHtml || `<span style="font-size:24px;">${p.icon||''}</span>`}<span>${p.name} - ${final} جنيه ${disc>0?`(خصم ${disc}%)`:''}</span>${sizeTags}${p.videoUrl ? '<span>🎬</span>' : ''}</div><button onclick="deleteProduct(${p.id})">حذف</button>`;
+        div.innerHTML = `<div class="item-info" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">${mediaHtml || `<span style="font-size:24px;">${p.icon||''}</span>`}<span>${p.name} - ${final} جنيه ${disc>0?`(خصم ${disc}%)`:''}</span>${sizeTags}</div><button onclick="deleteProduct(${p.id})">حذف</button>`;
         list.appendChild(div);
       });
     }
@@ -2017,9 +1794,6 @@
         gov.appendChild(opt); 
       });
 
-      const store = document.getElementById('store');
-      if(store) store.classList.add('show');
-      
       loadData();
 
       setTimeout(() => {
@@ -2028,8 +1802,6 @@
       }, 1000);
 
       updateCartCount();
-      renderOffers();
-      renderAdminOffers();
 
       if(localStorage.getItem('hl_admin')==='true' || localStorage.getItem('hl_user')==='true') {
         document.getElementById('loginBtn').classList.add('hidden');
@@ -2044,7 +1816,6 @@
         document.getElementById('logoutBtn').classList.add('hidden');
       }
     });
-    console.log('H.L LeVance Store Loaded Successfully');
   </script>
 </body>
 </html>
