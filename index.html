@@ -134,8 +134,8 @@
     .cart-item .item-price { font-size:14px; font-weight:700; color:var(--red-main); }
     .remove-item { background:var(--red-light); color:var(--red-main); border:none; border-radius:50%; width:28px; height:28px; cursor:pointer; font-size:12px; }
     .cart-total { font-size:20px; font-weight:900; text-align:center; margin:18px 0; }
-    #adminPanel { display:none; padding:40px 6%; background:var(--black-main); color:#FFF; border-bottom:1px solid var(--border-color); }
-    #adminPanel.active { display:block; }
+    #adminPanel { display:none!important; padding:40px 6%; background:var(--black-main); color:#FFF; border-bottom:1px solid var(--border-color); }
+    #adminPanel.active { display:block!important; }
     #adminPanel h2 { color:#FFF; font-size:26px; font-weight:900; margin-bottom:24px; }
     .admin-section { background:var(--black-hover); border:1px solid rgba(255,255,255,.1); border-radius:var(--radius-md); padding:24px; margin-bottom:24px; }
     .admin-section h3 { color:#FFF; margin-bottom:16px; font-size:18px; }
@@ -186,7 +186,7 @@
     </div>
   </header>
 
-  <div id="adminPanel">
+  <div id="adminPanel" style="display:none!important;">
     <h2>لوحة التحكم الإدارية</h2>
     <div class="admin-section"><h3>إضافة كود خصم</h3><div class="admin-controls">
       <input type="text" id="newDiscountCode" placeholder="كود الخصم">
@@ -310,7 +310,7 @@
 <script>
 const CONFIG = {
   API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwzMnshozcVGC2Rv1lwXNVqiKU5LdZ8s5fSXHSCN8deLVCLw1hutfB8FbpyK1pGX_Pa/exec',
-  ADMIN_PHONE: '111', ADMIN_PASSWORD: '111',
+  ADMIN_PHONE: '111', ADMIN_NAME: 'Admin',
   STORAGE_KEY_PRODUCTS: 'hl_products', STORAGE_KEY_CLOTHING: 'hl_clothing',
   STORAGE_KEY_OFFERS: 'hl_offers', STORAGE_KEY_CART: 'hl_cart', STORAGE_KEY_USER: 'hl_user_data'
 };
@@ -319,15 +319,7 @@ let cart = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_CART)||'[]');
 let discountRowIndex = null, discountPercent = 0, discountCode = '';
 let currentUser = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_USER)||null);
 
-const SHIPPING_COSTS = {
-  'القليوبية': 68, 'الجيزة': 68, 'القاهرة': 68, 'الإسكندرية': 68,
-  'السويس': 70, 'البحيرة': 79, 'الغربية': 79, 'الدقهلية': 79,
-  'دمياط': 79, 'بور سعيد': 79, 'المنوفية': 79, 'الشرقية': 79,
-  'الإسماعيلية': 79, 'كفر الشيخ': 79, 'مطوبس': 79, 'قنا': 85,
-  'الفيوم': 85, 'المنيا': 85, 'بني سويف': 85, 'الأقصر': 85,
-  'أسيوط': 85, 'مرسى مطروح': 85, 'البحر الأحمر': 85, 'أسوان': 85,
-  'سوهاج': 85, 'المراغة': 15, 'الوادي الجديد': 154, 'جنوب سيناء': 154, 'شمال سيناء': 154
-};
+const SHIPPING_COSTS = {'القليوبية':68,'الجيزة':68,'القاهرة':68,'الإسكندرية':68,'السويس':70,'البحيرة':79,'الغربية':79,'الدقهلية':79,'دمياط':79,'بور سعيد':79,'المنوفية':79,'الشرقية':79,'الإسماعيلية':79,'كفر الشيخ':79,'مطوبس':79,'قنا':85,'الفيوم':85,'المنيا':85,'بني سويف':85,'الأقصر':85,'أسيوط':85,'مرسى مطروح':85,'البحر الأحمر':85,'أسوان':85,'سوهاج':85,'المراغة':15,'الوادي الجديد':154,'جنوب سيناء':154,'شمال سيناء':154};
 
 function showToast(msg,type='success'){const t=document.createElement('div');t.className='custom-toast';t.textContent=msg;t.style.cssText=`position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#0F0F11':'#E50914'};color:#FFF;padding:14px 28px;border-radius:9999px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:toastIn .3s;text-align:center;direction:rtl;`;document.body.appendChild(t);setTimeout(()=>{t.style.animation='toastOut .3s';setTimeout(()=>t.remove(),300)},2500);}
 function addOfferImageField(){const c=document.getElementById('offerImagesContainer');const d=document.createElement('div');d.style.cssText='display:flex;gap:10px;margin-bottom:10px;';d.innerHTML=`<input type="file" accept="image/*" class="offer-image-input" style="flex:1;padding:8px;border:1px solid rgba(255,255,255,.2);border-radius:6px;background:rgba(0,0,0,.4);color:#FFF;">`;c.appendChild(d);}
@@ -374,8 +366,49 @@ async function submitOrder(){const name=document.getElementById('orderCustomerNa
 function selectSize(btn){btn.parentElement.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
 function openLoginModal(){document.getElementById('loginModal').classList.add('active');}
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('active');}
-async function handleLogin(){const phone=document.getElementById('loginPhone').value.trim();const name=document.getElementById('loginName').value.trim();if(!phone||!name)return showToast('أدخل البيانات','error');if(phone==='111'&&name==='Admin'){localStorage.setItem('hl_admin','true');document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');document.getElementById('adminPanel').style.display='block';document.getElementById('adminPanel').classList.add('active');closeLoginModal();renderAdminDiscounts();return;}const r=await callAPI('loginUser',{phone,name});if(r.success){currentUser=r.user;localStorage.setItem(CONFIG.STORAGE_KEY_USER,JSON.stringify(currentUser));document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');closeLoginModal();showToast('تم الدخول');}else showToast(r.error||'خطأ','error');}
-function handleLogout(){localStorage.removeItem('hl_admin');localStorage.removeItem(CONFIG.STORAGE_KEY_USER);currentUser=null;document.getElementById('loginBtn').classList.remove('hidden');document.getElementById('logoutBtn').classList.add('hidden');document.getElementById('adminPanel').style.display='none';showToast('تم الخروج');}
+async function handleLogin(){
+  const phone=document.getElementById('loginPhone').value.trim();
+  const name=document.getElementById('loginName').value.trim();
+  if(!phone||!name)return showToast('أدخل البيانات','error');
+  
+  if(phone===CONFIG.ADMIN_PHONE && name===CONFIG.ADMIN_NAME){
+    localStorage.setItem('hl_admin','true');
+    localStorage.removeItem(CONFIG.STORAGE_KEY_USER);
+    currentUser=null;
+    document.getElementById('loginBtn').classList.add('hidden');
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    const adminPanel=document.getElementById('adminPanel');
+    adminPanel.style.display='block';
+    adminPanel.classList.add('active');
+    closeLoginModal();
+    document.querySelectorAll('.delete-prod, .offer-delete').forEach(el=>el.style.display='block');
+    renderAdminDiscounts();
+    showToast('مرحباً Admin!');
+    return;
+  }
+  
+  const r=await callAPI('loginUser',{phone,name});
+  if(r.success){
+    currentUser=r.user;
+    localStorage.setItem(CONFIG.STORAGE_KEY_USER,JSON.stringify(currentUser));
+    document.getElementById('loginBtn').classList.add('hidden');
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    closeLoginModal();
+    showToast('تم الدخول');
+  }else showToast(r.error||'خطأ','error');
+}
+function handleLogout(){
+  localStorage.removeItem('hl_admin');
+  localStorage.removeItem(CONFIG.STORAGE_KEY_USER);
+  currentUser=null;
+  document.getElementById('loginBtn').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.add('hidden');
+  const adminPanel=document.getElementById('adminPanel');
+  adminPanel.style.display='none';
+  adminPanel.classList.remove('active');
+  document.querySelectorAll('.delete-prod, .offer-delete').forEach(el=>el.style.display='none');
+  showToast('تم الخروج');
+}
 let zoomData=[],zoomIndex=0;
 function openZoom(id){const p=JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_PRODUCTS)||'[]').find(x=>x.id===id)||JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_CLOTHING)||'[]').find(x=>x.id===id);if(!p?.media?.length)return;zoomData=p.media;zoomIndex=0;showZoomItem();document.getElementById('zoomModal').classList.add('active');}
 function openOfferZoom(id){const o=JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]').find(x=>x.id===id);if(!o?.media?.length)return;zoomData=o.media;zoomIndex=0;showZoomItem();document.getElementById('zoomModal').classList.add('active');}
@@ -386,7 +419,7 @@ function closeZoom(){document.getElementById('zoomModal').classList.remove('acti
 const EGYPT_GOVERNORATES={'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],'الجيزة':['مدينة السادس من أكتوبر','مدينة الشيخ زايد','العياط','الحوامدية','البدرشين','الصف','العمرانية','أطفيح','الواحات البحرية','الجيزة','حدائق الاهرام','فيصل','الهرم','أبو النمرس','العجوزة','الوراق','أوسيم','بولاق الدكرور','الدقي','أرض اللواء','المهندسين','كرداسة','إمبابة','منشأة القناطر'],'الغربية':['كفر الزيات','المحلة الكبرى','سمنود','بسيون','السنطة','زفتى','قطور','طنطا'],'الدقهلية':['المنصورة','أجا','المنزلة','بلقاس','دكرنس','السنبلاوين','منية النصر','ميت غمر','شربين','طلخا'],'الإسكندرية':['الدخيلة','العامرية','برج العرب','محرم بيك','باب شرقي','الساحل الشمالي','سيدي جابر','العطارين','المنشية','اللبان','الجمرك','مينا البصل','كرموز','الرمل','المنتزه'],'أسيوط':['أبنوب','أبوتيج','البداري','الغنايم','الفتح','القوصية','ديروط','ساحل سليم','صدفا','مدينة أسيوط','منفلوط','منقباد'],'أسوان':['أسوان','كوم امبو','دراو','إدفو'],'بني سويف':['الواسطى','ناصر','مدينة بني سويف','مركز بني سويف','أهناسيا','ببا','سمسطا','الفشن'],'القليوبية':['بنها','الخانكة','العبور','القناطر الخيرية','شبين القناطر','طوخ','كفر شكر','قليوب','شبرا الخيمة'],'القاهرة':['عابدين','العباسية','الأزبكية','القطامية','المنيل','المقطم','دار السلام','البساتين','الجمالية','السيدة زينب','حلوان','المعادي','مصر القديمة','قصر النيل','الخليفة','طرة','الزمالك','الشروق','مدينة بدر','عين شمس','مدينتي','الزيتون','مدينة نصر','القاهرة الجديدة','هليوبوليس','الأميرية','السلام','الوايلي','الشرابية','المرج','المطرية','النزهة','حدائق القبة','شبرا مصر','كورنيش النيل'],'البحيرة':['دمنهور','كفر الدوار','أبو حمص','المحمودية','وادي النطرون','النوبارية','أبوالمطامير','حوش عيسي','إيتاي البارود','شبراخيت','رشيد','إدكوا','مركز بدر','الدلنجات','الرحمانية','كوم حمادة'],'دمياط':['فارسكور','دمياط القديمة','كفر سعد','الزرقا','كفر البطيخ','دمياط الجديدة','رأس البر','عزبة البرج'],'الفيوم':['طامية','سنورس','مركز الفيوم','مدينة الفيوم','أطسا','أبشواي','يوسف الصديق'],'البحر الأحمر':['الغردقة','رأس غارب','سفاجا','القصير','مرسى علم'],'الإسماعيلية':['الإسماعيلية'],'كفر الشيخ':['كفر الشيخ','دسوق','فوه','مطوبس','بلطيم','الحامول','الرياض','بيلا','قلين','سيدى سالم'],'الأقصر':['مدينة الأقصر','أرمنت','أسنا','القرنة'],'مرسى مطروح':['مرسى مطروح'],'المنيا':['العدوة','مغاغة','بني مزار','مطاي','سمالوط','مركز المنيا','مدينة المنيا','أبو قرقاص','ملوي','دير مواس'],'بور سعيد':['بورسعيد'],'قنا':['قنا','قوص','مدينة قفط','دشنا','نقادة','نجع حمادي','فرشوط','أبوتشت'],'المنوفية':['قويسنا','بركة السبع','السادات','الشهداء','تلا','شبين الكوم','الباجور','منوف','أشمون'],'سوهاج':['طما','طهطا','جهينة','المراغة','مدينة سوهاج','أخميم','ساقلته','المنشأة','جرجا','البلينا','دار السلام','العسيرات'],'السويس':['السويس'],'الوادي الجديد':['الخارجة','الداخلة','الفرافرة'],'جنوب سيناء':['جنوب سيناء','شرم الشيخ','دهب']};
 function updateOrderCities(){const gov=document.getElementById('orderGovernorate').value;const cs=document.getElementById('orderCity');cs.innerHTML='<option value="">اختر المدينة</option>';if(gov&&EGYPT_GOVERNORATES[gov]){EGYPT_GOVERNORATES[gov].forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});}updateOrderTotal();}
 function updateOrderTotal(){const gov=document.getElementById('orderGovernorate').value;const ship=SHIPPING_COSTS[gov]||0;const ct=cart.reduce((s,i)=>s+i.price*i.quantity,0);let total=ct+ship;if(discountPercent>0)total-=total*discountPercent/100;document.getElementById('orderTotalPrice').textContent=Math.round(total);document.getElementById('orderAmount').value=Math.round(total);}
-document.addEventListener('DOMContentLoaded',function(){const gov=document.getElementById('orderGovernorate');Object.keys(EGYPT_GOVERNORATES).forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;gov.appendChild(o);});const intro=document.getElementById('intro');const video=document.getElementById('introVideo');function transition(){if(intro.classList.contains('hide'))return;intro.classList.add('hide');document.body.style.overflow='auto';const store=document.getElementById('store');store.classList.add('show');setTimeout(loadData,500);}setTimeout(transition,3000);if(video){video.addEventListener('ended',transition);video.addEventListener('error',transition);video.play().catch(transition);}else transition();setTimeout(()=>{const wa=document.querySelector('.contact-float');if(wa)wa.classList.add('show');},3000);updateCartCount();renderAll();if(localStorage.getItem('hl_admin')==='true'){document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');document.getElementById('adminPanel').style.display='block';document.getElementById('adminPanel').classList.add('active');renderAdminDiscounts();}else if(currentUser){document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');}});
+document.addEventListener('DOMContentLoaded',function(){const gov=document.getElementById('orderGovernorate');Object.keys(EGYPT_GOVERNORATES).forEach(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;gov.appendChild(o);});const intro=document.getElementById('intro');const video=document.getElementById('introVideo');function transition(){if(intro.classList.contains('hide'))return;intro.classList.add('hide');document.body.style.overflow='auto';const store=document.getElementById('store');store.classList.add('show');setTimeout(loadData,500);}setTimeout(transition,3000);if(video){video.addEventListener('ended',transition);video.addEventListener('error',transition);video.play().catch(transition);}else transition();setTimeout(()=>{const wa=document.querySelector('.contact-float');if(wa)wa.classList.add('show');},3000);updateCartCount();renderAll();if(localStorage.getItem('hl_admin')==='true'){document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');const adminPanel=document.getElementById('adminPanel');adminPanel.style.display='block';adminPanel.classList.add('active');document.querySelectorAll('.delete-prod, .offer-delete').forEach(el=>el.style.display='block');renderAdminDiscounts();}else if(currentUser){document.getElementById('loginBtn').classList.add('hidden');document.getElementById('logoutBtn').classList.remove('hidden');}});
 </script>
 </body>
 </html>
