@@ -383,6 +383,12 @@
       box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
+    .stock-info {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
     .zoom-modal {
       display: none;
       position: fixed;
@@ -743,7 +749,7 @@
       border: 1px solid #E50914;
       border-radius: var(--radius-sm);
       padding: 16px;
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
     }
 
@@ -809,6 +815,7 @@
         <input type="number" id="newOfferPrice" placeholder="السعر *">
         <input type="number" id="newOfferOldPrice" placeholder="السعر قبل الخصم">
         <input type="text" id="newOfferIcon" placeholder="رمز العرض (Emoji)">
+        <input type="number" id="newOfferStock" placeholder="الكمية المتوفرة *" min="0">
         <div class="size-checkboxes">
           <label><input type="checkbox" value="S"> S</label>
           <label><input type="checkbox" value="M"> M</label>
@@ -849,6 +856,7 @@
           <option value="Tshirt">تيشيرت</option>
           <option value="Shoes">أحذية</option>
         </select>
+        <input type="number" id="newProductStock" placeholder="الكمية المتوفرة *" min="0">
         <div class="size-checkboxes">
           <label><input type="checkbox" value="S"> S</label>
           <label><input type="checkbox" value="M"> M</label>
@@ -873,6 +881,11 @@
       <div id="uploadedImagesPreview"></div>
       <br>
       <button type="button" onclick="addProduct()">إضافة المنتج</button>
+    </div>
+
+    <div class="admin-section">
+      <h3>إدارة المخزون</h3>
+      <div id="adminStockList" class="admin-list"></div>
     </div>
   </section>
 
@@ -999,7 +1012,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxEj4_T_d5yT19zj4cjwUG09mDIKcp1kMDEZ8KK97qqH7QBF0dc2CwzpGLN2xCtgv7c/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwfHYAS373qViF-l0ywuX-PK4j1Cy1bEG6ugBJDiTdxnfIR1UlWO4kuSbFVG9SiygBk/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1271,12 +1284,15 @@
       const mainImage = media.length > 0 ? media[0] : '';
       const sizes = item.sizes || [];
       const colors = item.colors || [];
+      const stock = item.stock || 0;
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">🎬 فيديو شرحي</a>` : '';
+      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name}',${final},null,event)">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       const art = document.createElement('article'); 
       art.className='product'; 
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">${item.icon||'📦'}</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:12px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${videoBtnHtml}<button class="add-cart" onclick="addToCart('${item.name}',${final},null,event)">أضف إلى السلة</button></div>`;
+      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">${item.icon||'📦'}</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:12px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
 
@@ -1290,11 +1306,40 @@
         const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
         const sizes = offer.sizes || [];
         const colors = offer.colors || [];
+        const stock = offer.stock || 0;
         const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
         const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
-        div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||'🎉'}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}<button class="offer-add-cart" onclick="addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button></div>`;
+        const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
+        const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+        div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||'🎉'}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
         grid.appendChild(div);
       });
+    }
+
+    function renderAdminStock() {
+      const container = document.getElementById('adminStockList');
+      const sections = [
+        {key: 'hl_products_sherwal', category: 'Sherwal', title: 'شروال'},
+        {key: 'hl_products_shirt', category: 'Shirt', title: 'قميص'},
+        {key: 'hl_products_tshirt', category: 'Tshirt', title: 'تيشيرت'},
+        {key: 'hl_products_shoes', category: 'Shoes', title: 'أحذية'}
+      ];
+      let html = '';
+      sections.forEach(section => {
+        const items = JSON.parse(localStorage.getItem(section.key)||'[]');
+        html += `<h4 style="color:#FFF;margin:15px 0 10px;">${section.title}</h4>`;
+        items.forEach(item => {
+          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
+        });
+      });
+      container.innerHTML = html || '<p style="text-align:center;color:rgba(255,255,255,0.5);">لا توجد منتجات</p>';
+    }
+
+    async function updateStockManually(id, category) {
+      const stock = document.getElementById(`stock_${id}_${category}`).value;
+      const result = await callAPI('updateStockManually', {id, category, stock: parseInt(stock)||0});
+      if(result.success) { showToast('تم تحديث المخزون!'); await loadData(); renderAdminStock(); }
+      else showToast('فشل: '+(result.error||'خطأ'), 'error');
     }
 
     async function addOffer() {
@@ -1303,10 +1348,11 @@
       const price = parseFloat(document.getElementById('newOfferPrice').value.trim());
       const oldPrice = parseFloat(document.getElementById('newOfferOldPrice').value.trim())||0;
       const icon = document.getElementById('newOfferIcon').value.trim()||'';
+      const stock = parseInt(document.getElementById('newOfferStock').value.trim())||0;
       if(!title || isNaN(price) || price<=0) return showToast('يرجى إدخال عنوان العرض والسعر.', 'error');
       const sizes = [...document.querySelectorAll('#adminPanel .size-checkboxes input[type="checkbox"]:checked')].map(cb=>cb.value);
       await uploadOfferImages();
-      const result = await callAPI('addOffer', {title, description, price, oldPrice, icon, sizes, colors: offerColors, media: offerImages});
+      const result = await callAPI('addOffer', {title, description, price, oldPrice, icon, sizes, colors: offerColors, media: offerImages, stock});
       if(result.success) { 
         showToast('تم إضافة العرض بنجاح!'); 
         offerColors = [];
@@ -1316,6 +1362,7 @@
         document.getElementById('newOfferPrice').value=''; 
         document.getElementById('newOfferOldPrice').value=''; 
         document.getElementById('newOfferIcon').value=''; 
+        document.getElementById('newOfferStock').value=''; 
         document.getElementById('offerImagesContainer').innerHTML=''; 
         document.getElementById('offerImagesPreview').innerHTML=''; 
         await loadData(); 
@@ -1331,15 +1378,25 @@
       const icon = document.getElementById('newProductIcon').value.trim()||'';
       const videoUrl = document.getElementById('newProductVideoUrl').value.trim()||'';
       const category = document.getElementById('newProductCategory').value;
+      const stock = parseInt(document.getElementById('newProductStock').value.trim())||0;
       if(!name || isNaN(price) || price<=0) return showToast('يرجى إدخال اسم المنتج وسعر صحيح.', 'error');
       const sizes = [...document.querySelectorAll('#adminPanel .size-checkboxes input[type="checkbox"]:checked')].map(cb=>cb.value);
       await uploadProductImages();
       const actionMap = {Sherwal:'addSherwal', Shirt:'addShirt', Tshirt:'addTshirt', Shoes:'addShoes'};
-      const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors: productColors, media: uploadedImages, videoUrl});
+      const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors: productColors, media: uploadedImages, videoUrl, stock});
       if(result.success) { 
         showToast('تم إضافة المنتج بنجاح!'); 
         productColors = [];
         renderProductColorTags();
+        document.getElementById('newProductName').value='';
+        document.getElementById('newProductPrice').value='';
+        document.getElementById('newProductDiscount').value='';
+        document.getElementById('newProductIcon').value='';
+        document.getElementById('newProductVideoUrl').value='';
+        document.getElementById('newProductStock').value='';
+        document.getElementById('productImagesContainer').innerHTML='';
+        document.getElementById('uploadedImagesPreview').innerHTML='';
+        document.getElementById('uploadStatus').textContent='';
         await loadData(); 
       }
       else showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error');
@@ -1364,6 +1421,7 @@
       renderGrid('tshirtGrid', 'hl_products_tshirt');
       renderGrid('shoesGrid', 'hl_products_shoes');
       renderOffers();
+      renderAdminStock();
     }
 
     function renderGrid(gridId, storageKey) {
@@ -1441,6 +1499,7 @@
         showToast('تم إرسال الطلبية بنجاح!');
         cart = []; saveCart();
         closeOrderForm();
+        await loadData();
       } else {
         document.getElementById('orderError').textContent='فشل إرسال الطلبية: '+(result.error||'خطأ');
       }
