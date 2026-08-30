@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H.L LeVance | المتجر الرسمي</title>
+  <title>Akone | المتجر الرسمي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -68,16 +68,14 @@
     }
 
     .logo {
-      color: var(--black-main);
+      color: var(--red-main);
       text-decoration: none;
-      font-size: clamp(24px, 4vw, 36px);
+      font-size: clamp(28px, 4vw, 40px);
       font-weight: 900;
       letter-spacing: -0.5px;
       white-space: nowrap;
       text-transform: uppercase;
     }
-
-    .logo span { color: var(--red-main); }
 
     .header-actions {
       display: flex;
@@ -85,7 +83,6 @@
       gap: 12px;
     }
 
-    /* ============ BUTTONS ============ */
     .login-btn, .logout-btn, .cart, .add-cart, .offer-add-cart, .submit-order-btn, .cart-checkout-btn, .btn-login-submit {
       position: relative;
       border: 1px solid #E50914;
@@ -127,12 +124,20 @@
     }
 
     .cart {
-      background: #E50914;
+      background: #111215;
+      color: #FFFFFF;
+      border: 2px solid #E50914;
       box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
     }
 
     .cart:hover {
-      background: #C1070F;
+      background: #E50914;
+      color: #FFFFFF;
     }
 
     .login-btn.hidden, .logout-btn.hidden { display: none !important; }
@@ -162,7 +167,6 @@
       box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
     }
 
-    /* ============ SEARCH ============ */
     .search-bar { padding: 0 6% 16px; }
 
     .search-box {
@@ -330,7 +334,7 @@
       align-items: center;
     }
 
-    .sizes .size-btn {
+    .sizes .size-btn, .colors-display .color-btn {
       padding: 6px 14px;
       border: 1px solid #E50914;
       border-radius: 8px;
@@ -342,7 +346,8 @@
       transition: var(--transition);
     }
 
-    .sizes .size-btn:hover, .sizes .size-btn.selected {
+    .sizes .size-btn:hover, .sizes .size-btn.selected,
+    .colors-display .color-btn:hover, .colors-display .color-btn.selected {
       background: #E50914;
       color: #FFFFFF;
       box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
@@ -353,16 +358,6 @@
       gap: 6px;
       flex-wrap: wrap;
       margin-bottom: 12px;
-    }
-
-    .colors-display .color-tag {
-      background: #111215;
-      border: 1px solid #E50914;
-      color: #FFFFFF;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
     }
 
     .video-btn {
@@ -770,28 +765,6 @@
     footer h2 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
     footer p { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
 
-    .whatsapp-float {
-      position: fixed;
-      bottom: 25px;
-      left: -80px;
-      z-index: 99999;
-      background: #E50914;
-      color: #FFFFFF;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
-      text-decoration: none;
-      opacity: 0;
-      font-size: 26px;
-      transition: left 0.5s, opacity 0.5s;
-    }
-
-    .whatsapp-float.show { left: 25px; opacity: 1; }
-
     @keyframes toastIn {
       from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -799,11 +772,9 @@
 
     @media (max-width: 768px) {
       .top-header { padding: 12px 4%; }
-      .logo { font-size: 22px; }
-      .cart { font-size: 0; padding: 10px 14px; }
-      .cart::after { content: "🛒"; font-size: 18px; }
+      .logo { font-size: 26px; }
+      .cart { padding: 10px 18px; }
       .order-form-container .form-row { grid-template-columns: 1fr; gap: 0; }
-      .whatsapp-float { width: 48px; height: 48px; font-size: 22px; }
       .offer-image, .product-image { height: 280px; }
     }
   </style>
@@ -812,7 +783,7 @@
 
   <header>
     <div class="top-header">
-      <a href="#" class="logo">H.L <span>LeVance</span></a>
+      <a href="#" class="logo">Akone</a>
       <div class="header-actions">
         <button id="loginBtn" class="login-btn" onclick="openLoginModal()">دخول</button>
         <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">خروج</button>
@@ -838,7 +809,6 @@
         <input type="number" id="newOfferPrice" placeholder="السعر *">
         <input type="number" id="newOfferOldPrice" placeholder="السعر قبل الخصم">
         <input type="text" id="newOfferIcon" placeholder="رمز العرض (Emoji)">
-        <input type="text" id="newOfferColors" placeholder="الألوان (مثال: أحمر, أزرق)">
         <div class="size-checkboxes">
           <label><input type="checkbox" value="S"> S</label>
           <label><input type="checkbox" value="M"> M</label>
@@ -848,6 +818,14 @@
           <label><input type="checkbox" value="XL3"> XL3</label>
           <label><input type="checkbox" value="XL4"> XL4</label>
         </div>
+        <div style="width:100%;">
+          <label style="color:#FFF;font-weight:700;margin-bottom:8px;display:block;">الألوان المتوفرة:</label>
+          <div id="offerColorsContainer" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="newOfferColorInput" placeholder="اكتب اللون" style="flex:1;padding:10px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;">
+            <button type="button" class="add-image-btn" onclick="addOfferColor()">+ إضافة لون</button>
+          </div>
+        </div>
       </div>
       <div id="offerImagesContainer"></div>
       <button type="button" class="add-image-btn" onclick="addOfferImageField()">+ إضافة صورة عرض</button>
@@ -855,8 +833,6 @@
       <div id="offerImagesPreview"></div>
       <br>
       <button type="button" onclick="addOffer()">إضافة العرض</button>
-      <h4 style="margin:20px 0 10px;color:#FFF;">قائمة العروض</h4>
-      <div id="adminOfferList" class="admin-list"></div>
     </div>
 
     <div class="admin-section">
@@ -873,7 +849,6 @@
           <option value="Tshirt">تيشيرت</option>
           <option value="Shoes">أحذية</option>
         </select>
-        <input type="text" id="newProductColors" placeholder="الألوان (مثال: أحمر, أزرق)">
         <div class="size-checkboxes">
           <label><input type="checkbox" value="S"> S</label>
           <label><input type="checkbox" value="M"> M</label>
@@ -882,6 +857,14 @@
           <label><input type="checkbox" value="XL2"> XL2</label>
           <label><input type="checkbox" value="XL3"> XL3</label>
           <label><input type="checkbox" value="XL4"> XL4</label>
+        </div>
+        <div style="width:100%;">
+          <label style="color:#FFF;font-weight:700;margin-bottom:8px;display:block;">الألوان المتوفرة:</label>
+          <div id="productColorsContainer" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;"></div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="newProductColorInput" placeholder="اكتب اللون" style="flex:1;padding:10px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;">
+            <button type="button" class="add-image-btn" onclick="addProductColor()">+ إضافة لون</button>
+          </div>
         </div>
       </div>
       <div id="productImagesContainer"></div>
@@ -979,11 +962,9 @@
   </section>
 
   <footer>
-    <h2>H.L LeVance</h2>
+    <h2>Akone</h2>
     <p>© 2026 جميع الحقوق محفوظة | المتجر الرسمي</p>
   </footer>
-
-  <a href="https://wa.me/" class="whatsapp-float" target="_blank">💬</a>
 
   <div id="loginModal" class="modal-overlay">
     <div class="modal-box">
@@ -1019,7 +1000,7 @@
   <script>
     const CONFIG = { 
       API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxEj4_T_d5yT19zj4cjwUG09mDIKcp1kMDEZ8KK97qqH7QBF0dc2CwzpGLN2xCtgv7c/exec',
-      STORE_NAME: 'H.L LeVance', 
+      STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
       STORAGE_KEY_PRODUCTS: 'hl_products', 
@@ -1033,6 +1014,8 @@
     let cart = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_CART) || '[]');
     let uploadedImages = [];
     let offerImages = [];
+    let productColors = [];
+    let offerColors = [];
 
     const SHIPPING_COSTS = {
       'القليوبية': 68, 'الجيزة': 68, 'القاهرة': 68, 'الإسكندرية': 68,
@@ -1053,6 +1036,58 @@
       toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#111215':'#E50914'};color:#FFFFFF;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 0 20px rgba(229,9,20,0.5);animation:toastIn .3s ease-out;text-align:center;direction:rtl;border:1px solid #E50914;`;
       document.body.appendChild(toast);
       setTimeout(() => { toast.remove(); }, 2500);
+    }
+
+    function addProductColor() {
+      const input = document.getElementById('newProductColorInput');
+      const color = input.value.trim();
+      if(!color) return showToast('اكتب اسم اللون أولاً', 'error');
+      if(productColors.includes(color)) return showToast('اللون موجود بالفعل', 'error');
+      productColors.push(color);
+      input.value = '';
+      renderProductColorTags();
+    }
+
+    function renderProductColorTags() {
+      const container = document.getElementById('productColorsContainer');
+      container.innerHTML = '';
+      productColors.forEach((c, index) => {
+        const tag = document.createElement('span');
+        tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
+        tag.innerHTML = `${c} <span onclick="removeProductColor(${index})" style="cursor:pointer;font-weight:900;">✕</span>`;
+        container.appendChild(tag);
+      });
+    }
+
+    function removeProductColor(index) {
+      productColors.splice(index, 1);
+      renderProductColorTags();
+    }
+
+    function addOfferColor() {
+      const input = document.getElementById('newOfferColorInput');
+      const color = input.value.trim();
+      if(!color) return showToast('اكتب اسم اللون أولاً', 'error');
+      if(offerColors.includes(color)) return showToast('اللون موجود بالفعل', 'error');
+      offerColors.push(color);
+      input.value = '';
+      renderOfferColorTags();
+    }
+
+    function renderOfferColorTags() {
+      const container = document.getElementById('offerColorsContainer');
+      container.innerHTML = '';
+      offerColors.forEach((c, index) => {
+        const tag = document.createElement('span');
+        tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
+        tag.innerHTML = `${c} <span onclick="removeOfferColor(${index})" style="cursor:pointer;font-weight:900;">✕</span>`;
+        container.appendChild(tag);
+      });
+    }
+
+    function removeOfferColor(index) {
+      offerColors.splice(index, 1);
+      renderOfferColorTags();
     }
 
     function addOfferImageField() {
@@ -1237,7 +1272,7 @@
       const sizes = item.sizes || [];
       const colors = item.colors || [];
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
-      const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<span class="color-tag">${c}</span>`).join('')}</div>` : '';
+      const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">🎬 فيديو شرحي</a>` : '';
       const art = document.createElement('article'); 
       art.className='product'; 
@@ -1256,7 +1291,7 @@
         const sizes = offer.sizes || [];
         const colors = offer.colors || [];
         const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
-        const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<span class="color-tag">${c}</span>`).join('')}</div>` : '';
+        const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
         div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||'🎉'}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}<button class="offer-add-cart" onclick="addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button></div>`;
         grid.appendChild(div);
       });
@@ -1268,20 +1303,19 @@
       const price = parseFloat(document.getElementById('newOfferPrice').value.trim());
       const oldPrice = parseFloat(document.getElementById('newOfferOldPrice').value.trim())||0;
       const icon = document.getElementById('newOfferIcon').value.trim()||'';
-      const colorsInput = document.getElementById('newOfferColors').value.trim();
-      const colors = colorsInput ? colorsInput.split(',').map(c => c.trim()) : [];
       if(!title || isNaN(price) || price<=0) return showToast('يرجى إدخال عنوان العرض والسعر.', 'error');
       const sizes = [...document.querySelectorAll('#adminPanel .size-checkboxes input[type="checkbox"]:checked')].map(cb=>cb.value);
       await uploadOfferImages();
-      const result = await callAPI('addOffer', {title, description, price, oldPrice, icon, sizes, colors, media: offerImages});
+      const result = await callAPI('addOffer', {title, description, price, oldPrice, icon, sizes, colors: offerColors, media: offerImages});
       if(result.success) { 
         showToast('تم إضافة العرض بنجاح!'); 
+        offerColors = [];
+        renderOfferColorTags();
         document.getElementById('newOfferTitle').value=''; 
         document.getElementById('newOfferDescription').value=''; 
         document.getElementById('newOfferPrice').value=''; 
         document.getElementById('newOfferOldPrice').value=''; 
         document.getElementById('newOfferIcon').value=''; 
-        document.getElementById('newOfferColors').value=''; 
         document.getElementById('offerImagesContainer').innerHTML=''; 
         document.getElementById('offerImagesPreview').innerHTML=''; 
         await loadData(); 
@@ -1297,14 +1331,17 @@
       const icon = document.getElementById('newProductIcon').value.trim()||'';
       const videoUrl = document.getElementById('newProductVideoUrl').value.trim()||'';
       const category = document.getElementById('newProductCategory').value;
-      const colorsInput = document.getElementById('newProductColors').value.trim();
-      const colors = colorsInput ? colorsInput.split(',').map(c => c.trim()) : [];
       if(!name || isNaN(price) || price<=0) return showToast('يرجى إدخال اسم المنتج وسعر صحيح.', 'error');
       const sizes = [...document.querySelectorAll('#adminPanel .size-checkboxes input[type="checkbox"]:checked')].map(cb=>cb.value);
       await uploadProductImages();
       const actionMap = {Sherwal:'addSherwal', Shirt:'addShirt', Tshirt:'addTshirt', Shoes:'addShoes'};
-      const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors, media: uploadedImages, videoUrl});
-      if(result.success) { showToast('تم إضافة المنتج بنجاح!'); await loadData(); }
+      const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors: productColors, media: uploadedImages, videoUrl});
+      if(result.success) { 
+        showToast('تم إضافة المنتج بنجاح!'); 
+        productColors = [];
+        renderProductColorTags();
+        await loadData(); 
+      }
       else showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error');
     }
 
@@ -1338,6 +1375,11 @@
 
     function selectSize(btn) {
       btn.parentElement.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function selectColor(btn) {
+      btn.parentElement.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('selected'));
       btn.classList.add('selected');
     }
 
@@ -1467,11 +1509,6 @@
       });
 
       loadData();
-
-      setTimeout(() => {
-        const wa = document.querySelector('.whatsapp-float');
-        if(wa) wa.classList.add('show');
-      }, 1000);
 
       updateCartCount();
 
