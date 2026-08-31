@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كارت استعراضي متحرك كبير</title>
+    <title>كارت استعراضي طائر ومتحرك</title>
     <style>
         * {
             box-sizing: border-box;
@@ -18,46 +18,64 @@
             align-items: center;
             min-height: 100vh;
             font-family: sans-serif;
+            overflow: hidden;
         }
 
-        /* الكارت بمقاس مضاعف */
+        /* الكارت بمقاس أصغر قليلاً مع إضافة تأثير الطفو/الطيران */
         .card {
             position: relative;
-            width: 380px;
-            height: 480px;
-            border-radius: 20px;
+            width: 340px;
+            height: 440px;
+            border-radius: 18px;
             z-index: 1111;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+            /* أنيميشن الطيران للكارت بالكامل */
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* تأثير حركة الطيران والظلال المتغيرة */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+                box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff;
+            }
+            50% {
+                transform: translateY(-18px);
+                box-shadow: 25px 40px 70px rgba(0, 0, 0, 0.15), -25px -40px 70px #ffffff;
+            }
+            100% {
+                transform: translateY(0px);
+                box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff;
+            }
         }
 
         .bg {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 360px;
-            height: 460px;
+            top: 8px;
+            left: 8px;
+            width: 324px;
+            height: 424px;
             z-index: 2;
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border-radius: 14px;
+            border-radius: 12px;
             overflow: hidden;
             outline: 2px solid white;
         }
 
-        /* تكبير حجم الـ Blob ليتناسب مع الكارت */
+        /* الـ Blob المتحرك */
         .blob {
             position: absolute;
             z-index: 1;
             top: 50%;
             left: 50%;
-            width: 280px;
-            height: 280px;
+            width: 250px;
+            height: 250px;
             border-radius: 50%;
             background-color: #ff0000;
             opacity: 1;
@@ -73,7 +91,7 @@
             100% { transform: translate(-100%, -100%) translate3d(0, 0, 0); }
         }
 
-        /* عرض الصور */
+        /* عرض الصور والتبديل */
         .slideshow {
             position: relative;
             width: 100%;
@@ -121,7 +139,7 @@
             images[currentIndex].classList.add('active');
         }
 
-        // التبديل كل 4 ثوانٍ (4000 مللي ثانية)
+        // التبديل تلقائياً كل 4 ثوانٍ
         setInterval(changeImage, 4000);
     </script>
 
