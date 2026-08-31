@@ -241,15 +241,15 @@
 
     .offers-grid, .product-grid {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       overflow-x: auto;
       padding-bottom: 16px;
       scroll-snap-type: x mandatory;
     }
 
     .offer-card, .product {
-      min-width: clamp(260px, 30vw, 320px);
-      max-width: 320px;
+      min-width: clamp(200px, 22vw, 240px);
+      max-width: 240px;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
@@ -268,7 +268,7 @@
 
     .offer-image, .product-image {
       width: 100%;
-      height: 350px;
+      height: 220px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -292,58 +292,58 @@
       justify-content: center;
     }
 
-    .product-image .product-icon { font-size: 80px; }
+    .product-image .product-icon { font-size: 60px; }
 
     .offer-info, .product-info {
-      padding: 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       flex-grow: 1;
     }
 
     .offer-info h3, .product-info h3 {
-      font-size: 17px;
+      font-size: 14px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
-    .offer-info p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .offer-info p { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
 
     .offer-info .offer-price, .price {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 900;
       color: var(--red-main);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .offer-info .offer-old-price, .price .original-price {
       text-decoration: line-through;
-      font-size: 14px;
+      font-size: 12px;
       color: var(--text-muted);
       font-weight: 400;
     }
 
     .sizes {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       align-items: center;
     }
 
     .sizes .size-btn, .colors-display .color-btn {
-      padding: 6px 14px;
+      padding: 4px 10px;
       border: 1px solid #E50914;
-      border-radius: 8px;
+      border-radius: 6px;
       background: #111215;
       color: #FFFFFF;
       cursor: pointer;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 10px;
       transition: var(--transition);
     }
 
@@ -356,25 +356,25 @@
 
     .colors-display {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .video-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      margin-bottom: 12px;
-      padding: 8px 14px;
+      gap: 4px;
+      margin-bottom: 8px;
+      padding: 6px 10px;
       border: 1px solid #E50914;
-      border-radius: 8px;
+      border-radius: 6px;
       background: #111215;
       color: #FFFFFF;
       cursor: pointer;
       font-weight: 700;
-      font-size: 13px;
+      font-size: 10px;
       text-decoration: none;
       transition: var(--transition);
     }
@@ -386,11 +386,16 @@
 
     .stock-info {
       font-weight: 700;
-      font-size: 13px;
-      margin-bottom: 8px;
+      font-size: 11px;
+      margin-bottom: 6px;
     }
 
-    /* صفحة تفاصيل المنتج */
+    .add-cart, .offer-add-cart {
+      padding: 8px 14px;
+      font-size: 11px;
+      border-radius: 8px;
+    }
+
     #productDetailsPage {
       display: none;
       position: fixed;
@@ -518,7 +523,6 @@
       font-size: 24px;
     }
 
-    /* نتائج البحث */
     #searchResultsSection {
       display: none;
       padding: 40px 6%;
@@ -528,20 +532,19 @@
 
     #searchResultsSection.active { display: block; }
 
-    /* الكارت الاستعراضي الطائر */
     .floating-showcase {
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       background: #e0e0e0;
       overflow: hidden;
     }
 
     .floating-card {
       position: relative;
-      width: 340px;
-      height: 440px;
+      width: 500px;
+      height: 600px;
       border-radius: 18px;
       z-index: 1111;
       overflow: hidden;
@@ -571,8 +574,8 @@
       position: absolute;
       top: 8px;
       left: 8px;
-      width: 324px;
-      height: 424px;
+      width: 484px;
+      height: 584px;
       z-index: 2;
       background: rgba(255, 255, 255, 0.25);
       backdrop-filter: blur(8px);
@@ -587,8 +590,8 @@
       z-index: 1;
       top: 50%;
       left: 50%;
-      width: 250px;
-      height: 250px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
       background-color: #ff0000;
       opacity: 1;
@@ -1050,10 +1053,11 @@
       .logo { font-size: 26px; }
       .cart { padding: 10px 18px; }
       .order-form-container .form-row { grid-template-columns: 1fr; gap: 0; }
-      .offer-image, .product-image { height: 280px; }
+      .offer-image, .product-image { height: 180px; }
+      .offer-card, .product { min-width: 160px; max-width: 180px; }
       .product-details-gallery { height: 300px; }
-      .floating-card { width: 280px; height: 380px; }
-      .floating-bg { width: 264px; height: 364px; }
+      .floating-card { width: 340px; height: 440px; }
+      .floating-bg { width: 324px; height: 424px; }
     }
   </style>
 </head>
@@ -1205,7 +1209,6 @@
     <div id="searchResultsGrid" class="product-grid"></div>
   </section>
 
-  <!-- الكارت الاستعراضي الطائر -->
   <section class="floating-showcase">
     <div class="floating-card">
       <div class="floating-bg">
@@ -1274,7 +1277,6 @@
     <p>© 2026 جميع الحقوق محفوظة | المتجر الرسمي</p>
   </footer>
 
-  <!-- صفحة تفاصيل المنتج -->
   <div id="productDetailsPage">
     <div class="product-details-container">
       <div class="product-details-header">
@@ -1324,7 +1326,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwcg1BKBfFJzq8WZ9ohO2--BjetLvsLF5-NCpxrydvTFurXHOO76redob5mjmHb3n0g/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbyXlNiYVa0HuhqUULdYE5Px6BLZanHvoUlYaABQiLR9ULvdSWDrsKgFd3zUHqqLb60X/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1564,16 +1566,16 @@
       document.getElementById('cartCount').textContent = count; 
     }
 
-    function addToCart(name, price, size, event) {
+    function addToCart(name, price, size, event, id = 0, category = 'Sherwal') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
       const existingItem = cart.find(item => item.name === name && item.size === selectedSize);
-      if(existingItem) { existingItem.quantity++; } else { cart.push({name, price, size: selectedSize, quantity: 1}); }
+      if(existingItem) { existingItem.quantity++; } else { cart.push({name, price, size: selectedSize, quantity: 1, id: id, category: category}); }
       saveCart(); 
       showToast(`تم إضافة ${name} إلى السلة`);
     }
 
-    function addOfferToCart(name, price, event) { 
-      addToCart(name, price, '', event); 
+    function addOfferToCart(name, price, event, id = 0) { 
+      addToCart(name, price, '', event, id, 'Offer'); 
     }
 
     function removeFromCart(index) { 
@@ -1685,11 +1687,11 @@
       const shoesItems = JSON.parse(localStorage.getItem('hl_products_shoes')||'[]');
       const offerItems = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
 
-      sherwalItems.forEach(item => allProducts.push({...item, type: 'product'}));
-      shirtItems.forEach(item => allProducts.push({...item, type: 'product'}));
-      tshirtItems.forEach(item => allProducts.push({...item, type: 'product'}));
-      shoesItems.forEach(item => allProducts.push({...item, type: 'product'}));
-      offerItems.forEach(item => allProducts.push({...item, type: 'offer', name: item.title}));
+      sherwalItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Sherwal'}));
+      shirtItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Shirt'}));
+      tshirtItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Tshirt'}));
+      shoesItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Shoes'}));
+      offerItems.forEach(item => allProducts.push({...item, type: 'offer', category: 'Offer', name: item.title}));
 
       const filtered = allProducts.filter(item => 
         (item.name || '').toLowerCase().includes(query) ||
@@ -1719,15 +1721,16 @@
       const sizes = item.sizes || [];
       const colors = item.colors || [];
       const stock = item.stock || 0;
+      const category = item.category || 'Sherwal';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">🎬 فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event)">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       const art = document.createElement('article'); 
       art.className='product'; 
-      art.setAttribute('onclick', `openProductDetails(${JSON.stringify(item).replace(/"/g, '&quot;')})`);
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">${item.icon||'📦'}</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:12px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
+      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category: category}).replace(/"/g, '&quot;')})`);
+      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">${item.icon||'📦'}</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:10px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
 
@@ -1741,8 +1744,8 @@
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event)">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
-      div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title}).replace(/"/g, '&quot;')})`);
+      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id})">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer'}).replace(/"/g, '&quot;')})`);
       div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||'🎉'}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
     }
@@ -1789,11 +1792,12 @@
       const sizes = item.sizes || [];
       const colors = item.colors || [];
       const stock = item.stock || 0;
+      const category = item.category || 'Sherwal';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">🎬 فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event)">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
 
       info.innerHTML = `
         <h2>${item.name || item.title || ''}</h2>
@@ -2020,12 +2024,19 @@
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const shippingCost = getShippingCosts()[gov] || 0;
       const totalPrice = cartTotal + shippingCost;
+      const cartItems = cart.map(item => ({
+        id: item.id || 0,
+        name: item.name,
+        quantity: item.quantity,
+        category: item.category || 'Sherwal'
+      }));
       document.getElementById('submitOrderBtn').disabled=true;
       document.getElementById('submitOrderBtn').textContent='جاري الإرسال...';
       const result = await callAPI('addOrder', {
         customerName: name, customerPhone: phone, customerPhone2: phone2,
         governorate: gov, city: city, address: addr,
-        notes: notes, products: productsList, totalPrice: totalPrice
+        notes: notes, products: productsList, totalPrice: totalPrice,
+        cartItems: cartItems
       });
       document.getElementById('submitOrderBtn').disabled=false;
       document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
@@ -2082,7 +2093,6 @@
         renderShippingTable();
       }
 
-      // تشغيل السلايدشو العائم
       const floatingImages = document.querySelectorAll('#floatingSlideshow img');
       let floatingIndex = 0;
       setInterval(() => {
