@@ -3,172 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استعراض الخلفيات والصور البصرية للموقع</title>
+    <title>كارت استعراضي متحرك</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        /* 1. الترويسة الرئيسية بخلفية بارالاكس (Parallax Hero) */
-        .hero-section {
-            position: relative;
-            height: 70vh;
-            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* تأثير Parallax */
+        body {
+            background-color: #e0e0e0;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: sans-serif;
+        }
+
+        /* التصميم الخاص بك من Uiverse.io */
+        .card {
+            position: relative;
+            width: 200px;
+            height: 250px;
+            border-radius: 14px;
+            z-index: 1111;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            color: #fff;
+            box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
         }
 
-        .hero-overlay {
+        .bg {
             position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5); /* طبقة تعتيم لإبراز النص */
-        }
-
-        .hero-text {
-            position: relative;
+            top: 5px;
+            left: 5px;
+            width: 190px;
+            height: 240px;
             z-index: 2;
-            max-width: 700px;
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.25); /* تعديل الشفافية لإظهار الصور بوضوح */
+            backdrop-filter: blur(8px); /* تقليل الضباب قليلاً لتفاصيل الصور */
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 10px;
+            overflow: hidden;
+            outline: 2px solid white;
         }
 
-        .hero-text h1 { font-size: 42px; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .hero-text p { font-size: 18px; line-height: 1.6; }
-
-        /* محتوى عادي بين الأقسام */
-        .content-block {
-            max-width: 900px;
-            margin: 60px auto;
-            text-align: center;
-            padding: 0 20px;
+        .blob {
+            position: absolute;
+            z-index: 1;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #ff0000;
+            opacity: 1;
+            filter: blur(12px);
+            animation: blob-bounce 5s infinite ease;
         }
 
-        /* 2. صورة استعراضية عريضة للفصل بين الأقسام (Section Divider Banner) */
-        .visual-divider {
+        @keyframes blob-bounce {
+            0% { transform: translate(-100%, -100%) translate3d(0, 0, 0); }
+            25% { transform: translate(-100%, -100%) translate3d(100%, 0, 0); }
+            50% { transform: translate(-100%, -100%) translate3d(100%, 100%, 0); }
+            75% { transform: translate(-100%, -100%) translate3d(0, 100%, 0); }
+            100% { transform: translate(-100%, -100%) translate3d(0, 0, 0); }
+        }
+
+        /* عناصر عرض الصور والأنيميشن الخاص بها */
+        .slideshow {
             position: relative;
             width: 100%;
-            height: 300px;
-            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 40px 0;
+            height: 100%;
         }
 
-        .divider-overlay {
+        .slideshow img {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(26, 42, 108, 0.7), rgba(178, 31, 31, 0.7));
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transform: scale(1.08);
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
         }
 
-        .divider-text {
-            position: relative;
-            z-index: 2;
-            color: #fff;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        /* 3. تذييل الموقع المزود بخلفية صورية (Footer with Background) */
-        footer {
-            position: relative;
-            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
-            background-size: cover;
-            background-position: center;
-            color: #fff;
-            padding: 60px 20px 20px;
-        }
-
-        .footer-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.92); /* تعتيم داكن جداً يناسب التذييل */
-        }
-
-        .footer-content {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .footer-col { flex: 1; min-width: 250px; }
-        .footer-col h3 { margin-bottom: 15px; color: #38bdf8; }
-        .footer-col p { font-size: 14px; line-height: 1.6; color: #cbd5e1; }
-
-        .footer-bottom {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 13px;
-            color: #94a3b8;
+        /* الصورة النشطة حالياً */
+        .slideshow img.active {
+            opacity: 0.85; /* درجة الشفافية لدمج الصورة مع خلفية الزجاج */
+            transform: scale(1);
         }
     </style>
 </head>
 <body>
 
-    <!-- 1. خلفية أعلى الصفحة البصرية -->
-    <header class="hero-section">
-        <div class="hero-overlay"></div>
-        <div class="hero-text">
-            <h1>جودة واستمرارية بلا حدود</h1>
-            <p>نقدم حلولاً متكاملة تهدف إلى تعزيز تجربة المستخدم وإعطاء مظهر بصري احترافي يعبر عن رؤيتنا.</p>
-        </div>
-    </header>
-
-    <!-- نص تعريفي بين الصور -->
-    <div class="content-block">
-        <h2>عن المنصة</h2>
-        <p style="margin-top: 10px; color: #666;">هنا يوضع المحتوى الرئيسي للموقع، حيث تعمل الصور الاستعراضية على كسرة رتابة النصوص ومنح الزائر تجربة تصفح مريحة للعين.</p>
-    </div>
-
-    <!-- 2. صورة استعراضية تفصل بين الأقسام -->
-    <div class="visual-divider">
-        <div class="divider-overlay"></div>
-        <div class="divider-text">
-            "الابتكار هو ما ميز الشركات الرائدة في تقديم أفضل خدمة"
-        </div>
-    </div>
-
-    <!-- نص فرعي آخر -->
-    <div class="content-block">
-        <h2>خدماتنا المتميزة</h2>
-        <p style="margin-top: 10px; color: #666;">يمكنك كتابة المزيد من التفاصيل هنا قبل الوصول إلى أسفل الصفحة.</p>
-    </div>
-
-    <!-- 3. أسفل الصفحة بخلفية صورية استعراضية -->
-    <footer>
-        <div class="footer-overlay"></div>
-        <div class="footer-content">
-            <div class="footer-col">
-                <h3>عن الشركة</h3>
-                <p>مؤسسة متخصصة في تقديم أحدث الحلول والخدمات الرقمية بأعلى معايير الدقة والأمان.</p>
-            </div>
-            <div class="footer-col">
-                <h3>تواصل معنا</h3>
-                <p>البريد الإلكتروني: info@example.com</p>
-                <p>الهاتف: +20 100 000 0000</p>
+    <div class="card">
+        <div class="bg">
+            <div class="slideshow" id="slideshow">
+                <!-- يمكنك إضافة أو تغيير روابط الصور من هنا -->
+                <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" class="active" alt="صورة استعراضية 1">
+                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600" alt="صورة استعراضية 2">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600" alt="صورة استعراضية 3">
             </div>
         </div>
-        <div class="footer-bottom">
-            جميع الحقوق محفوظة &copy; 2026
-        </div>
-    </footer>
+        <div class="blob"></div>
+    </div>
+
+    <script>
+        const images = document.querySelectorAll('#slideshow img');
+        let currentIndex = 0;
+
+        function changeImage() {
+            // إخفاء الصورة الحالية
+            images[currentIndex].classList.remove('active');
+            
+            // الانتقال للصورة التالية (أو العودة للأولى عند الوصول للنهاية)
+            currentIndex = (currentIndex + 1) % images.length;
+            
+            // إظهار الصورة الجديدة
+            images[currentIndex].classList.add('active');
+        }
+
+        // التبديل تلقائياً كل ثانيتين (2000 مللي ثانية)
+        setInterval(changeImage, 2000);
+    </script>
 
 </body>
 </html>
