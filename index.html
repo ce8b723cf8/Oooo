@@ -3,152 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نماذج البانرات الإعلانية التسويقية</title>
+    <title>استعراض الخلفيات والصور البصرية للموقع</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: #f8f9fa; color: #333; }
+        body { background-color: #f4f6f9; color: #333; }
 
-        /* 1. بانر أعلى الصفحة الترويجي */
-        .top-notice-bar {
-            background: linear-gradient(90deg, #1e3c72, #2a5298);
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* 2. البانر الرئيسي العريض (Hero Banner) */
-        .hero-banner {
+        /* 1. الترويسة الرئيسية بخلفية بارالاكس (Parallax Hero) */
+        .hero-section {
             position: relative;
-            max-width: 1200px;
-            margin: 20px auto;
-            height: 350px;
-            border-radius: 16px;
-            overflow: hidden;
+            height: 70vh;
+            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* تأثير Parallax */
             display: flex;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .hero-banner img {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
         }
 
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            background: rgba(0, 0, 0, 0.5); /* طبقة تعتيم لإبراز النص */
+        }
+
+        .hero-text {
+            position: relative;
             z-index: 2;
+            max-width: 700px;
+            padding: 20px;
         }
 
-        .hero-content {
+        .hero-text h1 { font-size: 42px; margin-bottom: 15px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .hero-text p { font-size: 18px; line-height: 1.6; }
+
+        /* محتوى عادي بين الأقسام */
+        .content-block {
+            max-width: 900px;
+            margin: 60px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* 2. صورة استعراضية عريضة للفصل بين الأقسام (Section Divider Banner) */
+        .visual-divider {
             position: relative;
-            z-index: 3;
-            color: #fff;
-            padding: 40px;
-            max-width: 500px;
-        }
-
-        .hero-content h2 { font-size: 32px; margin-bottom: 12px; }
-        .hero-content p { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
-
-        /* 3. كروت العروض المزدوجة (Promo Cards Grid) */
-        .promo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 15px;
-        }
-
-        .promo-card {
-            position: relative;
-            height: 220px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
-
-        .promo-card img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s;
+            height: 300px;
+            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px 0;
         }
 
-        .promo-card:hover img { transform: scale(1.05); }
-
-        .promo-card-overlay {
+        .divider-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
+            background: linear-gradient(135deg, rgba(26, 42, 108, 0.7), rgba(178, 31, 31, 0.7));
+        }
+
+        .divider-text {
+            position: relative;
+            z-index: 2;
+            color: #fff;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* 3. تذييل الموقع المزود بخلفية صورية (Footer with Background) */
+        footer {
+            position: relative;
+            background-image: url('https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 60px 20px 20px;
+        }
+
+        .footer-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.92); /* تعتيم داكن جداً يناسب التذييل */
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 25px;
-            color: #fff;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
         }
 
-        /* الأزرار العامة */
-        .btn-cta {
-            display: inline-block;
-            padding: 10px 24px;
-            background: #ff4757;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            width: fit-content;
-            transition: background 0.3s;
-        }
+        .footer-col { flex: 1; min-width: 250px; }
+        .footer-col h3 { margin-bottom: 15px; color: #38bdf8; }
+        .footer-col p { font-size: 14px; line-height: 1.6; color: #cbd5e1; }
 
-        .btn-cta:hover { background: #e84118; }
+        .footer-bottom {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
 
-    <!-- النموذج الأول: شريط الإشعار العلوي -->
-    <div class="top-notice-bar">
-        ⚡ عرض خاص: شحن مجاني لكافة المحافظات للطلبات الأعلى من 500 جنيه!
-    </div>
-
-    <!-- النموذج الثاني: البانر الرئيسي العريض (Hero Banner) -->
-    <div class="hero-banner">
-        <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="إعلان رئيسي">
+    <!-- 1. خلفية أعلى الصفحة البصرية -->
+    <header class="hero-section">
         <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h2>انطلاقة الخدمات السريعة</h2>
-            <p>احصل على حلول شحن وتسليم متكاملة لأعمالك التجارية بأعلى جودة وأفضل سعر.</p>
-            <a href="#" class="btn-cta">اكتشف خدماتنا</a>
+        <div class="hero-text">
+            <h1>جودة واستمرارية بلا حدود</h1>
+            <p>نقدم حلولاً متكاملة تهدف إلى تعزيز تجربة المستخدم وإعطاء مظهر بصري احترافي يعبر عن رؤيتنا.</p>
+        </div>
+    </header>
+
+    <!-- نص تعريفي بين الصور -->
+    <div class="content-block">
+        <h2>عن المنصة</h2>
+        <p style="margin-top: 10px; color: #666;">هنا يوضع المحتوى الرئيسي للموقع، حيث تعمل الصور الاستعراضية على كسرة رتابة النصوص ومنح الزائر تجربة تصفح مريحة للعين.</p>
+    </div>
+
+    <!-- 2. صورة استعراضية تفصل بين الأقسام -->
+    <div class="visual-divider">
+        <div class="divider-overlay"></div>
+        <div class="divider-text">
+            "الابتكار هو ما ميز الشركات الرائدة في تقديم أفضل خدمة"
         </div>
     </div>
 
-    <!-- النموذج الثالث: كروت العروض الفرعية المزدوجة -->
-    <div class="promo-grid">
-        <div class="promo-card">
-            <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="عرض 1">
-            <div class="promo-card-overlay">
-                <h3>عروض التجار والشركات</h3>
-                <p style="margin: 8px 0 15px;">خصومات تصل إلى 30% على الشحنات الكبيرة</p>
-                <a href="#" class="btn-cta" style="background:#2ed573;">انضم الآن</a>
-            </div>
-        </div>
-
-        <div class="promo-card">
-            <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="عرض 2">
-            <div class="promo-card-overlay">
-                <h3>التوصيل في نفس اليوم</h3>
-                <p style="margin: 8px 0 15px;">خدمة سريعة داخل القاهرة والجيزة</p>
-                <a href="#" class="btn-cta" style="background:#ffa502;">طلب الخدمة</a>
-            </div>
-        </div>
+    <!-- نص فرعي آخر -->
+    <div class="content-block">
+        <h2>خدماتنا المتميزة</h2>
+        <p style="margin-top: 10px; color: #666;">يمكنك كتابة المزيد من التفاصيل هنا قبل الوصول إلى أسفل الصفحة.</p>
     </div>
+
+    <!-- 3. أسفل الصفحة بخلفية صورية استعراضية -->
+    <footer>
+        <div class="footer-overlay"></div>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h3>عن الشركة</h3>
+                <p>مؤسسة متخصصة في تقديم أحدث الحلول والخدمات الرقمية بأعلى معايير الدقة والأمان.</p>
+            </div>
+            <div class="footer-col">
+                <h3>تواصل معنا</h3>
+                <p>البريد الإلكتروني: info@example.com</p>
+                <p>الهاتف: +20 100 000 0000</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            جميع الحقوق محفوظة &copy; 2026
+        </div>
+    </footer>
 
 </body>
 </html>
