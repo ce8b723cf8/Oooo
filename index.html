@@ -761,6 +761,37 @@
       border-bottom: 1px solid rgba(229, 9, 20, 0.2);
     }
 
+    .shipping-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+
+    .shipping-table th, .shipping-table td {
+      padding: 10px 12px;
+      border: 1px solid rgba(229, 9, 20, 0.3);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .shipping-table th {
+      background: #111215;
+      color: #FFFFFF;
+      font-weight: 700;
+    }
+
+    .shipping-table td input {
+      width: 100px;
+      padding: 8px 10px;
+      border: 1px solid #E50914;
+      border-radius: 6px;
+      background: #111215;
+      color: #FFFFFF;
+      text-align: center;
+      font-size: 14px;
+      outline: none;
+    }
+
     footer {
       padding: 40px 6%;
       background: var(--black-main);
@@ -807,6 +838,20 @@
   <section id="adminPanel">
     <h2>لوحة التحكم الإدارية</h2>
     
+    <div class="admin-section">
+      <h3>إدارة أسعار الشحن</h3>
+      <table class="shipping-table">
+        <thead>
+          <tr>
+            <th>المحافظة</th>
+            <th>سعر الشحن (جنيه)</th>
+          </tr>
+        </thead>
+        <tbody id="shippingTableBody"></tbody>
+      </table>
+      <button type="button" class="add-image-btn" onclick="saveShippingCosts()">حفظ أسعار الشحن</button>
+    </div>
+
     <div class="admin-section">
       <h3>إضافة عرض جديد</h3>
       <div class="admin-controls">
@@ -955,16 +1000,6 @@
         <label>العنوان بالتفصيل <span class="required">*</span></label>
         <input type="text" id="orderAddress" placeholder="اسم الشارع - رقم المبنى - الشقة">
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>المبلغ المستحق (جنيه)</label>
-          <input type="number" id="orderAmount" readonly>
-        </div>
-        <div class="form-group">
-          <label>الوزن التقديري (كجم)</label>
-          <input type="number" id="orderWeight" value="1">
-        </div>
-      </div>
       <div class="form-group">
         <label>ملاحظات التوصيل</label>
         <textarea id="orderNotes" placeholder="أي تعليمات خاصة بالسائق..."></textarea>
@@ -1012,14 +1047,15 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwfHYAS373qViF-l0ywuX-PK4j1Cy1bEG6ugBJDiTdxnfIR1UlWO4kuSbFVG9SiygBk/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbzwECPEMiejTvFyMnE65oPZel8Fy8JIZoV7SZf-p1OmlNbg4bP3vvUV_Y8hwji1W3KR/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
       STORAGE_KEY_PRODUCTS: 'hl_products', 
       STORAGE_KEY_OFFERS: 'hl_offers', 
       STORAGE_KEY_CART: 'hl_cart', 
-      STORAGE_KEY_ORDERS: 'hl_orders' 
+      STORAGE_KEY_ORDERS: 'hl_orders',
+      STORAGE_KEY_SHIPPING: 'hl_shipping_costs'
     };
 
     const IMGBB_API_KEY = 'b61d706bd2139f3676166a0e6be68f0a';
@@ -1030,15 +1066,84 @@
     let productColors = [];
     let offerColors = [];
 
-    const SHIPPING_COSTS = {
-      'القليوبية': 68, 'الجيزة': 68, 'القاهرة': 68, 'الإسكندرية': 68,
-      'السويس': 70, 'البحيرة': 79, 'الغربية': 79, 'الدقهلية': 79,
-      'دمياط': 79, 'بور سعيد': 79, 'المنوفية': 79, 'الشرقية': 79,
-      'الإسماعيلية': 79, 'كفر الشيخ': 79, 'مطوبس': 79, 'قنا': 85,
-      'الفيوم': 85, 'المنيا': 85, 'بني سويف': 85, 'الأقصر': 85,
-      'أسيوط': 85, 'مرسى مطروح': 85, 'البحر الأحمر': 85, 'أسوان': 85,
-      'سوهاج': 85, 'المراغة': 15, 'الوادي الجديد': 154, 'جنوب سيناء': 154, 'شمال سيناء': 154
+    const EGYPT_GOVERNORATES = {
+      'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
+      'الجيزة':['مدينة السادس من أكتوبر','مدينة الشيخ زايد','العياط','الحوامدية','البدرشين','الصف','العمرانية','أطفيح','الواحات البحرية','الجيزة','حدائق الاهرام','فيصل','الهرم','أبو النمرس','العجوزة','الوراق','أوسيم','بولاق الدكرور','الدقي','أرض اللواء','المهندسين','كرداسة','إمبابة','منشأة القناطر'],
+      'الغربية':['كفر الزيات','المحلة الكبرى','سمنود','بسيون','السنطة','زفتى','قطور','طنطا'],
+      'الدقهلية':['المنصورة','أجا','المنزلة','بلقاس','دكرنس','السنبلاوين','منية النصر','ميت غمر','شربين','طلخا'],
+      'الإسكندرية':['الدخيلة','العامرية','برج العرب','محرم بيك','باب شرقي','الساحل الشمالي','سيدي جابر','العطارين','المنشية','اللبان','الجمرك','مينا البصل','كرموز','الرمل','المنتزه'],
+      'أسيوط':['أبنوب','أبوتيج','البداري','الغنايم','الفتح','القوصية','ديروط','ساحل سليم','صدفا','مدينة أسيوط','منفلوط','منقباد'],
+      'أسوان':['أسوان','كوم امبو','دراو','إدفو'],
+      'بني سويف':['الواسطى','ناصر','مدينة بني سويف','مركز بني سويف','أهناسيا','ببا','سمسطا','الفشن'],
+      'القليوبية':['بنها','الخانكة','العبور','القناطر الخيرية','شبين القناطر','طوخ','كفر شكر','قليوب','شبرا الخيمة'],
+      'القاهرة':['عابدين','العباسية','الأزبكية','القطامية','المنيل','المقطم','دار السلام','البساتين','الجمالية','السيدة زينب','حلوان','المعادي','مصر القديمة','قصر النيل','الخليفة','طرة','الزمالك','الشروق','مدينة بدر','عين شمس','مدينتي','الزيتون','مدينة نصر','القاهرة الجديدة','هليوبوليس','الأميرية','السلام','الوايلي','الشرابية','المرج','المطرية','النزهة','حدائق القبة','شبرا مصر','كورنيش النيل'],
+      'البحيرة':['دمنهور','كفر الدوار','أبو حمص','المحمودية','وادي النطرون','النوبارية','أبوالمطامير','حوش عيسي','إيتاي البارود','شبراخيت','رشيد','إدكوا','مركز بدر','الدلنجات','الرحمانية','كوم حمادة'],
+      'دمياط':['فارسكور','دمياط القديمة','كفر سعد','الزرقا','كفر البطيخ','دمياط الجديدة','رأس البر','عزبة البرج'],
+      'الفيوم':['طامية','سنورس','مركز الفيوم','مدينة الفيوم','أطسا','أبشواي','يوسف الصديق'],
+      'البحر الأحمر':['الغردقة','رأس غارب','سفاجا','القصير','مرسى علم'],
+      'الإسماعيلية':['الإسماعيلية'],
+      'كفر الشيخ':['كفر الشيخ','دسوق','فوه','مطوبس','بلطيم','الحامول','الرياض','بيلا','قلين','سيدى سالم'],
+      'الأقصر':['مدينة الأقصر','أرمنت','أسنا','القرنة'],
+      'مرسى مطروح':['مرسى مطروح'],
+      'المنيا':['العدوة','مغاغة','بني مزار','مطاي','سمالوط','مركز المنيا','مدينة المنيا','أبو قرقاص','ملوي','دير مواس'],
+      'بور سعيد':['بورسعيد'],
+      'قنا':['قنا','قوص','مدينة قفط','دشنا','نقادة','نجع حمادي','فرشوط','أبوتشت'],
+      'المنوفية':['قويسنا','بركة السبع','السادات','الشهداء','تلا','شبين الكوم','الباجور','منوف','أشمون'],
+      'سوهاج':['طما','طهطا','جهينة','المراغة','مدينة سوهاج','أخميم','ساقلته','المنشأة','جرجا','البلينا','دار السلام','العسيرات'],
+      'السويس':['السويس'],
+      'الوادي الجديد':['الخارجة','الداخلة','الفرافرة'],
+      'جنوب سيناء':['جنوب سيناء','شرم الشيخ','دهب'],
+      'شمال سيناء':['شمال سيناء']
     };
+
+    function getDefaultShippingCosts() {
+      return {
+        'القليوبية': 68, 'الجيزة': 68, 'القاهرة': 68, 'الإسكندرية': 68,
+        'السويس': 70, 'البحيرة': 79, 'الغربية': 79, 'الدقهلية': 79,
+        'دمياط': 79, 'بور سعيد': 79, 'المنوفية': 79, 'الشرقية': 79,
+        'الإسماعيلية': 79, 'كفر الشيخ': 79, 'قنا': 85,
+        'الفيوم': 85, 'المنيا': 85, 'بني سويف': 85, 'الأقصر': 85,
+        'أسيوط': 85, 'مرسى مطروح': 85, 'البحر الأحمر': 85, 'أسوان': 85,
+        'سوهاج': 85, 'الوادي الجديد': 154, 'جنوب سيناء': 154, 'شمال سيناء': 154
+      };
+    }
+
+    function getShippingCosts() {
+      const stored = localStorage.getItem(CONFIG.STORAGE_KEY_SHIPPING);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          return {...getDefaultShippingCosts(), ...parsed};
+        } catch(e) {
+          return getDefaultShippingCosts();
+        }
+      }
+      return getDefaultShippingCosts();
+    }
+
+    function saveShippingCosts() {
+      const inputs = document.querySelectorAll('.shipping-cost-input');
+      const costs = {};
+      inputs.forEach(input => {
+        const gov = input.getAttribute('data-governorate');
+        const value = parseFloat(input.value) || 0;
+        costs[gov] = value;
+      });
+      localStorage.setItem(CONFIG.STORAGE_KEY_SHIPPING, JSON.stringify(costs));
+      showToast('تم حفظ أسعار الشحن بنجاح');
+    }
+
+    function renderShippingTable() {
+      const tbody = document.getElementById('shippingTableBody');
+      const costs = getShippingCosts();
+      tbody.innerHTML = '';
+      Object.keys(EGYPT_GOVERNORATES).forEach(gov => {
+        const tr = document.createElement('tr');
+        const cost = costs[gov] || 0;
+        tr.innerHTML = `<td>${gov}</td><td><input type="number" class="shipping-cost-input" data-governorate="${gov}" value="${cost}" min="0"></td>`;
+        tbody.appendChild(tr);
+      });
+    }
 
     function showToast(message, type = 'success') {
       const existingToast = document.querySelector('.custom-toast');
@@ -1240,7 +1345,6 @@
     function populateOrderForm() {
       const orderCartItems = document.getElementById('orderCartItems');
       const orderTotalPrice = document.getElementById('orderTotalPrice');
-      const orderAmount = document.getElementById('orderAmount');
       orderCartItems.innerHTML = '';
       let total = 0;
       cart.forEach(item => {
@@ -1252,7 +1356,6 @@
         orderCartItems.appendChild(div);
       });
       orderTotalPrice.textContent = total;
-      orderAmount.value = total;
     }
 
     function closeOrderForm() { 
@@ -1422,6 +1525,7 @@
       renderGrid('shoesGrid', 'hl_products_shoes');
       renderOffers();
       renderAdminStock();
+      renderShippingTable();
     }
 
     function renderGrid(gridId, storageKey) {
@@ -1454,6 +1558,7 @@
         document.getElementById('loginBtn').classList.add('hidden');
         document.getElementById('logoutBtn').classList.remove('hidden');
         document.getElementById('adminPanel').style.display='block';
+        renderShippingTable();
         closeLoginModal();
         return;
       }
@@ -1477,21 +1582,21 @@
       const gov = document.getElementById('orderGovernorate').value;
       const city = document.getElementById('orderCity').value;
       const addr = document.getElementById('orderAddress').value.trim();
-      const amount = parseFloat(document.getElementById('orderAmount').value.trim());
-      const weight = parseFloat(document.getElementById('orderWeight').value.trim())||1;
       const notes = document.getElementById('orderNotes').value.trim();
-      if(!name||!phone||!gov||!city||!addr||isNaN(amount)||amount<=0) {
+      if(!name||!phone||!gov||!city||!addr) {
         document.getElementById('orderError').textContent='يرجى ملء جميع الحقول المطلوبة.';
         return;
       }
       const productsList = cart.map(item => `${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}`).join(' | ');
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const shippingCost = getShippingCosts()[gov] || 0;
+      const totalPrice = cartTotal + shippingCost;
       document.getElementById('submitOrderBtn').disabled=true;
       document.getElementById('submitOrderBtn').textContent='جاري الإرسال...';
       const result = await callAPI('addOrder', {
         customerName: name, customerPhone: phone, customerPhone2: phone2,
-        governorate: gov, city: city, address: addr, amount: amount,
-        weight: weight, notes: notes, products: productsList, totalPrice: totalPrice
+        governorate: gov, city: city, address: addr,
+        notes: notes, products: productsList, totalPrice: totalPrice
       });
       document.getElementById('submitOrderBtn').disabled=false;
       document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
@@ -1522,41 +1627,11 @@
 
     function updateOrderTotal() {
       const gov = document.getElementById('orderGovernorate').value;
-      const shipping = SHIPPING_COSTS[gov] || 0;
+      const shipping = getShippingCosts()[gov] || 0;
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const total = cartTotal + shipping;
       document.getElementById('orderTotalPrice').textContent = total;
-      document.getElementById('orderAmount').value = total;
     }
-
-    const EGYPT_GOVERNORATES = {
-      'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
-      'الجيزة':['مدينة السادس من أكتوبر','مدينة الشيخ زايد','العياط','الحوامدية','البدرشين','الصف','العمرانية','أطفيح','الواحات البحرية','الجيزة','حدائق الاهرام','فيصل','الهرم','أبو النمرس','العجوزة','الوراق','أوسيم','بولاق الدكرور','الدقي','أرض اللواء','المهندسين','كرداسة','إمبابة','منشأة القناطر'],
-      'الغربية':['كفر الزيات','المحلة الكبرى','سمنود','بسيون','السنطة','زفتى','قطور','طنطا'],
-      'الدقهلية':['المنصورة','أجا','المنزلة','بلقاس','دكرنس','السنبلاوين','منية النصر','ميت غمر','شربين','طلخا'],
-      'الإسكندرية':['الدخيلة','العامرية','برج العرب','محرم بيك','باب شرقي','الساحل الشمالي','سيدي جابر','العطارين','المنشية','اللبان','الجمرك','مينا البصل','كرموز','الرمل','المنتزه'],
-      'أسيوط':['أبنوب','أبوتيج','البداري','الغنايم','الفتح','القوصية','ديروط','ساحل سليم','صدفا','مدينة أسيوط','منفلوط','منقباد'],
-      'أسوان':['أسوان','كوم امبو','دراو','إدفو'],
-      'بني سويف':['الواسطى','ناصر','مدينة بني سويف','مركز بني سويف','أهناسيا','ببا','سمسطا','الفشن'],
-      'القليوبية':['بنها','الخانكة','العبور','القناطر الخيرية','شبين القناطر','طوخ','كفر شكر','قليوب','شبرا الخيمة'],
-      'القاهرة':['عابدين','العباسية','الأزبكية','القطامية','المنيل','المقطم','دار السلام','البساتين','الجمالية','السيدة زينب','حلوان','المعادي','مصر القديمة','قصر النيل','الخليفة','طرة','الزمالك','الشروق','مدينة بدر','عين شمس','مدينتي','الزيتون','مدينة نصر','القاهرة الجديدة','هليوبوليس','الأميرية','السلام','الوايلي','الشرابية','المرج','المطرية','النزهة','حدائق القبة','شبرا مصر','كورنيش النيل'],
-      'البحيرة':['دمنهور','كفر الدوار','أبو حمص','المحمودية','وادي النطرون','النوبارية','أبوالمطامير','حوش عيسي','إيتاي البارود','شبراخيت','رشيد','إدكوا','مركز بدر','الدلنجات','الرحمانية','كوم حمادة'],
-      'دمياط':['فارسكور','دمياط القديمة','كفر سعد','الزرقا','كفر البطيخ','دمياط الجديدة','رأس البر','عزبة البرج'],
-      'الفيوم':['طامية','سنورس','مركز الفيوم','مدينة الفيوم','أطسا','أبشواي','يوسف الصديق'],
-      'البحر الأحمر':['الغردقة','رأس غارب','سفاجا','القصير','مرسى علم'],
-      'الإسماعيلية':['الإسماعيلية'],
-      'كفر الشيخ':['كفر الشيخ','دسوق','فوه','مطوبس','بلطيم','الحامول','الرياض','بيلا','قلين','سيدى سالم'],
-      'الأقصر':['مدينة الأقصر','أرمنت','أسنا','القرنة'],
-      'مرسى مطروح':['مرسى مطروح'],
-      'المنيا':['العدوة','مغاغة','بني مزار','مطاي','سمالوط','مركز المنيا','مدينة المنيا','أبو قرقاص','ملوي','دير مواس'],
-      'بور سعيد':['بورسعيد'],
-      'قنا':['قنا','قوص','مدينة قفط','دشنا','نقادة','نجع حمادي','فرشوط','أبوتشت'],
-      'المنوفية':['قويسنا','بركة السبع','السادات','الشهداء','تلا','شبين الكوم','الباجور','منوف','أشمون'],
-      'سوهاج':['طما','طهطا','جهينة','المراغة','مدينة سوهاج','أخميم','ساقلته','المنشأة','جرجا','البلينا','دار السلام','العسيرات'],
-      'السويس':['السويس'],
-      'الوادي الجديد':['الخارجة','الداخلة','الفرافرة'],
-      'جنوب سيناء':['جنوب سيناء','شرم الشيخ','دهب']
-    };
 
     document.addEventListener('DOMContentLoaded', function() {
       const gov = document.getElementById('orderGovernorate');
@@ -1575,6 +1650,7 @@
         document.getElementById('loginBtn').classList.add('hidden');
         document.getElementById('logoutBtn').classList.remove('hidden');
         document.getElementById('adminPanel').style.display='block';
+        renderShippingTable();
       }
     });
   </script>
