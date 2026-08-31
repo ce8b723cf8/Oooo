@@ -3,219 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض النماذج الإعلانية</title>
+    <title>نماذج البانرات الإعلانية التسويقية</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #f8f9fa; color: #333; }
 
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            padding: 20px;
-        }
-
-        h1, h2 {
+        /* 1. بانر أعلى الصفحة الترويجي */
+        .top-notice-bar {
+            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            color: #fff;
             text-align: center;
-            margin-bottom: 20px;
-            color: #1a252f;
-        }
-
-        section {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        /* --- النموذج الأول: معرض صور شبكي (Grid Gallery) --- */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .ad-card {
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #e0e0e0;
-            transition: transform 0.3s, box-shadow 0.3s;
-            background: #fff;
-        }
-
-        .ad-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
-
-        .ad-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .ad-card-content {
-            padding: 15px;
-            text-align: center;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #3498db;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn:hover {
-            background-color: #2980b9;
-        }
-
-        /* --- النموذج الثاني: سلايدر إعلاني (Slider) --- */
-        .slider-container {
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-
-        .slider-slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-
-        .slide {
-            min-width: 100%;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-        }
-
-        .slider-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-
-        .prev { right: 10px; }
-        .next { left: 10px; }
-
-        /* --- النموذج الثالث: إعلان عائم (Popup Banner) --- */
-        .popup-banner {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 300px;
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            overflow: hidden;
-            z-index: 1000;
-            border: 2px solid #e74c3c;
-        }
-
-        .popup-banner img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            background: #e74c3c;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            cursor: pointer;
+            padding: 10px;
+            font-size: 14px;
             font-weight: bold;
         }
+
+        /* 2. البانر الرئيسي العريض (Hero Banner) */
+        .hero-banner {
+            position: relative;
+            max-width: 1200px;
+            margin: 20px auto;
+            height: 350px;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .hero-banner img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            color: #fff;
+            padding: 40px;
+            max-width: 500px;
+        }
+
+        .hero-content h2 { font-size: 32px; margin-bottom: 12px; }
+        .hero-content p { font-size: 16px; margin-bottom: 20px; opacity: 0.9; }
+
+        /* 3. كروت العروض المزدوجة (Promo Cards Grid) */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .promo-card {
+            position: relative;
+            height: 220px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .promo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .promo-card:hover img { transform: scale(1.05); }
+
+        .promo-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 25px;
+            color: #fff;
+        }
+
+        /* الأزرار العامة */
+        .btn-cta {
+            display: inline-block;
+            padding: 10px 24px;
+            background: #ff4757;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            width: fit-content;
+            transition: background 0.3s;
+        }
+
+        .btn-cta:hover { background: #e84118; }
     </style>
 </head>
 <body>
 
-    <h1>نماذج لعرض الإعلانات والصور</h1>
+    <!-- النموذج الأول: شريط الإشعار العلوي -->
+    <div class="top-notice-bar">
+        ⚡ عرض خاص: شحن مجاني لكافة المحافظات للطلبات الأعلى من 500 جنيه!
+    </div>
 
-    <!-- النموذج الأول -->
-    <section>
-        <h2>1. نموذج كروت العرض الشبكية (Grid Cards)</h2>
-        <div class="grid-container">
-            <div class="ad-card">
-                <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="إعلان 1">
-                <div class="ad-card-content">
-                    <h3>عرض خاص</h3>
-                    <p>تفاصيل الإعلان تظهر هنا باختصار.</p>
-                    <button class="btn">اطلب الآن</button>
-                </div>
-            </div>
-            <div class="ad-card">
-                <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="إعلان 2">
-                <div class="ad-card-content">
-                    <h3>خصم 50%</h3>
-                    <p>استفد من العرض قبل انتهاء الكمية.</p>
-                    <button class="btn">مشاهدة المزيد</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- النموذج الثاني -->
-    <section>
-        <h2>2. نموذج السلايدر المتحرك (Image Slider)</h2>
-        <div class="slider-container">
-            <div class="slider-slides" id="slides">
-                <div class="slide"><img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="شريحة 1"></div>
-                <div class="slide"><img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="شريحة 2"></div>
-            </div>
-            <button class="slider-btn prev" onclick="moveSlide(-1)">&#10095;</button>
-            <button class="slider-btn next" onclick="moveSlide(1)">&#10094;</button>
-        </div>
-    </section>
-
-    <!-- النموذج الثالث -->
-    <div class="popup-banner" id="popup">
-        <button class="close-btn" onclick="closePopup()">×</button>
-        <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="إعلان عائم">
-        <div style="padding: 10px; text-align: center;">
-            <p><strong>إعلان هام!</strong></p>
-            <a href="#" class="btn" style="display:block; margin-top:5px;">تصفح العرض</a>
+    <!-- النموذج الثاني: البانر الرئيسي العريض (Hero Banner) -->
+    <div class="hero-banner">
+        <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="إعلان رئيسي">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h2>انطلاقة الخدمات السريعة</h2>
+            <p>احصل على حلول شحن وتسليم متكاملة لأعمالك التجارية بأعلى جودة وأفضل سعر.</p>
+            <a href="#" class="btn-cta">اكتشف خدماتنا</a>
         </div>
     </div>
 
-    <script>
-        // كود السلايدر
-        let currentSlide = 0;
-        function moveSlide(direction) {
-            const slides = document.querySelectorAll('.slide');
-            currentSlide = (currentSlide + direction + slides.length) % slides.length;
-            document.getElementById('slides').style.transform = `translateX(${currentSlide * 100}%)`;
-        }
+    <!-- النموذج الثالث: كروت العروض الفرعية المزدوجة -->
+    <div class="promo-grid">
+        <div class="promo-card">
+            <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="عرض 1">
+            <div class="promo-card-overlay">
+                <h3>عروض التجار والشركات</h3>
+                <p style="margin: 8px 0 15px;">خصومات تصل إلى 30% على الشحنات الكبيرة</p>
+                <a href="#" class="btn-cta" style="background:#2ed573;">انضم الآن</a>
+            </div>
+        </div>
 
-        // كود إغلاق الإعلان العائم
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
-        }
-    </script>
+        <div class="promo-card">
+            <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" alt="عرض 2">
+            <div class="promo-card-overlay">
+                <h3>التوصيل في نفس اليوم</h3>
+                <p style="margin: 8px 0 15px;">خدمة سريعة داخل القاهرة والجيزة</p>
+                <a href="#" class="btn-cta" style="background:#ffa502;">طلب الخدمة</a>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
