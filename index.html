@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كارت استعراضي متحرك</title>
+    <title>كارت استعراضي متحرك كبير</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,12 +20,12 @@
             font-family: sans-serif;
         }
 
-        /* التصميم الخاص بك من Uiverse.io */
+        /* الكارت بمقاس مضاعف */
         .card {
             position: relative;
-            width: 200px;
-            height: 250px;
-            border-radius: 14px;
+            width: 380px;
+            height: 480px;
+            border-radius: 20px;
             z-index: 1111;
             overflow: hidden;
             display: flex;
@@ -37,31 +37,32 @@
 
         .bg {
             position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 190px;
-            height: 240px;
+            top: 10px;
+            left: 10px;
+            width: 360px;
+            height: 460px;
             z-index: 2;
-            background: rgba(255, 255, 255, 0.25); /* تعديل الشفافية لإظهار الصور بوضوح */
-            backdrop-filter: blur(8px); /* تقليل الضباب قليلاً لتفاصيل الصور */
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border-radius: 10px;
+            border-radius: 14px;
             overflow: hidden;
             outline: 2px solid white;
         }
 
+        /* تكبير حجم الـ Blob ليتناسب مع الكارت */
         .blob {
             position: absolute;
             z-index: 1;
             top: 50%;
             left: 50%;
-            width: 150px;
-            height: 150px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
             background-color: #ff0000;
             opacity: 1;
-            filter: blur(12px);
-            animation: blob-bounce 5s infinite ease;
+            filter: blur(16px);
+            animation: blob-bounce 6s infinite ease;
         }
 
         @keyframes blob-bounce {
@@ -72,7 +73,7 @@
             100% { transform: translate(-100%, -100%) translate3d(0, 0, 0); }
         }
 
-        /* عناصر عرض الصور والأنيميشن الخاص بها */
+        /* عرض الصور */
         .slideshow {
             position: relative;
             width: 100%;
@@ -87,13 +88,12 @@
             height: 100%;
             object-fit: cover;
             opacity: 0;
-            transform: scale(1.08);
-            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+            transform: scale(1.06);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
         }
 
-        /* الصورة النشطة حالياً */
         .slideshow img.active {
-            opacity: 0.85; /* درجة الشفافية لدمج الصورة مع خلفية الزجاج */
+            opacity: 0.9;
             transform: scale(1);
         }
     </style>
@@ -103,10 +103,9 @@
     <div class="card">
         <div class="bg">
             <div class="slideshow" id="slideshow">
-                <!-- يمكنك إضافة أو تغيير روابط الصور من هنا -->
                 <img src="https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg" class="active" alt="صورة استعراضية 1">
-                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=600" alt="صورة استعراضية 2">
-                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600" alt="صورة استعراضية 3">
+                <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=800" alt="صورة استعراضية 2">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800" alt="صورة استعراضية 3">
             </div>
         </div>
         <div class="blob"></div>
@@ -117,18 +116,13 @@
         let currentIndex = 0;
 
         function changeImage() {
-            // إخفاء الصورة الحالية
             images[currentIndex].classList.remove('active');
-            
-            // الانتقال للصورة التالية (أو العودة للأولى عند الوصول للنهاية)
             currentIndex = (currentIndex + 1) % images.length;
-            
-            // إظهار الصورة الجديدة
             images[currentIndex].classList.add('active');
         }
 
-        // التبديل تلقائياً كل ثانيتين (2000 مللي ثانية)
-        setInterval(changeImage, 2000);
+        // التبديل كل 4 ثوانٍ (4000 مللي ثانية)
+        setInterval(changeImage, 4000);
     </script>
 
 </body>
