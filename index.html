@@ -1304,9 +1304,12 @@
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
-      STORAGE_KEY_CART: 'hl_cart',
+      STORAGE_KEY_PRODUCTS: 'hl_products', 
+      STORAGE_KEY_OFFERS: 'hl_offers', 
+      STORAGE_KEY_CART: 'hl_cart', 
+      STORAGE_KEY_ORDERS: 'hl_orders',
       STORAGE_KEY_SHIPPING: 'hl_shipping_costs',
-      STOCK_KEY: 'akone_stock',
+      STORAGE_KEY_SHOWCASE: 'hl_showcase_images',
       FREE_SHIPPING_THRESHOLD: 1300
     };
 
@@ -1321,7 +1324,6 @@
     let currentGalleryIndex = 0;
     let showcaseImages = [];
     let floatingSlideshowInterval = null;
-    let allProductsData = {};
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -1406,23 +1408,6 @@
       toast.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);background:${type==='success'?'#111215':'#E50914'};color:#FFFFFF;padding:14px 28px;border-radius:12px;font-weight:700;font-size:15px;z-index:999999;box-shadow:0 0 20px rgba(229,9,20,0.5);animation:toastIn .3s ease-out;text-align:center;direction:rtl;border:1px solid #E50914;`;
       document.body.appendChild(toast);
       setTimeout(() => { toast.remove(); }, 2500);
-    }
-
-    function getStock(name) {
-      const stocks = JSON.parse(localStorage.getItem(CONFIG.STOCK_KEY) || '{}');
-      return stocks[name] !== undefined ? stocks[name] : null;
-    }
-
-    function setStock(name, value) {
-      const stocks = JSON.parse(localStorage.getItem(CONFIG.STOCK_KEY) || '{}');
-      stocks[name] = value;
-      localStorage.setItem(CONFIG.STOCK_KEY, JSON.stringify(stocks));
-    }
-
-    function getLocalStock(item) {
-      const name = item.name || item.title;
-      const stored = getStock(name);
-      return stored !== null ? stored : (parseInt(item.stock) || 0);
     }
 
     function addProductColor() {
@@ -1631,7 +1616,7 @@
 
     function addToCart(name, price, size, event, id = 0, category = 'Sherwal', image = '') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
-      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.category === category);
+      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === Number(id) && item.category === category);
       if(existingItem) { existingItem.quantity++; } 
       else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category, image: image}); }
       saveCart(); 
@@ -1739,11 +1724,10 @@
       searchGrid.innerHTML = '';
 
       const allProducts = [];
-      Object.values(allProductsData).forEach(catItems => {
-        if(Array.isArray(catItems)) {
-          catItems.forEach(item => allProducts.push(item));
-        }
+      ['hl_products_sherwal','hl_products_shirt','hl_products_tshirt','hl_products_shoes','hl_products_jeans','hl_products_jacket'].forEach(key => {
+        JSON.parse(localStorage.getItem(key)||'[]').forEach(item => allProducts.push({...item, category: key.replace('hl_products_','')}));
       });
+      JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]').forEach(item => allProducts.push({...item, category: 'Offer', name: item.title}));
 
       const filtered = allProducts.filter(item => 
         (item.name || '').toLowerCase().includes(query) ||
@@ -1762,6 +1746,13 @@
       window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
+    function getLocalStock(category, item) {
+      const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
+      const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const localItem = items.find(i => i.name === item.name || i.title === item.name || i.title === item.title);
+      return localItem ? (parseInt(localItem.stock) || 0) : (parseInt(item.stock) || 0);
+    }
+
     function renderProductCard(item, grid) {
       const price = item.price||0, disc = item.discount||0, final = disc>0 ? Math.round(price-(price*disc/100)) : price;
       const media = item.media || [];
@@ -1769,7 +1760,7 @@
       const sizes = item.sizes || [];
       const colors = item.colors || [];
       const category = item.category || 'Sherwal';
-      const stock = getLocalStock(item);
+      const stock = getLocalStock(category, item);
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">فيديو شرحي</a>` : '';
@@ -1789,7 +1780,7 @@
       const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
       const sizes = offer.sizes || [];
       const colors = offer.colors || [];
-      const stock = getLocalStock(offer);
+      const stock = getLocalStock('Offer', offer);
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
@@ -1801,7 +1792,7 @@
 
     function renderOffers() {
       const grid = document.getElementById('offersGrid');
-      const offers = allProductsData.offers || [];
+      const offers = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
       grid.innerHTML = offers.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد عروض حالياً</p>' : '';
       offers.forEach(offer => renderOfferCard(offer, grid));
     }
@@ -1840,7 +1831,7 @@
       const sizes = item.sizes || [];
       const colors = item.colors || [];
       const category = item.category || 'Sherwal';
-      const stock = getLocalStock(item);
+      const stock = getLocalStock(category, item);
       const mainImage = media.length > 0 ? media[0] : '';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
@@ -1900,43 +1891,36 @@
     function renderAdminStock() {
       const container = document.getElementById('adminStockList');
       const sections = [
-        {key: 'sherwal', category: 'Sherwal', title: 'شروال'},
-        {key: 'shirt', category: 'Shirt', title: 'قميص'},
-        {key: 'tshirt', category: 'Tshirt', title: 'تيشيرت'},
-        {key: 'shoes', category: 'Shoes', title: 'أحذية'},
-        {key: 'jeans', category: 'Jeans', title: 'جينز'},
-        {key: 'jacket', category: 'Jacket', title: 'جاكت'}
+        {key: 'hl_products_sherwal', category: 'Sherwal', title: 'شروال'},
+        {key: 'hl_products_shirt', category: 'Shirt', title: 'قميص'},
+        {key: 'hl_products_tshirt', category: 'Tshirt', title: 'تيشيرت'},
+        {key: 'hl_products_shoes', category: 'Shoes', title: 'أحذية'},
+        {key: 'hl_products_jeans', category: 'Jeans', title: 'جينز'},
+        {key: 'hl_products_jacket', category: 'Jacket', title: 'جاكت'}
       ];
       let html = '';
       sections.forEach(section => {
-        const items = allProductsData[section.key] || [];
+        const items = JSON.parse(localStorage.getItem(section.key)||'[]');
         html += `<h4 style="color:#FFF;margin:15px 0 10px;">${section.title}</h4>`;
         items.forEach(item => {
-          const stock = getLocalStock(item);
-          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} - المخزون: <strong style="color:#E50914;">${stock}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${stock}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually('${item.name}', '${section.category}', ${item.id})" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
+          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
         });
       });
       container.innerHTML = html || '<p style="text-align:center;color:rgba(255,255,255,0.5);">لا توجد منتجات</p>';
     }
 
-    async function updateStockManually(name, category, id) {
-      const inputId = `stock_${id}_${category}`;
-      const stock = document.getElementById(inputId).value;
-      setStock(name, parseInt(stock) || 0);
+    async function updateStockManually(id, category) {
+      const stock = document.getElementById(`stock_${id}_${category}`).value;
+      const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
+      const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const targetItem = items.find(i => Number(i.id) === Number(id));
+      if(targetItem) {
+        targetItem.stock = parseInt(stock) || 0;
+        localStorage.setItem(storageKey, JSON.stringify(items));
+      }
       const result = await callAPI('updateStockManually', {id, category, stock: parseInt(stock)||0});
       if(result.success) { showToast('تم تحديث المخزون!'); }
       renderAdminStock();
-      renderAllGrids();
-    }
-
-    function renderAllGrids() {
-      renderGrid('sherwalGrid', 'sherwal');
-      renderGrid('shirtGrid', 'shirt');
-      renderGrid('tshirtGrid', 'tshirt');
-      renderGrid('shoesGrid', 'shoes');
-      renderGrid('jeansGrid', 'jeans');
-      renderGrid('jacketGrid', 'jacket');
-      renderOffers();
     }
 
     async function addOffer() {
@@ -1988,59 +1972,41 @@
 
     async function loadData() {
       const sections = [
-        {action: 'getSherwal', dataKey: 'sherwal'},
-        {action: 'getShirt', dataKey: 'shirt'},
-        {action: 'getTshirt', dataKey: 'tshirt'},
-        {action: 'getShoes', dataKey: 'shoes'},
-        {action: 'getJeans', dataKey: 'jeans'},
-        {action: 'getJacket', dataKey: 'jacket'},
-        {action: 'getOffers', dataKey: 'offers'}
+        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection', dataKey: 'sherwal'},
+        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection', dataKey: 'shirt'},
+        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt'},
+        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection', dataKey: 'shoes'},
+        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection', dataKey: 'jeans'},
+        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection', dataKey: 'jacket'},
+        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection', dataKey: 'offers'}
       ];
 
       const promises = sections.map(async (s) => {
         try {
           const result = await fetchFromAPI(s.action);
           if (result?.[s.dataKey]) {
-            const items = result[s.dataKey];
-            items.forEach(item => {
-              item.category = s.dataKey === 'offers' ? 'Offer' : s.dataKey.charAt(0).toUpperCase() + s.dataKey.slice(1);
-              if(s.dataKey === 'offers') item.name = item.title;
-            });
-            allProductsData[s.dataKey] = items;
+            localStorage.setItem(s.key, JSON.stringify(result[s.dataKey]));
+            renderGrid(s.grid, s.key);
+            const sectionEl = document.getElementById(s.section);
+            if (sectionEl) {
+              sectionEl.classList.remove('section-hidden');
+              sectionEl.classList.add('section-visible');
+            }
           }
         } catch(e) { console.error(e); }
       });
 
       await Promise.all(promises);
-
-      // تهيئة المخزون
-      const stocks = JSON.parse(localStorage.getItem(CONFIG.STOCK_KEY) || '{}');
-      Object.values(allProductsData).forEach(catItems => {
-        if(Array.isArray(catItems)) {
-          catItems.forEach(item => {
-            const name = item.name || item.title;
-            if(stocks[name] === undefined) {
-              stocks[name] = parseInt(item.stock) || 0;
-            }
-          });
-        }
-      });
-      localStorage.setItem(CONFIG.STOCK_KEY, JSON.stringify(stocks));
-
-      renderAllGrids();
       renderAdminStock();
       renderShippingTable();
       await loadShowcaseImages();
     }
 
-    function renderGrid(gridId, dataKey) {
+    function renderGrid(gridId, storageKey) {
       const grid = document.getElementById(gridId);
-      const items = allProductsData[dataKey] || [];
+      const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
       grid.innerHTML = items.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>' : '';
-      items.forEach(item => {
-        if(item.category === 'Offer') renderOfferCard(item, grid);
-        else renderProductCard(item, grid);
-      });
+      items.forEach(item => renderProductCard(item, grid));
     }
 
     function selectSize(btn) {
@@ -2123,11 +2089,16 @@
       if(result.success) {
         showToast('تم إرسال الطلبية بنجاح!');
         
-        // خصم المخزون من akone_stock بالاسم فقط
+        // خصم المخزون محلياً - البحث بالاسم الصحيح
         cart.forEach(item => {
-          const currentStock = getStock(item.name);
-          if(currentStock !== null) {
-            setStock(item.name, Math.max(0, currentStock - item.quantity));
+          const category = item.category || 'Sherwal';
+          const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
+          const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+          const targetItem = items.find(i => i.name === item.name || i.title === item.name);
+          
+          if(targetItem) {
+            targetItem.stock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
+            localStorage.setItem(storageKey, JSON.stringify(items));
           }
         });
         
@@ -2136,7 +2107,13 @@
         closeOrderForm();
         
         // إعادة عرض فقط - بدون loadData
-        renderAllGrids();
+        renderGrid('sherwalGrid', 'hl_products_sherwal');
+        renderGrid('shirtGrid', 'hl_products_shirt');
+        renderGrid('tshirtGrid', 'hl_products_tshirt');
+        renderGrid('shoesGrid', 'hl_products_shoes');
+        renderGrid('jeansGrid', 'hl_products_jeans');
+        renderGrid('jacketGrid', 'hl_products_jacket');
+        renderOffers();
         renderAdminStock();
       } else {
         document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
