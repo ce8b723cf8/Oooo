@@ -2041,47 +2041,66 @@
       const city = document.getElementById('orderCity').value;
       const addr = document.getElementById('orderAddress').value.trim();
       const notes = document.getElementById('orderNotes').value.trim();
+      
       if(!name||!phone||!gov||!city||!addr) {
         document.getElementById('orderError').textContent='يرجى ملء جميع الحقول المطلوبة.';
         return;
       }
-      const productsList = cart.map(item => `${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}`).join(' | ');
+
+      const productsList = cart.map(item => 
+        `${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}`
+      ).join(' | ');
+      
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const shippingCost = getShippingCost(gov, cartTotal);
       const totalPrice = cartTotal + shippingCost;
+      
       const cartItems = cart.map(item => ({
         id: Number(item.id) || 0,
         name: item.name,
         quantity: Number(item.quantity) || 1,
         category: item.category || 'Sherwal'
       }));
-      document.getElementById('submitOrderBtn').disabled=true;
-      document.getElementById('submitOrderBtn').textContent='جاري الإرسال...';
+
+      document.getElementById('submitOrderBtn').disabled = true;
+      document.getElementById('submitOrderBtn').textContent = 'جاري الإرسال...';
+
       const result = await callAPI('addOrder', {
-        customerName: name, customerPhone: phone, customerPhone2: phone2,
-        governorate: gov, city: city, address: addr,
-        notes: notes, products: productsList, totalPrice: totalPrice
+        customerName: name,
+        customerPhone: phone,
+        customerPhone2: phone2,
+        governorate: gov,
+        city: city,
+        address: addr,
+        notes: notes,
+        products: productsList,
+        totalPrice: totalPrice
       });
+
       if(result.success) {
-        for(const item of cartItems) {
-          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
-          const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
-          const targetItem = items.find(i => Number(i.id) === Number(item.id));
-          if(targetItem) {
-            targetItem.stock = Math.max(0, (parseInt(targetItem.stock)||0) - item.quantity);
-            localStorage.setItem(storageKey, JSON.stringify(items));
-            await callAPI('updateStockManually', {id: item.id, category: item.category, stock: targetItem.stock});
-          }
-        }
         showToast('تم إرسال الطلبية بنجاح!');
-        cart = []; saveCart();
+        cart = [];
+        saveCart();
         closeOrderForm();
-        await loadData();
+        
+        setTimeout(async () => {
+          for(const item of cartItems) {
+            await callAPI('updateStock', {
+              id: item.id,
+              category: item.category,
+              quantity: item.quantity
+            });
+          }
+          await loadData();
+          showToast('تم تحديث المخزون!');
+        }, 1000);
+        
       } else {
-        document.getElementById('orderError').textContent='فشل إرسال الطلبية: '+(result.error||'خطأ');
+        document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
       }
-      document.getElementById('submitOrderBtn').disabled=false;
-      document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
+
+      document.getElementById('submitOrderBtn').disabled = false;
+      document.getElementById('submitOrderBtn').textContent = 'تأكيد الطلبية الآن';
     }
 
     function updateOrderCities() {
