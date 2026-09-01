@@ -1300,7 +1300,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwPg587stxdtODRVVXxPUDUGxEwVuI8GjPwwmI7BWSq7qz1QEAVCqi9GcVyQAzbpClD/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbzPT37vIUpO-hBpsZf05C74JSmpq4NlcYado7RlryNsmWB-5DWbk6AqKBk3-nFoCQhd/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -2085,14 +2085,16 @@
         
         setTimeout(async () => {
           for(const item of cartItems) {
-            await callAPI('updateStock', {
+            const stockResult = await callAPI('updateStock', {
               id: item.id,
               category: item.category,
               quantity: item.quantity
             });
+            if(stockResult.success) {
+              showToast(`تم خصم ${item.quantity} من ${item.name}. المتبقي: ${stockResult.newStock}`);
+            }
           }
           await loadData();
-          showToast('تم تحديث المخزون!');
         }, 1000);
         
       } else {
