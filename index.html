@@ -1746,14 +1746,21 @@
       window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
+    function getLocalStock(category, item) {
+      const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
+      const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const localItem = items.find(i => i.name === item.name || i.title === item.name);
+      return localItem ? (parseInt(localItem.stock) || 0) : (parseInt(item.stock) || 0);
+    }
+
     function renderProductCard(item, grid) {
       const price = item.price||0, disc = item.discount||0, final = disc>0 ? Math.round(price-(price*disc/100)) : price;
       const media = item.media || [];
       const mainImage = media.length > 0 ? media[0] : '';
       const sizes = item.sizes || [];
       const colors = item.colors || [];
-      const stock = item.stock || 0;
       const category = item.category || 'Sherwal';
+      const stock = getLocalStock(category, item);
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">فيديو شرحي</a>` : '';
@@ -1761,7 +1768,7 @@
       const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,${item.id},'${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       const art = document.createElement('article'); 
       art.className='product'; 
-      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category}).replace(/"/g, '&quot;')})`);
+      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category, stock}).replace(/"/g, '&quot;')})`);
       art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">📦</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
@@ -1772,12 +1779,12 @@
       const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
       const sizes = offer.sizes || [];
       const colors = offer.colors || [];
-      const stock = offer.stock || 0;
+      const stock = getLocalStock('Offer', offer);
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
       const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id}, '${mainImage}')">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
-      div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer'}).replace(/"/g, '&quot;')})`);
+      div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer', stock}).replace(/"/g, '&quot;')})`);
       div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
     }
@@ -1822,8 +1829,8 @@
       const final = discount > 0 ? Math.round(price - (price * discount / 100)) : price;
       const sizes = item.sizes || [];
       const colors = item.colors || [];
-      const stock = item.stock || 0;
       const category = item.category || 'Sherwal';
+      const stock = getLocalStock(category, item);
       const mainImage = media.length > 0 ? media[0] : '';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
@@ -1903,9 +1910,16 @@
 
     async function updateStockManually(id, category) {
       const stock = document.getElementById(`stock_${id}_${category}`).value;
+      const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
+      const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      const targetItem = items.find(i => Number(i.id) === Number(id));
+      if(targetItem) {
+        targetItem.stock = parseInt(stock) || 0;
+        localStorage.setItem(storageKey, JSON.stringify(items));
+      }
       const result = await callAPI('updateStockManually', {id, category, stock: parseInt(stock)||0});
-      if(result.success) { showToast('تم تحديث المخزون!'); await loadData(); }
-      else showToast('فشل: '+(result.error||'خطأ'), 'error');
+      if(result.success) { showToast('تم تحديث المخزون!'); }
+      renderAdminStock();
     }
 
     async function addOffer() {
@@ -2056,13 +2070,6 @@
       const shippingCost = getShippingCost(gov, cartTotal);
       const totalPrice = cartTotal + shippingCost;
 
-      const cartItems = cart.map(item => ({
-        id: Number(item.id) || 0,
-        name: item.name,
-        quantity: Number(item.quantity) || 1,
-        category: item.category || 'Sherwal'
-      }));
-
       document.getElementById('submitOrderBtn').disabled = true;
       document.getElementById('submitOrderBtn').textContent = 'جاري الإرسال...';
 
@@ -2080,28 +2087,24 @@
 
       if(result.success) {
         showToast('تم إرسال الطلبية بنجاح!');
+        
+        // خصم المخزون محلياً بالاسم
+        cart.forEach(item => {
+          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
+          const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+          const targetItem = items.find(i => i.name === item.name || i.title === item.name);
+          
+          if(targetItem) {
+            targetItem.stock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
+            localStorage.setItem(storageKey, JSON.stringify(items));
+          }
+        });
+        
         cart = [];
         saveCart();
         closeOrderForm();
         
-        for(const item of cartItems) {
-          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
-          const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
-          const targetItem = items.find(i => Number(i.id) === Number(item.id) || i.name === item.name);
-          
-          if(targetItem) {
-            const newStock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
-            targetItem.stock = newStock;
-            localStorage.setItem(storageKey, JSON.stringify(items));
-            
-            await callAPI('updateStockManually', {
-              id: targetItem.id,
-              category: item.category,
-              stock: newStock
-            });
-          }
-        }
-        
+        // إعادة عرض فقط - بدون loadData
         renderGrid('sherwalGrid', 'hl_products_sherwal');
         renderGrid('shirtGrid', 'hl_products_shirt');
         renderGrid('tshirtGrid', 'hl_products_tshirt');
@@ -2110,8 +2113,6 @@
         renderGrid('jacketGrid', 'hl_products_jacket');
         renderOffers();
         renderAdminStock();
-        
-        showToast('تم تحديث المخزون!');
       } else {
         document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
       }
