@@ -2087,7 +2087,7 @@
         for(const item of cartItems) {
           const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
           const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
-          const targetItem = items.find(i => Number(i.id) === Number(item.id));
+          const targetItem = items.find(i => Number(i.id) === Number(item.id) || i.name === item.name);
           
           if(targetItem) {
             const newStock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
@@ -2095,7 +2095,7 @@
             localStorage.setItem(storageKey, JSON.stringify(items));
             
             await callAPI('updateStockManually', {
-              id: item.id,
+              id: targetItem.id,
               category: item.category,
               stock: newStock
             });
