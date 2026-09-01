@@ -2060,12 +2060,19 @@
       const result = await callAPI('addOrder', {
         customerName: name, customerPhone: phone, customerPhone2: phone2,
         governorate: gov, city: city, address: addr,
-        notes: notes, products: productsList, totalPrice: totalPrice,
-        cartItems: cartItems
+        notes: notes, products: productsList, totalPrice: totalPrice
       });
-      document.getElementById('submitOrderBtn').disabled=false;
-      document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
       if(result.success) {
+        for(const item of cartItems) {
+          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
+          const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
+          const targetItem = items.find(i => Number(i.id) === Number(item.id));
+          if(targetItem) {
+            targetItem.stock = Math.max(0, (parseInt(targetItem.stock)||0) - item.quantity);
+            localStorage.setItem(storageKey, JSON.stringify(items));
+            await callAPI('updateStockManually', {id: item.id, category: item.category, stock: targetItem.stock});
+          }
+        }
         showToast('تم إرسال الطلبية بنجاح!');
         cart = []; saveCart();
         closeOrderForm();
@@ -2073,6 +2080,8 @@
       } else {
         document.getElementById('orderError').textContent='فشل إرسال الطلبية: '+(result.error||'خطأ');
       }
+      document.getElementById('submitOrderBtn').disabled=false;
+      document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
     }
 
     function updateOrderCities() {
