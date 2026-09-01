@@ -2055,13 +2055,12 @@
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const shippingCost = getShippingCost(gov, cartTotal);
       const totalPrice = cartTotal + shippingCost;
-      
+
       const cartItems = cart.map(item => ({
         id: Number(item.id) || 0,
         name: item.name,
         quantity: Number(item.quantity) || 1,
-        category: item.category || 'Sherwal',
-        image: item.image || ''
+        category: item.category || 'Sherwal'
       }));
 
       document.getElementById('submitOrderBtn').disabled = true;
@@ -2076,8 +2075,7 @@
         address: addr,
         notes: notes,
         products: productsList,
-        totalPrice: totalPrice,
-        cartItems: cartItems
+        totalPrice: totalPrice
       });
 
       if(result.success) {
@@ -2085,7 +2083,35 @@
         cart = [];
         saveCart();
         closeOrderForm();
-        await loadData();
+        
+        for(const item of cartItems) {
+          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
+          const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+          const targetItem = items.find(i => Number(i.id) === Number(item.id));
+          
+          if(targetItem) {
+            const newStock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
+            targetItem.stock = newStock;
+            localStorage.setItem(storageKey, JSON.stringify(items));
+            
+            await callAPI('updateStockManually', {
+              id: item.id,
+              category: item.category,
+              stock: newStock
+            });
+          }
+        }
+        
+        renderGrid('sherwalGrid', 'hl_products_sherwal');
+        renderGrid('shirtGrid', 'hl_products_shirt');
+        renderGrid('tshirtGrid', 'hl_products_tshirt');
+        renderGrid('shoesGrid', 'hl_products_shoes');
+        renderGrid('jeansGrid', 'hl_products_jeans');
+        renderGrid('jacketGrid', 'hl_products_jacket');
+        renderOffers();
+        renderAdminStock();
+        
+        showToast('تم تحديث المخزون!');
       } else {
         document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
       }
