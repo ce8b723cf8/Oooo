@@ -1897,14 +1897,59 @@
           html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
         });
       });
+      const offers = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
+      if (offers.length > 0) {
+        html += `<h4 style="color:#FFF;margin:15px 0 10px;">العروض</h4>`;
+        offers.forEach(item => {
+          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.title} - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_Offer" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, 'Offer')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
+        });
+      }
       container.innerHTML = html || '<p style="text-align:center;color:rgba(255,255,255,0.5);">لا توجد منتجات</p>';
     }
 
-    async function updateStockManually(id, category) {
-      const stock = document.getElementById(`stock_${id}_${category}`).value;
-      const result = await callAPI('updateStockManually', {id, category, stock: parseInt(stock)||0});
-      if(result.success) { showToast('تم تحديث المخزون!'); await loadData(); }
-      else showToast('فشل: '+(result.error||'خطأ'), 'error');
+    function updateStockManually(id, category) {
+      const stockInput = document.getElementById(`stock_${id}_${category}`);
+      if (!stockInput) return;
+      const newStock = Math.max(0, parseInt(stockInput.value) || 0);
+      
+      let items = [];
+      let storageKey = '';
+      
+      if (category === 'Offer') {
+        storageKey = CONFIG.STORAGE_KEY_OFFERS;
+      } else {
+        storageKey = `hl_products_${category.toLowerCase()}`;
+      }
+      
+      items = JSON.parse(localStorage.getItem(storageKey)||'[]');
+      const itemIndex = items.findIndex(i => Number(i.id) === Number(id));
+      if (itemIndex !== -1) {
+        items[itemIndex].stock = newStock;
+        localStorage.setItem(storageKey, JSON.stringify(items));
+        renderAdminStock();
+        refreshGrids();
+        showToast('تم تحديث المخزون محلياً');
+      } else {
+        showToast('المنتج غير موجود', 'error');
+      }
+    }
+
+    function refreshGrids() {
+      const grids = [
+        {key: 'hl_products_sherwal', gridId: 'sherwalGrid'},
+        {key: 'hl_products_shirt', gridId: 'shirtGrid'},
+        {key: 'hl_products_tshirt', gridId: 'tshirtGrid'},
+        {key: 'hl_products_shoes', gridId: 'shoesGrid'},
+        {key: 'hl_products_jeans', gridId: 'jeansGrid'},
+        {key: 'hl_products_jacket', gridId: 'jacketGrid'}
+      ];
+      grids.forEach(g => {
+        const grid = document.getElementById(g.gridId);
+        const items = JSON.parse(localStorage.getItem(g.key)||'[]');
+        grid.innerHTML = '';
+        items.forEach(item => renderProductCard(item, grid));
+      });
+      renderOffers();
     }
 
     async function addOffer() {
@@ -2063,20 +2108,21 @@
         notes: notes, products: productsList, totalPrice: totalPrice
       });
       if(result.success) {
+        // خصم المخزون محلياً فقط
         for(const item of cartItems) {
-          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
+          const storageKey = item.category === 'Offer' ? CONFIG.STORAGE_KEY_OFFERS : `hl_products_${item.category.toLowerCase()}`;
           const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
-          const targetItem = items.find(i => Number(i.id) === Number(item.id));
-          if(targetItem) {
-            targetItem.stock = Math.max(0, (parseInt(targetItem.stock)||0) - item.quantity);
+          const targetIndex = items.findIndex(i => Number(i.id) === Number(item.id));
+          if(targetIndex !== -1) {
+            items[targetIndex].stock = Math.max(0, (parseInt(items[targetIndex].stock)||0) - item.quantity);
             localStorage.setItem(storageKey, JSON.stringify(items));
-            await callAPI('updateStockManually', {id: item.id, category: item.category, stock: targetItem.stock});
           }
         }
         showToast('تم إرسال الطلبية بنجاح!');
         cart = []; saveCart();
         closeOrderForm();
-        await loadData();
+        refreshGrids();
+        renderAdminStock();
       } else {
         document.getElementById('orderError').textContent='فشل إرسال الطلبية: '+(result.error||'خطأ');
       }
