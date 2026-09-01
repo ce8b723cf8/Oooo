@@ -59,30 +59,11 @@
       animation: shippingBarGlow 3s ease-in-out infinite;
       position: relative;
       z-index: 1001;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
     }
 
     @keyframes shippingBarGlow {
       0%, 100% { box-shadow: 0 0 10px rgba(229, 9, 20, 0.3); }
       50% { box-shadow: 0 0 25px rgba(229, 9, 20, 0.7); }
-    }
-
-    .icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-
-    .icon svg {
-      width: 100%;
-      height: 100%;
-      fill: currentColor;
     }
 
     header {
@@ -112,12 +93,7 @@
       letter-spacing: -0.5px;
       white-space: nowrap;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 10px;
     }
-
-    .logo .icon { width: 32px; height: 32px; }
 
     .header-actions {
       display: flex;
@@ -273,8 +249,6 @@
       border-radius: var(--radius-full);
     }
 
-    .section-title .icon { width: 26px; height: 26px; color: var(--red-main); }
-
     .offers-section, .products-section {
       padding: 40px 6%;
       border-bottom: 1px solid var(--border-color);
@@ -349,8 +323,6 @@
     }
 
     .product-image .product-icon { font-size: 70px; }
-
-    .product-image .product-icon .icon { width: 60px; height: 60px; color: var(--red-main); }
 
     .offer-info, .product-info {
       padding: 16px;
@@ -442,8 +414,6 @@
       box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
-    .video-btn .icon { width: 14px; height: 14px; }
-
     .stock-info {
       font-weight: 700;
       font-size: 12px;
@@ -455,8 +425,6 @@
       font-size: 12px;
       border-radius: 8px;
     }
-
-    .add-cart .icon, .offer-add-cart .icon { width: 14px; height: 14px; }
 
     #productDetailsPage {
       display: none;
@@ -492,17 +460,12 @@
       font-size: 14px;
       cursor: pointer;
       transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .back-btn:hover {
       background: #E50914;
       box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
     }
-
-    .back-btn .icon { width: 14px; height: 14px; }
 
     .product-details-gallery {
       width: 100%;
@@ -625,18 +588,9 @@
     }
 
     @keyframes float {
-      0% {
-        transform: translateY(0px);
-        box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff;
-      }
-      50% {
-        transform: translateY(-18px);
-        box-shadow: 25px 40px 70px rgba(0, 0, 0, 0.15), -25px -40px 70px #ffffff;
-      }
-      100% {
-        transform: translateY(0px);
-        box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff;
-      }
+      0% { transform: translateY(0px); box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff; }
+      50% { transform: translateY(-18px); box-shadow: 25px 40px 70px rgba(0, 0, 0, 0.15), -25px -40px 70px #ffffff; }
+      100% { transform: translateY(0px); box-shadow: 15px 25px 50px #bebebe, -15px -25px 50px #ffffff; }
     }
 
     .floating-bg {
@@ -1075,38 +1029,21 @@
 </head>
 <body>
 
-  <div class="free-shipping-bar">
-    <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></span>
-    شحن مجاني لأي طلب يتخطى 1300 جنيه
-  </div>
+  <div class="free-shipping-bar">شحن مجاني لأي طلب يتخطى 1300 جنيه</div>
 
   <header>
     <div class="top-header">
-      <a href="#" class="logo">
-        <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
-        Akone
-      </a>
+      <a href="#" class="logo">Akone</a>
       <div class="header-actions">
-        <button id="loginBtn" class="login-btn" onclick="openLoginModal()">
-          <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-          دخول
-        </button>
-        <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">
-          <span class="icon"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></span>
-          خروج
-        </button>
-        <button class="cart" onclick="showCart()">
-          <span class="icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></span>
-          <span id="cartCount">0</span>
-        </button>
+        <button id="loginBtn" class="login-btn" onclick="openLoginModal()">دخول</button>
+        <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">خروج</button>
+        <button class="cart" onclick="showCart()">السلة <span id="cartCount">0</span></button>
       </div>
     </div>
     <div class="search-bar">
       <div class="search-box">
         <input type="text" id="search" placeholder="ابحث عن منتج..." oninput="searchProducts()">
-        <button type="button">
-          <span class="icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
-        </button>
+        <button type="button">بحث</button>
       </div>
     </div>
   </header>
@@ -1118,10 +1055,7 @@
       <h3>إدارة أسعار الشحن</h3>
       <table class="shipping-table">
         <thead>
-          <tr>
-            <th>المحافظة</th>
-            <th>سعر الشحن (جنيه)</th>
-          </tr>
+          <tr><th>المحافظة</th><th>سعر الشحن (جنيه)</th></tr>
         </thead>
         <tbody id="shippingTableBody"></tbody>
       </table>
@@ -1224,66 +1158,42 @@
   </section>
 
   <section class="offers-section section-hidden" id="offersSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></span>
-      أحدث العروض الحصرية
-    </h2>
+    <h2 class="section-title">أحدث العروض الحصرية</h2>
     <div id="offersGrid" class="offers-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="sherwalSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg></span>
-      شروال
-    </h2>
+    <h2 class="section-title">شروال</h2>
     <div id="sherwalGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="shirtSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M16 4L14 2H10L8 4 2 7v3l4-2v14h12V8l4 2V7l-6-3z"/></svg></span>
-      قميص
-    </h2>
+    <h2 class="section-title">قميص</h2>
     <div id="shirtGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="tshirtSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M16 4L14 2H10L8 4 2 7v3l4-2v14h12V8l4 2V7l-6-3z"/></svg></span>
-      تيشيرت
-    </h2>
+    <h2 class="section-title">تيشيرت</h2>
     <div id="tshirtGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="shoesSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v18l4-3 3 3 3-3 3 3 3-3 4 3V4c0-1.1-.9-2-2-2zm-2 12h-6v-2h6v2zm2-6H6V6h12v2z"/></svg></span>
-      أحذية
-    </h2>
+    <h2 class="section-title">أحذية</h2>
     <div id="shoesGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="jeansSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg></span>
-      جينز
-    </h2>
+    <h2 class="section-title">جينز</h2>
     <div id="jeansGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="jacketSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 9H9v3H7v-3H4v-2h3V8h2v3h3v2z"/></svg></span>
-      جاكت
-    </h2>
+    <h2 class="section-title">جاكت</h2>
     <div id="jacketGrid" class="product-grid"></div>
   </section>
 
   <section id="searchResultsSection">
-    <h2 class="section-title">
-      <span class="icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
-      نتائج البحث
-    </h2>
+    <h2 class="section-title">نتائج البحث</h2>
     <div id="searchResultsGrid" class="product-grid"></div>
   </section>
 
@@ -1354,10 +1264,7 @@
   <div id="productDetailsPage">
     <div class="product-details-container">
       <div class="product-details-header">
-        <button class="back-btn" onclick="closeProductDetails()">
-          <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
-          رجوع
-        </button>
+        <button class="back-btn" onclick="closeProductDetails()">→ رجوع</button>
         <h2 style="font-size:20px;font-weight:900;">تفاصيل المنتج</h2>
       </div>
       <div class="product-details-gallery" id="productDetailsGallery"></div>
@@ -1709,7 +1616,7 @@
 
     function addToCart(name, price, size, event, id = 0, category = 'Sherwal') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
-      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === id && item.category === category);
+      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === Number(id) && item.category === category);
       if(existingItem) { existingItem.quantity++; } 
       else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category}); }
       saveCart(); 
@@ -1855,7 +1762,7 @@
       const art = document.createElement('article'); 
       art.className='product'; 
       art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category}).replace(/"/g, '&quot;')})`);
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span></span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
+      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">📦</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
 
@@ -1871,7 +1778,7 @@
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
       const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id})">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer'}).replace(/"/g, '&quot;')})`);
-      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;"><span class="icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></span></span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
+      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
     }
 
@@ -1895,7 +1802,7 @@
       dots.innerHTML = '';
       
       if (media.length === 0) {
-        gallery.innerHTML = `<span style="font-size:80px;display:flex;align-items:center;justify-content:center;height:100%;"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span></span>`;
+        gallery.innerHTML = `<span style="font-size:80px;display:flex;align-items:center;justify-content:center;height:100%;">📦</span>`;
       } else {
         media.forEach((img, index) => {
           const imgEl = document.createElement('img');
@@ -2049,21 +1956,20 @@
 
     async function loadData() {
       const sections = [
-        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection'},
-        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection'},
-        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection'},
-        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection'},
-        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection'},
-        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection'},
-        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection'}
+        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection', dataKey: 'sherwal'},
+        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection', dataKey: 'shirt'},
+        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt'},
+        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection', dataKey: 'shoes'},
+        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection', dataKey: 'jeans'},
+        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection', dataKey: 'jacket'},
+        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection', dataKey: 'offers'}
       ];
 
       const promises = sections.map(async (s) => {
         try {
           const result = await fetchFromAPI(s.action);
-          const dataKey = s.action.replace('get','').toLowerCase();
-          if (result?.[dataKey]) {
-            localStorage.setItem(s.key, JSON.stringify(result[dataKey]));
+          if (result?.[s.dataKey]) {
+            localStorage.setItem(s.key, JSON.stringify(result[s.dataKey]));
             renderGrid(s.grid, s.key);
             const sectionEl = document.getElementById(s.section);
             if (sectionEl) {
@@ -2154,12 +2060,19 @@
       const result = await callAPI('addOrder', {
         customerName: name, customerPhone: phone, customerPhone2: phone2,
         governorate: gov, city: city, address: addr,
-        notes: notes, products: productsList, totalPrice: totalPrice,
-        cartItems: cartItems
+        notes: notes, products: productsList, totalPrice: totalPrice
       });
-      document.getElementById('submitOrderBtn').disabled=false;
-      document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
       if(result.success) {
+        for(const item of cartItems) {
+          const storageKey = item.category === 'Offer' ? 'hl_offers' : `hl_products_${item.category.toLowerCase()}`;
+          const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
+          const targetItem = items.find(i => Number(i.id) === Number(item.id));
+          if(targetItem) {
+            targetItem.stock = Math.max(0, (parseInt(targetItem.stock)||0) - item.quantity);
+            localStorage.setItem(storageKey, JSON.stringify(items));
+            await callAPI('updateStockManually', {id: item.id, category: item.category, stock: targetItem.stock});
+          }
+        }
         showToast('تم إرسال الطلبية بنجاح!');
         cart = []; saveCart();
         closeOrderForm();
@@ -2167,6 +2080,8 @@
       } else {
         document.getElementById('orderError').textContent='فشل إرسال الطلبية: '+(result.error||'خطأ');
       }
+      document.getElementById('submitOrderBtn').disabled=false;
+      document.getElementById('submitOrderBtn').textContent='تأكيد الطلبية الآن';
     }
 
     function updateOrderCities() {
