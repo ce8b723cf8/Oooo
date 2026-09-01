@@ -48,7 +48,6 @@
       overflow-x: hidden;
     }
 
-    /* شريط الشحن المجاني */
     .free-shipping-bar {
       background: linear-gradient(90deg, #111215, #E50914, #111215);
       color: #FFFFFF;
@@ -60,11 +59,30 @@
       animation: shippingBarGlow 3s ease-in-out infinite;
       position: relative;
       z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     @keyframes shippingBarGlow {
       0%, 100% { box-shadow: 0 0 10px rgba(229, 9, 20, 0.3); }
       50% { box-shadow: 0 0 25px rgba(229, 9, 20, 0.7); }
+    }
+
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+      fill: currentColor;
     }
 
     header {
@@ -94,7 +112,12 @@
       letter-spacing: -0.5px;
       white-space: nowrap;
       text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
+    .logo .icon { width: 32px; height: 32px; }
 
     .header-actions {
       display: flex;
@@ -250,13 +273,27 @@
       border-radius: var(--radius-full);
     }
 
+    .section-title .icon { width: 26px; height: 26px; color: var(--red-main); }
+
     .offers-section, .products-section {
       padding: 40px 6%;
       border-bottom: 1px solid var(--border-color);
+      opacity: 1;
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .offers-section { background: var(--bg-alt); }
     .products-section { background: var(--bg-main); }
+
+    .section-hidden {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .section-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     .offers-grid, .product-grid {
       display: flex;
@@ -312,6 +349,8 @@
     }
 
     .product-image .product-icon { font-size: 70px; }
+
+    .product-image .product-icon .icon { width: 60px; height: 60px; color: var(--red-main); }
 
     .offer-info, .product-info {
       padding: 16px;
@@ -403,6 +442,8 @@
       box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
     }
 
+    .video-btn .icon { width: 14px; height: 14px; }
+
     .stock-info {
       font-weight: 700;
       font-size: 12px;
@@ -414,6 +455,8 @@
       font-size: 12px;
       border-radius: 8px;
     }
+
+    .add-cart .icon, .offer-add-cart .icon { width: 14px; height: 14px; }
 
     #productDetailsPage {
       display: none;
@@ -449,12 +492,17 @@
       font-size: 14px;
       cursor: pointer;
       transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .back-btn:hover {
       background: #E50914;
       box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
     }
+
+    .back-btn .icon { width: 14px; height: 14px; }
 
     .product-details-gallery {
       width: 100%;
@@ -649,81 +697,6 @@
     .floating-slideshow img.active {
       opacity: 0.9;
       transform: scale(1);
-    }
-
-    .zoom-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.92);
-      z-index: 99999;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 20px;
-    }
-
-    .zoom-modal.active { display: flex; }
-
-    .zoom-modal .zoom-close {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      background: #E50914;
-      color: #FFFFFF;
-      border: none;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    .zoom-modal .zoom-content {
-      width: 100%;
-      max-width: 900px;
-      max-height: 75vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .zoom-modal .zoom-content img {
-      max-width: 100%;
-      max-height: 75vh;
-      border-radius: var(--radius-md);
-      object-fit: contain;
-    }
-
-    .zoom-modal .zoom-nav {
-      display: flex;
-      gap: 16px;
-      margin-top: 24px;
-      align-items: center;
-    }
-
-    .zoom-modal .zoom-nav button {
-      background: #111215;
-      border: 1px solid #E50914;
-      color: #FFFFFF;
-      padding: 10px 24px;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: var(--transition);
-    }
-
-    .zoom-modal .zoom-nav button:hover {
-      background: #E50914;
-      box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
-    }
-
-    .zoom-modal .zoom-nav .zoom-counter {
-      color: #FFFFFF;
-      font-size: 16px;
-      font-weight: 700;
-      padding: 0 12px;
     }
 
     #orderFormPage {
@@ -1102,22 +1075,38 @@
 </head>
 <body>
 
-  <!-- شريط الشحن المجاني -->
-  <div class="free-shipping-bar">🚚 شحن مجاني لأي طلب يتخطى 1300 جنيه</div>
+  <div class="free-shipping-bar">
+    <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></span>
+    شحن مجاني لأي طلب يتخطى 1300 جنيه
+  </div>
 
   <header>
     <div class="top-header">
-      <a href="#" class="logo">Akone</a>
+      <a href="#" class="logo">
+        <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+        Akone
+      </a>
       <div class="header-actions">
-        <button id="loginBtn" class="login-btn" onclick="openLoginModal()">دخول</button>
-        <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">خروج</button>
-        <button class="cart" onclick="showCart()">🛒 <span id="cartCount">0</span></button>
+        <button id="loginBtn" class="login-btn" onclick="openLoginModal()">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+          دخول
+        </button>
+        <button id="logoutBtn" class="logout-btn hidden" onclick="handleLogout()">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></span>
+          خروج
+        </button>
+        <button class="cart" onclick="showCart()">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg></span>
+          <span id="cartCount">0</span>
+        </button>
       </div>
     </div>
     <div class="search-bar">
       <div class="search-box">
         <input type="text" id="search" placeholder="ابحث عن منتج..." oninput="searchProducts()">
-        <button type="button">🔍</button>
+        <button type="button">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
+        </button>
       </div>
     </div>
   </header>
@@ -1157,7 +1146,7 @@
         <input type="text" id="newOfferDescription" placeholder="الوصف">
         <input type="number" id="newOfferPrice" placeholder="السعر *">
         <input type="number" id="newOfferOldPrice" placeholder="السعر قبل الخصم">
-        <input type="text" id="newOfferIcon" placeholder="رمز العرض (Emoji)">
+        <input type="text" id="newOfferIcon" placeholder="أيقونة العرض">
         <input type="number" id="newOfferStock" placeholder="الكمية المتوفرة *" min="0">
         <div class="size-checkboxes">
           <label><input type="checkbox" value="S"> S</label>
@@ -1191,7 +1180,7 @@
         <input type="text" id="newProductName" placeholder="اسم المنتج *">
         <input type="number" id="newProductPrice" placeholder="السعر *">
         <input type="number" id="newProductDiscount" placeholder="نسبة الخصم %">
-        <input type="text" id="newProductIcon" placeholder="رمز المنتج (Emoji)">
+        <input type="text" id="newProductIcon" placeholder="أيقونة المنتج">
         <input type="text" id="newProductVideoUrl" placeholder="رابط فيديو">
         <select id="newProductCategory">
           <option value="Sherwal">شروال</option>
@@ -1234,43 +1223,67 @@
     </div>
   </section>
 
-  <section class="offers-section" id="offersSection">
-    <h2 class="section-title">أحدث العروض الحصرية</h2>
+  <section class="offers-section section-hidden" id="offersSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></span>
+      أحدث العروض الحصرية
+    </h2>
     <div id="offersGrid" class="offers-grid"></div>
   </section>
 
-  <section class="products-section" id="sherwalSection">
-    <h2 class="section-title">شروال</h2>
+  <section class="products-section section-hidden" id="sherwalSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg></span>
+      شروال
+    </h2>
     <div id="sherwalGrid" class="product-grid"></div>
   </section>
 
-  <section class="products-section" id="shirtSection">
-    <h2 class="section-title">قميص</h2>
+  <section class="products-section section-hidden" id="shirtSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M16 4L14 2H10L8 4 2 7v3l4-2v14h12V8l4 2V7l-6-3z"/></svg></span>
+      قميص
+    </h2>
     <div id="shirtGrid" class="product-grid"></div>
   </section>
 
-  <section class="products-section" id="tshirtSection">
-    <h2 class="section-title">تيشيرت</h2>
+  <section class="products-section section-hidden" id="tshirtSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M16 4L14 2H10L8 4 2 7v3l4-2v14h12V8l4 2V7l-6-3z"/></svg></span>
+      تيشيرت
+    </h2>
     <div id="tshirtGrid" class="product-grid"></div>
   </section>
 
-  <section class="products-section" id="shoesSection">
-    <h2 class="section-title">أحذية</h2>
+  <section class="products-section section-hidden" id="shoesSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v18l4-3 3 3 3-3 3 3 3-3 4 3V4c0-1.1-.9-2-2-2zm-2 12h-6v-2h6v2zm2-6H6V6h12v2z"/></svg></span>
+      أحذية
+    </h2>
     <div id="shoesGrid" class="product-grid"></div>
   </section>
 
-  <section class="products-section" id="jeansSection">
-    <h2 class="section-title">جينز</h2>
+  <section class="products-section section-hidden" id="jeansSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v9h6v-6h2v6h6v-9h3L12 3z"/></svg></span>
+      جينز
+    </h2>
     <div id="jeansGrid" class="product-grid"></div>
   </section>
 
-  <section class="products-section" id="jacketSection">
-    <h2 class="section-title">جاكت</h2>
+  <section class="products-section section-hidden" id="jacketSection">
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-8 9H9v3H7v-3H4v-2h3V8h2v3h3v2z"/></svg></span>
+      جاكت
+    </h2>
     <div id="jacketGrid" class="product-grid"></div>
   </section>
 
   <section id="searchResultsSection">
-    <h2 class="section-title">نتائج البحث</h2>
+    <h2 class="section-title">
+      <span class="icon"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
+      نتائج البحث
+    </h2>
     <div id="searchResultsGrid" class="product-grid"></div>
   </section>
 
@@ -1341,7 +1354,10 @@
   <div id="productDetailsPage">
     <div class="product-details-container">
       <div class="product-details-header">
-        <button class="back-btn" onclick="closeProductDetails()">→ رجوع</button>
+        <button class="back-btn" onclick="closeProductDetails()">
+          <span class="icon"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></span>
+          رجوع
+        </button>
         <h2 style="font-size:20px;font-weight:900;">تفاصيل المنتج</h2>
       </div>
       <div class="product-details-gallery" id="productDetailsGallery"></div>
@@ -1372,16 +1388,6 @@
       <div class="cart-total">الإجمالي: <span id="cartTotal">0</span> جنيه</div>
       <button class="cart-checkout-btn" onclick="checkout()">تأكيد الطلب الشراء</button>
       <button class="cart-close-btn" onclick="closeCart()">متابعة التسوق</button>
-    </div>
-  </div>
-
-  <div id="zoomModal" class="zoom-modal">
-    <button class="zoom-close" onclick="closeZoom()">✕</button>
-    <div id="zoomContent" class="zoom-content"></div>
-    <div class="zoom-nav">
-      <button onclick="prevZoom()">▶ السابق</button>
-      <span id="zoomCounter" class="zoom-counter">1 / 1</span>
-      <button onclick="nextZoom()">التالي ◀</button>
     </div>
   </div>
 
@@ -1457,12 +1463,7 @@
     function getShippingCosts() {
       const stored = localStorage.getItem(CONFIG.STORAGE_KEY_SHIPPING);
       if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          return {...getDefaultShippingCosts(), ...parsed};
-        } catch(e) {
-          return getDefaultShippingCosts();
-        }
+        try { return {...getDefaultShippingCosts(), ...JSON.parse(stored)}; } catch(e) {}
       }
       return getDefaultShippingCosts();
     }
@@ -1475,11 +1476,7 @@
     function saveShippingCosts() {
       const inputs = document.querySelectorAll('.shipping-cost-input');
       const costs = {};
-      inputs.forEach(input => {
-        const gov = input.getAttribute('data-governorate');
-        const value = parseFloat(input.value) || 0;
-        costs[gov] = value;
-      });
+      inputs.forEach(input => { costs[input.getAttribute('data-governorate')] = parseFloat(input.value) || 0; });
       localStorage.setItem(CONFIG.STORAGE_KEY_SHIPPING, JSON.stringify(costs));
       showToast('تم حفظ أسعار الشحن بنجاح');
     }
@@ -1490,8 +1487,7 @@
       tbody.innerHTML = '';
       Object.keys(EGYPT_GOVERNORATES).forEach(gov => {
         const tr = document.createElement('tr');
-        const cost = costs[gov] || 0;
-        tr.innerHTML = `<td>${gov}</td><td><input type="number" class="shipping-cost-input" data-governorate="${gov}" value="${cost}" min="0"></td>`;
+        tr.innerHTML = `<td>${gov}</td><td><input type="number" class="shipping-cost-input" data-governorate="${gov}" value="${costs[gov]||0}" min="0"></td>`;
         tbody.appendChild(tr);
       });
     }
@@ -1523,15 +1519,12 @@
       productColors.forEach((c, index) => {
         const tag = document.createElement('span');
         tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
-        tag.innerHTML = `${c} <span onclick="removeProductColor(${index})" style="cursor:pointer;font-weight:900;">✕</span>`;
+        tag.innerHTML = `${c} <span onclick="removeProductColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
         container.appendChild(tag);
       });
     }
 
-    function removeProductColor(index) {
-      productColors.splice(index, 1);
-      renderProductColorTags();
-    }
+    function removeProductColor(index) { productColors.splice(index, 1); renderProductColorTags(); }
 
     function addOfferColor() {
       const input = document.getElementById('newOfferColorInput');
@@ -1549,15 +1542,12 @@
       offerColors.forEach((c, index) => {
         const tag = document.createElement('span');
         tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
-        tag.innerHTML = `${c} <span onclick="removeOfferColor(${index})" style="cursor:pointer;font-weight:900;">✕</span>`;
+        tag.innerHTML = `${c} <span onclick="removeOfferColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
         container.appendChild(tag);
       });
     }
 
-    function removeOfferColor(index) {
-      offerColors.splice(index, 1);
-      renderOfferColorTags();
-    }
+    function removeOfferColor(index) { offerColors.splice(index, 1); renderOfferColorTags(); }
 
     function addOfferImageField() {
       const container = document.getElementById('offerImagesContainer');
@@ -1641,12 +1631,8 @@
           showToast('تم رفع الصورة بنجاح');
           input.value = '';
           await loadShowcaseImages();
-        } else {
-          showToast('فشل حفظ الصورة', 'error');
-        }
-      } else {
-        showToast('فشل رفع الصورة', 'error');
-      }
+        } else { showToast('فشل حفظ الصورة', 'error'); }
+      } else { showToast('فشل رفع الصورة', 'error'); }
       status.textContent = '';
     }
 
@@ -1654,7 +1640,6 @@
       const result = await fetchFromAPI('getShowcaseImages');
       if(result?.images) {
         showcaseImages = result.images;
-        localStorage.setItem(CONFIG.STORAGE_KEY_SHOWCASE, JSON.stringify(showcaseImages));
         renderShowcaseImages();
         renderFloatingSlideshow();
       }
@@ -1669,7 +1654,6 @@
         const imgEl = document.createElement('img');
         imgEl.src = img.url;
         preview.appendChild(imgEl);
-        
         const itemDiv = document.createElement('div');
         itemDiv.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:6px;';
         itemDiv.innerHTML = `<img src="${img.url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;"><button onclick="deleteShowcaseImage(${img.id})" style="background:#E50914;color:#FFF;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;">حذف</button>`;
@@ -1679,18 +1663,13 @@
 
     async function deleteShowcaseImage(id) {
       const result = await callAPI('deleteShowcaseImage', {id});
-      if(result.success) {
-        showToast('تم حذف الصورة');
-        await loadShowcaseImages();
-      } else {
-        showToast('فشل الحذف', 'error');
-      }
+      if(result.success) { showToast('تم حذف الصورة'); await loadShowcaseImages(); }
+      else { showToast('فشل الحذف', 'error'); }
     }
 
     function renderFloatingSlideshow() {
       const slideshow = document.getElementById('floatingSlideshow');
       slideshow.innerHTML = '';
-      
       if (showcaseImages.length === 0) {
         showcaseImages = [
           {id: 0, url: 'https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg'},
@@ -1698,7 +1677,6 @@
           {id: 0, url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800'}
         ];
       }
-      
       showcaseImages.forEach((img, index) => {
         const imgEl = document.createElement('img');
         imgEl.src = img.url;
@@ -1706,11 +1684,7 @@
         if (index === 0) imgEl.classList.add('active');
         slideshow.appendChild(imgEl);
       });
-      
-      if (floatingSlideshowInterval) {
-        clearInterval(floatingSlideshowInterval);
-      }
-      
+      if (floatingSlideshowInterval) clearInterval(floatingSlideshowInterval);
       if (showcaseImages.length > 1) {
         let currentIndex = 0;
         floatingSlideshowInterval = setInterval(() => {
@@ -1735,14 +1709,15 @@
 
     function addToCart(name, price, size, event, id = 0, category = 'Sherwal') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
-      const existingItem = cart.find(item => item.name === name && item.size === selectedSize);
-      if(existingItem) { existingItem.quantity++; } else { cart.push({name, price, size: selectedSize, quantity: 1, id: id, category: category}); }
+      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === id && item.category === category);
+      if(existingItem) { existingItem.quantity++; } 
+      else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category}); }
       saveCart(); 
       showToast(`تم إضافة ${name} إلى السلة`);
     }
 
     function addOfferToCart(name, price, event, id = 0) { 
-      addToCart(name, price, '', event, id, 'Offer'); 
+      addToCart(name, price, '', event, Number(id), 'Offer'); 
     }
 
     function removeFromCart(index) { 
@@ -1766,20 +1741,14 @@
         total += itemTotal;
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.innerHTML = `<span class="item-name">${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">✕</button>`;
+        div.innerHTML = `<span class="item-name">${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">×</button>`;
         cartItemsList.appendChild(div);
       });
       cartTotal.textContent = total;
     }
 
-    function showCart() { 
-      renderCart(); 
-      document.getElementById('cartModal').classList.add('active'); 
-    }
-
-    function closeCart() { 
-      document.getElementById('cartModal').classList.remove('active'); 
-    }
+    function showCart() { renderCart(); document.getElementById('cartModal').classList.add('active'); }
+    function closeCart() { document.getElementById('cartModal').classList.remove('active'); }
 
     function checkout() {
       if(cart.length === 0) { showToast('السلة فارغة', 'error'); return; }
@@ -1848,21 +1817,10 @@
       searchGrid.innerHTML = '';
 
       const allProducts = [];
-      const sherwalItems = JSON.parse(localStorage.getItem('hl_products_sherwal')||'[]');
-      const shirtItems = JSON.parse(localStorage.getItem('hl_products_shirt')||'[]');
-      const tshirtItems = JSON.parse(localStorage.getItem('hl_products_tshirt')||'[]');
-      const shoesItems = JSON.parse(localStorage.getItem('hl_products_shoes')||'[]');
-      const jeansItems = JSON.parse(localStorage.getItem('hl_products_jeans')||'[]');
-      const jacketItems = JSON.parse(localStorage.getItem('hl_products_jacket')||'[]');
-      const offerItems = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]');
-
-      sherwalItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Sherwal'}));
-      shirtItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Shirt'}));
-      tshirtItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Tshirt'}));
-      shoesItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Shoes'}));
-      jeansItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Jeans'}));
-      jacketItems.forEach(item => allProducts.push({...item, type: 'product', category: 'Jacket'}));
-      offerItems.forEach(item => allProducts.push({...item, type: 'offer', category: 'Offer', name: item.title}));
+      ['hl_products_sherwal','hl_products_shirt','hl_products_tshirt','hl_products_shoes','hl_products_jeans','hl_products_jacket'].forEach(key => {
+        JSON.parse(localStorage.getItem(key)||'[]').forEach(item => allProducts.push({...item, category: key.replace('hl_products_','')}));
+      });
+      JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]').forEach(item => allProducts.push({...item, category: 'Offer', name: item.title}));
 
       const filtered = allProducts.filter(item => 
         (item.name || '').toLowerCase().includes(query) ||
@@ -1874,14 +1832,10 @@
         searchGrid.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;width:100%;">لا توجد نتائج مطابقة</p>';
       } else {
         filtered.forEach(item => {
-          if (item.type === 'offer') {
-            renderOfferCard(item, searchGrid);
-          } else {
-            renderProductCard(item, searchGrid);
-          }
+          if (item.category === 'Offer') renderOfferCard(item, searchGrid);
+          else renderProductCard(item, searchGrid);
         });
       }
-
       window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
@@ -1895,13 +1849,13 @@
       const category = item.category || 'Sherwal';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
-      const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">🎬 فيديو شرحي</a>` : '';
-      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
+      const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">فيديو شرحي</a>` : '';
+      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
       const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       const art = document.createElement('article'); 
       art.className='product'; 
-      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category: category}).replace(/"/g, '&quot;')})`);
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">${item.icon||'📦'}</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
+      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category}).replace(/"/g, '&quot;')})`);
+      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span></span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
 
@@ -1914,10 +1868,10 @@
       const stock = offer.stock || 0;
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
-      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
+      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
       const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id})">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer'}).replace(/"/g, '&quot;')})`);
-      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">${offer.icon||'🎉'}</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
+      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;"><span class="icon"><svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg></span></span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
     }
 
@@ -1941,7 +1895,7 @@
       dots.innerHTML = '';
       
       if (media.length === 0) {
-        gallery.innerHTML = `<span style="font-size:80px;display:flex;align-items:center;justify-content:center;height:100%;">${item.icon || '📦'}</span>`;
+        gallery.innerHTML = `<span style="font-size:80px;display:flex;align-items:center;justify-content:center;height:100%;"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span></span>`;
       } else {
         media.forEach((img, index) => {
           const imgEl = document.createElement('img');
@@ -1949,7 +1903,6 @@
           imgEl.alt = item.name || item.title || '';
           if (index === 0) imgEl.classList.add('active');
           gallery.appendChild(imgEl);
-          
           const dot = document.createElement('span');
           dot.className = 'dot' + (index === 0 ? ' active' : '');
           dot.setAttribute('onclick', `setGalleryImage(${index})`);
@@ -1966,8 +1919,8 @@
       const category = item.category || 'Sherwal';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
-      const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">🎬 فيديو شرحي</a>` : '';
-      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? '⚠️ متبقي ' + stock + ' فقط' : '✅ متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">❌ غير متوفر</div>';
+      const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">فيديو شرحي</a>` : '';
+      const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
       const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
 
       info.innerHTML = `
@@ -1999,12 +1952,8 @@
       const dots = document.querySelectorAll('#galleryDots .dot');
       if (images.length === 0) return;
       currentGalleryIndex = index;
-      images.forEach((img, i) => {
-        img.classList.toggle('active', i === index);
-      });
-      dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-      });
+      images.forEach((img, i) => img.classList.toggle('active', i === index));
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
     }
 
     function nextGalleryImage() {
@@ -2047,7 +1996,7 @@
     async function updateStockManually(id, category) {
       const stock = document.getElementById(`stock_${id}_${category}`).value;
       const result = await callAPI('updateStockManually', {id, category, stock: parseInt(stock)||0});
-      if(result.success) { showToast('تم تحديث المخزون!'); await loadData(); renderAdminStock(); }
+      if(result.success) { showToast('تم تحديث المخزون!'); await loadData(); }
       else showToast('فشل: '+(result.error||'خطأ'), 'error');
     }
 
@@ -2066,18 +2015,11 @@
         showToast('تم إضافة العرض بنجاح!'); 
         offerColors = [];
         renderOfferColorTags();
-        document.getElementById('newOfferTitle').value=''; 
-        document.getElementById('newOfferDescription').value=''; 
-        document.getElementById('newOfferPrice').value=''; 
-        document.getElementById('newOfferOldPrice').value=''; 
-        document.getElementById('newOfferIcon').value=''; 
-        document.getElementById('newOfferStock').value=''; 
+        ['newOfferTitle','newOfferDescription','newOfferPrice','newOfferOldPrice','newOfferIcon','newOfferStock'].forEach(id => document.getElementById(id).value='');
         document.getElementById('offerImagesContainer').innerHTML=''; 
         document.getElementById('offerImagesPreview').innerHTML=''; 
         await loadData(); 
-      } else {
-        showToast('فشل إضافة العرض: '+(result.error||'خطأ'), 'error');
-      }
+      } else { showToast('فشل إضافة العرض: '+(result.error||'خطأ'), 'error'); }
     }
 
     async function addProduct() {
@@ -2097,45 +2039,42 @@
         showToast('تم إضافة المنتج بنجاح!'); 
         productColors = [];
         renderProductColorTags();
-        document.getElementById('newProductName').value='';
-        document.getElementById('newProductPrice').value='';
-        document.getElementById('newProductDiscount').value='';
-        document.getElementById('newProductIcon').value='';
-        document.getElementById('newProductVideoUrl').value='';
-        document.getElementById('newProductStock').value='';
+        ['newProductName','newProductPrice','newProductDiscount','newProductIcon','newProductVideoUrl','newProductStock'].forEach(id => document.getElementById(id).value='');
         document.getElementById('productImagesContainer').innerHTML='';
         document.getElementById('uploadedImagesPreview').innerHTML='';
         document.getElementById('uploadStatus').textContent='';
         await loadData(); 
-      }
-      else showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error');
+      } else { showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error'); }
     }
 
     async function loadData() {
-      try {
-        const s = await fetchFromAPI('getSherwal');
-        if(s?.sherwal) localStorage.setItem('hl_products_sherwal', JSON.stringify(s.sherwal));
-        const sh = await fetchFromAPI('getShirt');
-        if(sh?.shirt) localStorage.setItem('hl_products_shirt', JSON.stringify(sh.shirt));
-        const t = await fetchFromAPI('getTshirt');
-        if(t?.tshirt) localStorage.setItem('hl_products_tshirt', JSON.stringify(t.tshirt));
-        const shoes = await fetchFromAPI('getShoes');
-        if(shoes?.shoes) localStorage.setItem('hl_products_shoes', JSON.stringify(shoes.shoes));
-        const jeans = await fetchFromAPI('getJeans');
-        if(jeans?.jeans) localStorage.setItem('hl_products_jeans', JSON.stringify(jeans.jeans));
-        const jacket = await fetchFromAPI('getJacket');
-        if(jacket?.jacket) localStorage.setItem('hl_products_jacket', JSON.stringify(jacket.jacket));
-        const o = await fetchFromAPI('getOffers');
-        if(o?.offers) localStorage.setItem(CONFIG.STORAGE_KEY_OFFERS, JSON.stringify(o.offers));
-      } catch(e){ console.error(e); }
-      
-      renderGrid('sherwalGrid', 'hl_products_sherwal');
-      renderGrid('shirtGrid', 'hl_products_shirt');
-      renderGrid('tshirtGrid', 'hl_products_tshirt');
-      renderGrid('shoesGrid', 'hl_products_shoes');
-      renderGrid('jeansGrid', 'hl_products_jeans');
-      renderGrid('jacketGrid', 'hl_products_jacket');
-      renderOffers();
+      const sections = [
+        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection'},
+        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection'},
+        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection'},
+        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection'},
+        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection'},
+        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection'},
+        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection'}
+      ];
+
+      const promises = sections.map(async (s) => {
+        try {
+          const result = await fetchFromAPI(s.action);
+          const dataKey = s.action.replace('get','').toLowerCase();
+          if (result?.[dataKey]) {
+            localStorage.setItem(s.key, JSON.stringify(result[dataKey]));
+            renderGrid(s.grid, s.key);
+            const sectionEl = document.getElementById(s.section);
+            if (sectionEl) {
+              sectionEl.classList.remove('section-hidden');
+              sectionEl.classList.add('section-visible');
+            }
+          }
+        } catch(e) { console.error(e); }
+      });
+
+      await Promise.all(promises);
       renderAdminStock();
       renderShippingTable();
       await loadShowcaseImages();
@@ -2205,9 +2144,9 @@
       const shippingCost = getShippingCost(gov, cartTotal);
       const totalPrice = cartTotal + shippingCost;
       const cartItems = cart.map(item => ({
-        id: item.id || 0,
+        id: Number(item.id) || 0,
         name: item.name,
-        quantity: item.quantity,
+        quantity: Number(item.quantity) || 1,
         category: item.category || 'Sherwal'
       }));
       document.getElementById('submitOrderBtn').disabled=true;
@@ -2249,8 +2188,7 @@
       const gov = document.getElementById('orderGovernorate').value;
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const shipping = getShippingCost(gov, cartTotal);
-      const total = cartTotal + shipping;
-      document.getElementById('orderTotalPrice').textContent = total;
+      document.getElementById('orderTotalPrice').textContent = cartTotal + shipping;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -2263,7 +2201,6 @@
       });
 
       loadData();
-
       updateCartCount();
 
       if(localStorage.getItem('hl_admin')==='true') {
