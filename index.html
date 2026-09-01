@@ -58,6 +58,8 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       animation: shippingBarGlow 3s ease-in-out infinite;
+      position: relative;
+      z-index: 1001;
     }
 
     @keyframes shippingBarGlow {
@@ -556,6 +558,8 @@
       padding: 80px 20px;
       background: #e0e0e0;
       overflow: hidden;
+      position: relative;
+      z-index: 1;
     }
 
     .floating-card {
@@ -563,7 +567,7 @@
       width: 500px;
       height: 600px;
       border-radius: 18px;
-      z-index: 1111;
+      z-index: 1;
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -1070,6 +1074,8 @@
       background: var(--black-main);
       color: #FFFFFF;
       text-align: center;
+      position: relative;
+      z-index: 1;
     }
 
     footer h2 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
@@ -1404,6 +1410,7 @@
     let currentProductDetails = null;
     let currentGalleryIndex = 0;
     let showcaseImages = [];
+    let floatingSlideshowInterval = null;
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -1683,6 +1690,7 @@
     function renderFloatingSlideshow() {
       const slideshow = document.getElementById('floatingSlideshow');
       slideshow.innerHTML = '';
+      
       if (showcaseImages.length === 0) {
         showcaseImages = [
           {id: 0, url: 'https://i.pinimg.com/736x/07/17/18/071718c4f4970294f3b63f154ecae1db.jpg'},
@@ -1690,6 +1698,7 @@
           {id: 0, url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800'}
         ];
       }
+      
       showcaseImages.forEach((img, index) => {
         const imgEl = document.createElement('img');
         imgEl.src = img.url;
@@ -1697,6 +1706,21 @@
         if (index === 0) imgEl.classList.add('active');
         slideshow.appendChild(imgEl);
       });
+      
+      if (floatingSlideshowInterval) {
+        clearInterval(floatingSlideshowInterval);
+      }
+      
+      if (showcaseImages.length > 1) {
+        let currentIndex = 0;
+        floatingSlideshowInterval = setInterval(() => {
+          const images = slideshow.querySelectorAll('img');
+          if (images.length === 0) return;
+          images[currentIndex].classList.remove('active');
+          currentIndex = (currentIndex + 1) % images.length;
+          images[currentIndex].classList.add('active');
+        }, 4000);
+      }
     }
 
     function saveCart() { 
