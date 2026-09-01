@@ -2070,6 +2070,7 @@
           if(targetItem) {
             targetItem.stock = Math.max(0, (parseInt(targetItem.stock)||0) - item.quantity);
             localStorage.setItem(storageKey, JSON.stringify(items));
+            await callAPI('updateStockManually', {id: item.id, category: item.category, stock: targetItem.stock});
           }
         }
         showToast('تم إرسال الطلبية بنجاح!');
