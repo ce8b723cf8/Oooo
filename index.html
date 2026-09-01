@@ -1300,7 +1300,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbyjGxBNmCOgR2M7IAYZbQhc_r6bgFiOD1q4j6iVfUjxBoJwlHGN9jKveuatiVmrJ4uv/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbzAW-FuMHzUAYS0UVUBlY6qSdSr7IRDawWN2Eb2TzVpbUPIdJC9znBB05_t9NebZyal/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1614,17 +1614,17 @@
       document.getElementById('cartCount').textContent = count; 
     }
 
-    function addToCart(name, price, size, event, id = 0, category = 'Sherwal') {
+    function addToCart(name, price, size, event, id = 0, category = 'Sherwal', image = '') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
       const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === Number(id) && item.category === category);
       if(existingItem) { existingItem.quantity++; } 
-      else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category}); }
+      else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category, image: image}); }
       saveCart(); 
       showToast(`تم إضافة ${name} إلى السلة`);
     }
 
-    function addOfferToCart(name, price, event, id = 0) { 
-      addToCart(name, price, '', event, Number(id), 'Offer'); 
+    function addOfferToCart(name, price, event, id = 0, image = '') { 
+      addToCart(name, price, '', event, Number(id), 'Offer', image); 
     }
 
     function removeFromCart(index) { 
@@ -1758,7 +1758,7 @@
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,${item.id},'${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       const art = document.createElement('article'); 
       art.className='product'; 
       art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category}).replace(/"/g, '&quot;')})`);
@@ -1776,7 +1776,7 @@
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id})">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, ${offer.id}, '${mainImage}')">أضف إلى السلة</button>` : `<button class="offer-add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
       div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer'}).replace(/"/g, '&quot;')})`);
       div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
@@ -1824,11 +1824,12 @@
       const colors = item.colors || [];
       const stock = item.stock || 0;
       const category = item.category || 'Sherwal';
+      const mainImage = media.length > 0 ? media[0] : '';
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event,${item.id},'${category}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event,${item.id},'${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" style="opacity:0.5;cursor:not-allowed;" disabled>غير متوفر</button>`;
 
       info.innerHTML = `
         <h2>${item.name || item.title || ''}</h2>
@@ -2059,7 +2060,8 @@
         id: Number(item.id) || 0,
         name: item.name,
         quantity: Number(item.quantity) || 1,
-        category: item.category || 'Sherwal'
+        category: item.category || 'Sherwal',
+        image: item.image || ''
       }));
 
       document.getElementById('submitOrderBtn').disabled = true;
