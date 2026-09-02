@@ -838,6 +838,59 @@
       text-decoration: underline;
     }
 
+    .transfer-info {
+      background: #FFF5F5;
+      border: 1px solid #E50914;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .transfer-info .transfer-label {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--black-main);
+    }
+
+    .transfer-info .transfer-number {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--red-main);
+      direction: ltr;
+    }
+
+    .transfer-info .copy-btn {
+      background: #111215;
+      border: 1px solid #E50914;
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: var(--transition);
+    }
+
+    .transfer-info .copy-btn:hover {
+      background: #E50914;
+    }
+
+    .file-upload-group {
+      margin-top: 12px;
+    }
+
+    .file-upload-group input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px dashed #E50914;
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      cursor: pointer;
+    }
+
     .modal-overlay, .cart-modal {
       display: none;
       position: fixed;
@@ -1313,6 +1366,19 @@
         <div class="total-price">الإجمالي: <span id="orderTotalPrice">0</span> جنيه</div>
       </div>
       <div id="orderError" style="color:var(--red-main);margin-bottom:15px;font-weight:bold;text-align:center;"></div>
+      
+      <div class="transfer-info">
+        <div class="transfer-label">📱 رقم التحويل InstaPay / Vodafone Cash:</div>
+        <div class="transfer-number">
+          <span id="transferPhoneNumber">0112 221 9424</span>
+          <button class="copy-btn" onclick="copyTransferNumber()">نسخ الرقم</button>
+        </div>
+        <div class="file-upload-group">
+          <label style="font-weight:700;margin-bottom:6px;display:block;">📎 إرفاق صورة التحويل:</label>
+          <input type="file" id="transferImageInput" accept="image/*" onchange="previewTransferImage(this)">
+        </div>
+      </div>
+
       <div class="form-group">
         <label>الاسم الكامل <span class="required">*</span></label>
         <input type="text" id="orderCustomerName" placeholder="أدخل اسمك الكامل">
@@ -1429,7 +1495,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbzjuckyB0ssvHbFc3z4kXryFwCzxMTJUMPzB2vos9AGmAPSCYll94wWAma-K9oJyel9/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbynH5zgUnxN77YkjwxMn6HbClG9O5HUbUHJhUobgxLcCu0-jsdK25XqZO70AV2u6eNq/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1455,6 +1521,7 @@
     let selectedColor = '';
     let showcaseImages = [];
     let floatingSlideshowInterval = null;
+    let transferImageUrl = '';
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -1556,6 +1623,42 @@
       localStorage.removeItem('hl_offers');
       showToast('تم مسح البيانات القديمة');
       location.reload();
+    }
+
+    function copyTransferNumber() {
+      const number = document.getElementById('transferPhoneNumber').textContent;
+      navigator.clipboard.writeText(number).then(() => {
+        showToast('تم نسخ الرقم بنجاح');
+      }).catch(() => {
+        showToast('فشل النسخ', 'error');
+      });
+    }
+
+    function previewTransferImage(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        showToast('جاري رفع صورة التحويل...');
+        
+        fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(result => {
+          if (result.success && result.data) {
+            transferImageUrl = result.data.url;
+            showToast('تم رفع صورة التحويل بنجاح');
+          } else {
+            showToast('فشل رفع الصورة', 'error');
+          }
+        })
+        .catch(err => {
+          showToast('فشل رفع الصورة: ' + err.message, 'error');
+        });
+      }
     }
 
     function addProductColor() {
@@ -1856,6 +1959,8 @@
         orderCartItems.appendChild(div);
       });
       orderTotalPrice.textContent = total;
+      transferImageUrl = '';
+      document.getElementById('transferImageInput').value = '';
     }
 
     function closeOrderForm() { 
@@ -2395,6 +2500,7 @@
         notes: notes,
         products: productsList,
         totalPrice: totalPrice,
+        transferImageUrl: transferImageUrl,
         cartItems: cart.map(item => ({
           id: String(item.id),
           category: item.category,
