@@ -489,8 +489,9 @@
 
     .main-gallery img {
       width: 100%;
-      height: 350px;
+      height: 400px;
       object-fit: cover;
+      object-position: top center;
       border-radius: 8px;
     }
 
@@ -538,12 +539,6 @@
 
     .current-price {
       color: #d00000;
-    }
-
-    .live-viewers {
-      font-size: 13px;
-      color: #444;
-      margin-bottom: 20px;
     }
 
     .option-section {
@@ -1384,10 +1379,6 @@
           <span id="detailPrice" class="current-price"></span>
         </div>
 
-        <div class="live-viewers">
-          👁 <span id="viewersNum">85</span> شخص يشاهدون هذا المنتج الآن
-        </div>
-
         <div class="option-section">
           <label class="option-label">COLOR: <span id="selectedColorName">BLACK</span></label>
           <div id="detailColors" class="color-options-grid"></div>
@@ -1407,7 +1398,7 @@
         </div>
 
         <div class="action-buttons-group">
-          <button class="btn-add-to-cart" onclick="addCurrentToCart()">ADD TO CART</button>
+          <button class="btn-add-to-cart" onclick="addCurrentToCart(event)">ADD TO CART</button>
           <button class="btn-buy-now" onclick="buyNowCurrent()">BUY IT NOW</button>
         </div>
       </div>
@@ -2014,8 +2005,6 @@
       document.getElementById('detailPrice').textContent = `LE ${price}.00`;
       document.getElementById('detailOldPrice').textContent = oldPrice > 0 ? `LE ${oldPrice}.00` : '';
       
-      document.getElementById('viewersNum').textContent = Math.floor(Math.random() * 40) + 60;
-      
       const gallery = document.getElementById('productDetailsGallery');
       const thumbs = document.getElementById('galleryThumbnails');
       const media = item.media && item.media.length ? item.media : ['https://via.placeholder.com/300'];
@@ -2069,26 +2058,34 @@
       document.getElementById('selectedColorName').textContent = color;
     }
 
-    function addCurrentToCart() {
+    function addCurrentToCart(e) {
+      if (e) e.stopPropagation();
       if (!currentProduct) return;
 
-      const selectedSize = document.getElementById('selectedSizeName').textContent;
-      const selectedColor = document.getElementById('selectedColorName').textContent;
-      const mainImg = currentProduct.media && currentProduct.media.length ? currentProduct.media[0] : (currentProduct.icon || '');
+      const selectedSize = document.getElementById('selectedSizeName')?.textContent || '';
+      const selectedColor = document.getElementById('selectedColorName')?.textContent || '';
+      const mainImg = (currentProduct.media && currentProduct.media.length) ? currentProduct.media[0] : (currentProduct.icon || '');
       const title = currentProduct.name || currentProduct.title;
+      const variant = `${selectedSize} | ${selectedColor}`.trim();
 
-      for (let i = 0; i < selectedQty; i++) {
-        addToCart(
-          title,
-          currentProduct.price,
-          `${selectedSize} | ${selectedColor}`,
-          null,
-          currentProduct.id,
-          currentProduct.category || 'General',
-          mainImg
-        );
+      const existingItemIndex = cart.findIndex(item => item.id === currentProduct.id && item.variant === variant);
+
+      if (existingItemIndex > -1) {
+        cart[existingItemIndex].quantity += selectedQty;
+      } else {
+        cart.push({
+          id: currentProduct.id,
+          name: title,
+          price: currentProduct.price,
+          variant: variant,
+          quantity: selectedQty,
+          category: currentProduct.category || 'General',
+          image: mainImg
+        });
       }
 
+      saveCart();
+      updateCartCount();
       showToast('تمت إضافة المنتج إلى السلة بنجاح');
     }
 
