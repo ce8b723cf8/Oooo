@@ -1945,6 +1945,10 @@
     }
 
     function renderProductCard(item, grid) {
+      const card = document.createElement('article');
+      card.className = 'product';
+      card.style.cursor = 'pointer';
+
       const price = item.price || 0;
       const disc = item.discount || 0;
       const final = disc > 0 ? Math.round(price - (price * disc / 100)) : price;
@@ -1954,27 +1958,43 @@
       const stock = getLocalStock(category, item);
       const itemId = String(item.id || '0');
       const itemName = String(item.name || '').replace(/'/g, "\\'");
-      
-      const art = document.createElement('article'); 
-      art.className = 'product';
-      const detailsObj = {...item, category, stock, id: itemId, price: final};
-      art.setAttribute('onclick', `openProductDetails(${JSON.stringify(detailsObj).replace(/"/g, '&quot;')})`);
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${itemName}"></div>` : `<span class="product-icon">📦</span>`}</div><div class="product-info"><h3>${itemName}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div></div>`;
-      grid.appendChild(art);
+
+      card.onclick = function() {
+        openProductDetails({...item, category, stock, id: itemId, price: final});
+      };
+
+      card.innerHTML = `
+        <div class="product-image">
+          ${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${itemName}"></div>` : `<span class="product-icon">📦</span>`}
+        </div>
+        <div class="product-info">
+          <h3>${itemName}</h3>
+          <div class="price">
+            ${final} جنيه 
+            ${disc > 0 ? `<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>` : ''}
+          </div>
+          ${stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>'}
+        </div>
+      `;
+
+      grid.appendChild(card);
     }
 
     function renderOfferCard(offer, grid) {
       const div = document.createElement('div');
       div.className = 'offer-card';
+      div.style.cursor = 'pointer';
       const category = 'Offer';
       const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
       const stock = getLocalStock(category, offer);
       const offerId = String(offer.id || '0');
       const offerTitle = String(offer.title || '').replace(/'/g, "\\'");
       
-      const detailsObj = {...offer, name: offerTitle, category, stock, id: offerId};
-      div.setAttribute('onclick', `openProductDetails(${JSON.stringify(detailsObj).replace(/"/g, '&quot;')})`);
-      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offerTitle}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offerTitle}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div></div>`;
+      div.onclick = function() {
+        openProductDetails({...offer, name: offerTitle, category, stock, id: offerId});
+      };
+      
+      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offerTitle}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offerTitle}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>'}</div>`;
       grid.appendChild(div);
     }
 
@@ -2051,18 +2071,30 @@
 
     function addCurrentToCart() {
       if (!currentProduct) return;
-      const price = currentProduct.price || 0;
-      const name = currentProduct.name || currentProduct.title || '';
-      const id = String(currentProduct.id || '0');
-      const category = String(currentProduct.category || 'Sherwal').trim();
-      const image = currentProduct.media && currentProduct.media.length ? currentProduct.media[0] : '';
-      
-      addToCart(name, price, selectedSize, null, id, category, image);
-      closeProductDetails();
+
+      const selectedSize = document.getElementById('selectedSizeName').textContent;
+      const selectedColor = document.getElementById('selectedColorName').textContent;
+      const mainImg = currentProduct.media && currentProduct.media.length ? currentProduct.media[0] : (currentProduct.icon || '');
+      const title = currentProduct.name || currentProduct.title;
+
+      for (let i = 0; i < selectedQty; i++) {
+        addToCart(
+          title,
+          currentProduct.price,
+          `${selectedSize} | ${selectedColor}`,
+          null,
+          currentProduct.id,
+          currentProduct.category || 'General',
+          mainImg
+        );
+      }
+
+      showToast('تمت إضافة المنتج إلى السلة بنجاح');
     }
 
     function buyNowCurrent() {
       addCurrentToCart();
+      closeProductDetails();
       showCart();
     }
 
