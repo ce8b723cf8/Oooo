@@ -1327,7 +1327,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxuSVlEXbJAeHGE3lmaRIxcEbqxEiOMZOXgBgytTqewJKcfG3bHSbqhHdB4GWcHCCEw/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbynH5zgUnxN77YkjwxMn6HbClG9O5HUbUHJhUobgxLcCu0-jsdK25XqZO70AV2u6eNq/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1837,39 +1837,51 @@
     }
 
     function renderProductCard(item, grid) {
-      const price = item.price||0, disc = item.discount||0, final = disc>0 ? Math.round(price-(price*disc/100)) : price;
+      const price = item.price || 0;
+      const disc = item.discount || 0;
+      const final = disc > 0 ? Math.round(price - (price * disc / 100)) : price;
       const media = item.media || [];
       const mainImage = media.length > 0 ? media[0] : '';
       const sizes = item.sizes || [];
       const colors = item.colors || [];
-      const category = item.category || 'Sherwal';
+      const category = String(item.category || 'Sherwal').trim();
       const stock = getLocalStock(category, item);
+      const itemId = String(item.id || '0');
+      const itemName = String(item.name || '').replace(/'/g, "\\'");
+      
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn" onclick="event.stopPropagation()">فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${item.name}',${final},null,event,'${item.id}','${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="event.stopPropagation();addToCart('${itemName}',${final},null,event,'${itemId}','${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" disabled>غير متوفر</button>`;
+      
       const art = document.createElement('article'); 
-      art.className='product'; 
-      art.setAttribute('onclick', `openProductDetails(${JSON.stringify({...item, category, stock}).replace(/"/g, '&quot;')})`);
-      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${item.name}"></div>`:`<span class="product-icon">📦</span>`}</div><div class="product-info"><h3>${item.name}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
+      art.className = 'product';
+      const detailsObj = {...item, category, stock, id: itemId};
+      art.setAttribute('onclick', `openProductDetails(${JSON.stringify(detailsObj).replace(/"/g, '&quot;')})`);
+      art.innerHTML = `<div class="product-image">${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${itemName}"></div>` : `<span class="product-icon">📦</span>`}</div><div class="product-info"><h3>${itemName}</h3><div class="price">${final} جنيه ${disc>0?`<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>`:''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${videoBtnHtml}${addBtnHtml}</div>`;
       grid.appendChild(art);
     }
 
     function renderOfferCard(offer, grid) {
       const div = document.createElement('div');
       div.className = 'offer-card';
-      offer.category = 'Offer';
+      const category = 'Offer';
       const mainImage = offer.media && offer.media.length > 0 ? offer.media[0] : '';
       const sizes = offer.sizes || [];
       const colors = offer.colors || [];
-      const stock = getLocalStock('Offer', offer);
+      const stock = getLocalStock(category, offer);
+      const offerId = String(offer.id || '0');
+      const offerTitle = String(offer.title || '').replace(/'/g, "\\'");
+      
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="event.stopPropagation();selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="event.stopPropagation();selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offer.title}', ${offer.price}, event, '${offer.id}', '${mainImage}')">أضف إلى السلة</button>` : `<button class="offer-add-cart" disabled>غير متوفر</button>`;
-      div.setAttribute('onclick', `openProductDetails(${JSON.stringify({...offer, name: offer.title, category: 'Offer', stock}).replace(/"/g, '&quot;')})`);
-      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offer.title}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offer.title}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
+      const addBtnHtml = stock > 0 ? `<button class="offer-add-cart" onclick="event.stopPropagation();addOfferToCart('${offerTitle}', ${offer.price}, event, '${offerId}', '${mainImage}')">أضف إلى السلة</button>` : `<button class="offer-add-cart" disabled>غير متوفر</button>`;
+      
+      const detailsObj = {...offer, name: offerTitle, category, stock, id: offerId};
+      div.setAttribute('onclick', `openProductDetails(${JSON.stringify(detailsObj).replace(/"/g, '&quot;')})`);
+      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offerTitle}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offerTitle}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}${colorsHtml}${stockHtml}${addBtnHtml}</div>`;
       grid.appendChild(div);
     }
 
@@ -1913,17 +1925,20 @@
       const final = discount > 0 ? Math.round(price - (price * discount / 100)) : price;
       const sizes = item.sizes || [];
       const colors = item.colors || [];
-      const category = item.category || 'Sherwal';
+      const category = String(item.category || 'Sherwal').trim();
       const stock = getLocalStock(category, item);
       const mainImage = media.length > 0 ? media[0] : '';
+      const itemId = String(item.id || '0');
+      const itemName = String(item.name || item.title || '').replace(/'/g, "\\'");
+      
       const sizeButtons = sizes.map(s => `<button class="size-btn" onclick="selectSize(this)">${s}</button>`).join('');
       const colorsHtml = colors.length ? `<div class="colors-display">${colors.map(c => `<button class="color-btn" onclick="selectColor(this)">${c}</button>`).join('')}</div>` : '';
       const videoBtnHtml = item.videoUrl ? `<a href="${item.videoUrl}" target="_blank" class="video-btn">فيديو شرحي</a>` : '';
       const stockHtml = stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>';
-      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${item.name || item.title}',${final},null,event,'${item.id}','${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" disabled>غير متوفر</button>`;
+      const addBtnHtml = stock > 0 ? `<button class="add-cart" onclick="addToCart('${itemName}',${final},null,event,'${itemId}','${category}','${mainImage}')">أضف إلى السلة</button>` : `<button class="add-cart" disabled>غير متوفر</button>`;
 
       info.innerHTML = `
-        <h2>${item.name || item.title || ''}</h2>
+        <h2>${itemName}</h2>
         ${item.description ? `<p style="color:var(--text-muted);margin-bottom:12px;">${item.description}</p>` : ''}
         <div class="price">${final} جنيه ${discount > 0 ? `<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:14px;">(-${discount}%)</span>` : ''}</div>
         ${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}
@@ -2040,7 +2055,7 @@
         ['newOfferTitle','newOfferDescription','newOfferPrice','newOfferOldPrice','newOfferIcon','newOfferStock'].forEach(id => document.getElementById(id).value='');
         document.getElementById('offerImagesContainer').innerHTML=''; 
         document.getElementById('offerImagesPreview').innerHTML=''; 
-        await loadData(); 
+        await loadAllData(); 
       } else { 
         showToast('فشل إضافة العرض: '+(result.error||'خطأ'), 'error'); 
       }
@@ -2080,53 +2095,85 @@
         document.getElementById('productImagesContainer').innerHTML='';
         document.getElementById('uploadedImagesPreview').innerHTML='';
         document.getElementById('uploadStatus').textContent='';
-        await loadData(); 
+        await loadAllData(); 
       } else { 
         showToast('فشل إضافة المنتج: '+(result.error||'خطأ'), 'error'); 
       }
       hideLoading('addProductBtn', 'إضافة المنتج');
     }
 
-    async function loadData() {
+    async function loadAllData() {
       const sections = [
-        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection', dataKey: 'sherwal'},
-        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection', dataKey: 'shirt'},
-        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt'},
-        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection', dataKey: 'shoes'},
-        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection', dataKey: 'jeans'},
-        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection', dataKey: 'jacket'},
-        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection', dataKey: 'offers'}
+        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection', dataKey: 'sherwal', category: 'Sherwal'},
+        {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection', dataKey: 'shirt', category: 'Shirt'},
+        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt', category: 'Tshirt'},
+        {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection', dataKey: 'shoes', category: 'Shoes'},
+        {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection', dataKey: 'jeans', category: 'Jeans'},
+        {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection', dataKey: 'jacket', category: 'Jacket'},
+        {action: 'getOffers', key: 'hl_offers', grid: 'offersGrid', section: 'offersSection', dataKey: 'offers', category: 'Offer'}
       ];
 
       const promises = sections.map(async (s) => {
         try {
           const result = await fetchFromAPI(s.action);
-          if (result?.[s.dataKey]) {
-            localStorage.setItem(s.key, JSON.stringify(result[s.dataKey]));
-            renderGrid(s.grid, s.key);
+          if (result?.[s.dataKey] && Array.isArray(result[s.dataKey])) {
+            const items = result[s.dataKey].map(item => ({
+              ...item,
+              category: s.category,
+              id: String(item.id)
+            }));
+            localStorage.setItem(s.key, JSON.stringify(items));
+            renderGrid(s.grid, s.key, s.category);
             const sectionEl = document.getElementById(s.section);
             if (sectionEl) {
               sectionEl.classList.remove('section-hidden');
               sectionEl.classList.add('section-visible');
             }
           }
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+          console.error('Error loading ' + s.action + ':', e); 
+        }
       });
 
       await Promise.all(promises);
-      renderAdminStock();
+      
+      if (localStorage.getItem('hl_admin') === 'true') {
+        renderAdminStock();
+      }
       renderShippingTable();
-      await loadShowcaseImages();
+      initScrollReveal();
     }
 
-    function renderGrid(gridId, storageKey) {
+    function renderGrid(gridId, storageKey, category = null) {
       const grid = document.getElementById(gridId);
       const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
-      grid.innerHTML = items.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>' : '';
+      
+      grid.innerHTML = items.length===0 
+        ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>' 
+        : '';
+        
       items.forEach(item => {
-        const isOffer = storageKey === 'hl_offers';
-        if (isOffer) renderOfferCard(item, grid);
-        else renderProductCard(item, grid);
+        const cat = category || item.category || 'Sherwal';
+        if (cat === 'Offer') {
+          renderOfferCard(item, grid);
+        } else {
+          renderProductCard({...item, category: cat}, grid);
+        }
+      });
+    }
+
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('section-hidden');
+            entry.target.classList.add('section-visible');
+          }
+        });
+      }, { threshold: 0.05 });
+
+      document.querySelectorAll('.offers-section, .products-section, [id$="Grid"]').forEach(sec => {
+        observer.observe(sec);
       });
     }
 
@@ -2143,6 +2190,27 @@
     function openLoginModal(){ document.getElementById('loginModal').classList.add('active'); }
     function closeLoginModal(){ document.getElementById('loginModal').classList.remove('active'); }
 
+    function checkAuth() {
+      if(localStorage.getItem('hl_admin')==='true') {
+        document.getElementById('loginBtn').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
+        document.getElementById('adminPanel').style.display='block';
+        renderShippingTable();
+      }
+    }
+
+    function populateGovernorates() {
+      const gov = document.getElementById('orderGovernorate');
+      if(gov) {
+        Object.keys(EGYPT_GOVERNORATES).forEach(g => { 
+          const opt=document.createElement('option'); 
+          opt.value=g; 
+          opt.textContent=g; 
+          gov.appendChild(opt); 
+        });
+      }
+    }
+
     async function handleLogin() {
       const phone = document.getElementById('loginPhone').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
@@ -2150,10 +2218,7 @@
       if(phone === String(CONFIG.ADMIN_PHONE) && password === String(CONFIG.ADMIN_PASSWORD)) {
         showToast('مرحباً Admin!');
         localStorage.setItem('hl_admin','true');
-        document.getElementById('loginBtn').classList.add('hidden');
-        document.getElementById('logoutBtn').classList.remove('hidden');
-        document.getElementById('adminPanel').style.display='block';
-        renderShippingTable();
+        checkAuth();
         closeLoginModal();
         return;
       }
@@ -2242,7 +2307,7 @@
         saveCart();
         closeOrderForm();
         
-        await loadData();
+        await loadAllData();
       } else {
         document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
       }
@@ -2273,24 +2338,24 @@
       document.getElementById('orderTotalPrice').textContent = cartTotal + shipping;
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-      const gov = document.getElementById('orderGovernorate');
-      if(gov) Object.keys(EGYPT_GOVERNORATES).forEach(g => { 
-        const opt=document.createElement('option'); 
-        opt.value=g; 
-        opt.textContent=g; 
-        gov.appendChild(opt); 
-      });
-
-      loadData();
+    document.addEventListener('DOMContentLoaded', async () => {
       updateCartCount();
+      populateGovernorates();
+      checkAuth();
 
-      if(localStorage.getItem('hl_admin')==='true') {
-        document.getElementById('loginBtn').classList.add('hidden');
-        document.getElementById('logoutBtn').classList.remove('hidden');
-        document.getElementById('adminPanel').style.display='block';
-        renderShippingTable();
+      try {
+        await loadShowcaseImages();
+      } catch (err) {
+        console.error('خطأ في تحميل صور المعرض:', err);
       }
+
+      try {
+        await loadAllData();
+      } catch (err) {
+        console.error('خطأ في تحميل البيانات:', err);
+      }
+
+      initScrollReveal();
     });
   </script>
 </body>
