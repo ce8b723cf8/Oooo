@@ -1322,7 +1322,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbwZC2MYZYHSC_IGEIz7tQvp2vJRL4aMwKrJ9cKYCXRrK2_ynu9uil4gh6Ed0P4pgfE/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxuSVlEXbJAeHGE3lmaRIxcEbqxEiOMZOXgBgytTqewJKcfG3bHSbqhHdB4GWcHCCEw/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -2085,7 +2085,7 @@
       const promises = sections.map(async (s) => {
         try {
           const result = await fetchFromAPI(s.action);
-          if (result?.[s.dataKey]) {
+          if (result?.[s.dataKey] && Array.isArray(result[s.dataKey]) && result[s.dataKey].length > 0) {
             localStorage.setItem(s.key, JSON.stringify(result[s.dataKey]));
             renderGrid(s.grid, s.key);
             const sectionEl = document.getElementById(s.section);
@@ -2093,8 +2093,18 @@
               sectionEl.classList.remove('section-hidden');
               sectionEl.classList.add('section-visible');
             }
+          } else {
+            const grid = document.getElementById(s.grid);
+            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>';
+            const sectionEl = document.getElementById(s.section);
+            if (sectionEl) {
+              sectionEl.classList.remove('section-hidden');
+              sectionEl.classList.add('section-visible');
+            }
           }
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+          console.error('Error loading ' + s.action + ':', e); 
+        }
       });
 
       await Promise.all(promises);
