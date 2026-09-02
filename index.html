@@ -1300,7 +1300,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbzBitCLWzLZYhW3InPNQ-4y4X6JrYk25XbwhKFUvQBZf-B94w12ykJhs5ZCPdL2Foh_/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbxuSVlEXbJAeHGE3lmaRIxcEbqxEiOMZOXgBgytTqewJKcfG3bHSbqhHdB4GWcHCCEw/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -2110,14 +2110,7 @@
         saveCart();
         closeOrderForm();
         
-        renderGrid('sherwalGrid', 'hl_products_sherwal');
-        renderGrid('shirtGrid', 'hl_products_shirt');
-        renderGrid('tshirtGrid', 'hl_products_tshirt');
-        renderGrid('shoesGrid', 'hl_products_shoes');
-        renderGrid('jeansGrid', 'hl_products_jeans');
-        renderGrid('jacketGrid', 'hl_products_jacket');
-        renderOffers();
-        renderAdminStock();
+        await loadData();
       } else {
         document.getElementById('orderError').textContent = 'فشل إرسال الطلبية: ' + (result.error || 'خطأ');
       }
