@@ -1616,7 +1616,7 @@
 
     function addToCart(name, price, size, event, id = 0, category = 'Sherwal', image = '') {
       const selectedSize = size || (event?.target?.parentElement?.querySelector('.size-btn.selected')?.textContent) || '';
-      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && item.id === Number(id) && item.category === category);
+      const existingItem = cart.find(item => item.name === name && item.size === selectedSize && Number(item.id) === Number(id) && item.category === category);
       if(existingItem) { existingItem.quantity++; } 
       else { cart.push({name, price, size: selectedSize, quantity: 1, id: Number(id), category: category, image: image}); }
       saveCart(); 
@@ -1749,7 +1749,7 @@
     function getLocalStock(category, item) {
       const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
       const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
-      const localItem = items.find(i => i.name === item.name || i.title === item.name || i.title === item.title);
+      const localItem = items.find(i => Number(i.id) === Number(item.id));
       return localItem ? (parseInt(localItem.stock) || 0) : (parseInt(item.stock) || 0);
     }
 
@@ -1903,7 +1903,7 @@
         const items = JSON.parse(localStorage.getItem(section.key)||'[]');
         html += `<h4 style="color:#FFF;margin:15px 0 10px;">${section.title}</h4>`;
         items.forEach(item => {
-          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
+          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} (ID: ${item.id}) - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually(${item.id}, '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
         });
       });
       container.innerHTML = html || '<p style="text-align:center;color:rgba(255,255,255,0.5);">لا توجد منتجات</p>';
@@ -2083,18 +2083,22 @@
         address: addr,
         notes: notes,
         products: productsList,
-        totalPrice: totalPrice
+        totalPrice: totalPrice,
+        cartItems: cart.map(item => ({
+          id: Number(item.id),
+          category: item.category,
+          quantity: item.quantity
+        }))
       });
 
       if(result.success) {
         showToast('تم إرسال الطلبية بنجاح!');
         
-        // خصم المخزون محلياً - البحث بالاسم الصحيح
         cart.forEach(item => {
           const category = item.category || 'Sherwal';
           const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
           const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
-          const targetItem = items.find(i => i.name === item.name || i.title === item.name);
+          const targetItem = items.find(i => Number(i.id) === Number(item.id));
           
           if(targetItem) {
             targetItem.stock = Math.max(0, (parseInt(targetItem.stock) || 0) - item.quantity);
@@ -2106,7 +2110,6 @@
         saveCart();
         closeOrderForm();
         
-        // إعادة عرض فقط - بدون loadData
         renderGrid('sherwalGrid', 'hl_products_sherwal');
         renderGrid('shirtGrid', 'hl_products_shirt');
         renderGrid('tshirtGrid', 'hl_products_tshirt');
