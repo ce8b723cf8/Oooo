@@ -475,12 +475,17 @@
 
     .product-details-gallery {
       width: 100%;
-      height: 450px;
+      height: 500px;
       position: relative;
       overflow: hidden;
       border-radius: var(--radius-lg);
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       background: #F8F9FA;
+      cursor: grab;
+    }
+
+    .product-details-gallery:active {
+      cursor: grabbing;
     }
 
     .product-details-gallery img {
@@ -498,18 +503,45 @@
       opacity: 1;
     }
 
+    .gallery-thumbnails {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .gallery-thumbnails img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .gallery-thumbnails img.active {
+      border-color: var(--red-main);
+      box-shadow: 0 0 10px rgba(229, 9, 20, 0.5);
+    }
+
+    .gallery-thumbnails img:hover {
+      border-color: var(--red-main);
+    }
+
     .gallery-nav {
       display: flex;
       gap: 12px;
       justify-content: center;
-      margin-top: 12px;
+      margin-top: 8px;
     }
 
     .gallery-nav button {
       background: #111215;
       border: 1px solid #E50914;
       color: #FFFFFF;
-      padding: 8px 18px;
+      padding: 10px 24px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
@@ -528,8 +560,8 @@
     }
 
     .gallery-dots .dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #ccc;
       cursor: pointer;
@@ -538,25 +570,38 @@
 
     .gallery-dots .dot.active {
       background: var(--red-main);
-      width: 24px;
-      border-radius: 5px;
+      width: 20px;
+      border-radius: 4px;
     }
 
     .product-details-info {
-      padding: 20px;
+      padding: 24px;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
     }
 
     .product-details-info h2 {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 900;
       margin-bottom: 12px;
+      color: var(--black-main);
     }
 
     .product-details-info .price {
-      font-size: 24px;
+      font-size: 28px;
+    }
+
+    .product-details-info .stock-info {
+      font-size: 14px;
+    }
+
+    .product-details-info .add-cart {
+      padding: 14px 24px;
+      font-size: 15px;
+      border-radius: 10px;
+      width: 100%;
+      justify-content: center;
     }
 
     #searchResultsSection {
@@ -1295,6 +1340,7 @@
         <h2 style="font-size:20px;font-weight:900;">تفاصيل المنتج</h2>
       </div>
       <div class="product-details-gallery" id="productDetailsGallery"></div>
+      <div class="gallery-thumbnails" id="galleryThumbnails"></div>
       <div class="gallery-dots" id="galleryDots"></div>
       <div class="gallery-nav">
         <button onclick="prevGalleryImage()">▶ السابق</button>
@@ -1351,6 +1397,8 @@
     let currentGalleryIndex = 0;
     let showcaseImages = [];
     let floatingSlideshowInterval = null;
+    let touchStartX = 0;
+    let touchEndX = 0;
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -1897,11 +1945,13 @@
       currentGalleryIndex = 0;
       const page = document.getElementById('productDetailsPage');
       const gallery = document.getElementById('productDetailsGallery');
+      const thumbnails = document.getElementById('galleryThumbnails');
       const info = document.getElementById('productDetailsInfo');
       const dots = document.getElementById('galleryDots');
       
       const media = item.media || [];
       gallery.innerHTML = '';
+      thumbnails.innerHTML = '';
       dots.innerHTML = '';
       
       if (media.length === 0) {
@@ -1913,9 +1963,17 @@
           imgEl.alt = item.name || item.title || '';
           if (index === 0) imgEl.classList.add('active');
           gallery.appendChild(imgEl);
+          
+          const thumb = document.createElement('img');
+          thumb.src = img;
+          thumb.alt = `صورة ${index + 1}`;
+          if (index === 0) thumb.classList.add('active');
+          thumb.onclick = () => setGalleryImage(index);
+          thumbnails.appendChild(thumb);
+          
           const dot = document.createElement('span');
           dot.className = 'dot' + (index === 0 ? ' active' : '');
-          dot.setAttribute('onclick', `setGalleryImage(${index})`);
+          dot.onclick = () => setGalleryImage(index);
           dots.appendChild(dot);
         });
       }
@@ -1939,7 +1997,7 @@
 
       info.innerHTML = `
         <h2>${itemName}</h2>
-        ${item.description ? `<p style="color:var(--text-muted);margin-bottom:12px;">${item.description}</p>` : ''}
+        ${item.description ? `<p style="color:var(--text-muted);margin-bottom:16px;font-size:15px;">${item.description}</p>` : ''}
         <div class="price">${final} جنيه ${discount > 0 ? `<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:14px;">(-${discount}%)</span>` : ''}</div>
         ${sizes.length ? `<div class="sizes">${sizeButtons}</div>` : ''}
         ${colorsHtml}
@@ -1951,6 +2009,7 @@
       page.classList.add('active');
       page.style.display = 'block';
       document.body.style.overflow = 'hidden';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function closeProductDetails() {
@@ -1963,10 +2022,14 @@
     function setGalleryImage(index) {
       const gallery = document.getElementById('productDetailsGallery');
       const images = gallery.querySelectorAll('img');
+      const thumbnails = document.querySelectorAll('#galleryThumbnails img');
       const dots = document.querySelectorAll('#galleryDots .dot');
+      
       if (images.length === 0) return;
+      
       currentGalleryIndex = index;
       images.forEach((img, i) => img.classList.toggle('active', i === index));
+      thumbnails.forEach((thumb, i) => thumb.classList.toggle('active', i === index));
       dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
     }
 
@@ -1984,6 +2047,30 @@
       if (images.length === 0) return;
       currentGalleryIndex = (currentGalleryIndex - 1 + images.length) % images.length;
       setGalleryImage(currentGalleryIndex);
+    }
+
+    function initGallerySwipe() {
+      const gallery = document.getElementById('productDetailsGallery');
+      
+      gallery.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      }, {passive: true});
+      
+      gallery.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      }, {passive: true});
+    }
+
+    function handleSwipe() {
+      const swipeDistance = touchEndX - touchStartX;
+      if (Math.abs(swipeDistance) > 50) {
+        if (swipeDistance < 0) {
+          nextGalleryImage();
+        } else {
+          prevGalleryImage();
+        }
+      }
     }
 
     function renderAdminStock() {
@@ -2342,6 +2429,7 @@
       updateCartCount();
       populateGovernorates();
       checkAuth();
+      initGallerySwipe();
 
       try {
         await loadShowcaseImages();
