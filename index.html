@@ -1177,6 +1177,11 @@
       <h3>إدارة المخزون</h3>
       <div id="adminStockList" class="admin-list"></div>
     </div>
+
+    <div class="admin-section">
+      <h3>أدوات الصيانة</h3>
+      <button type="button" class="add-image-btn" onclick="clearOldData()">مسح البيانات القديمة</button>
+    </div>
   </section>
 
   <section class="offers-section section-hidden" id="offersSection">
@@ -1435,6 +1440,17 @@
     function validatePhone(phone) {
       const regex = /^01[0125][0-9]{8}$/;
       return regex.test(phone);
+    }
+
+    function clearOldData() {
+      localStorage.removeItem('hl_products_shirt');
+      localStorage.removeItem('hl_products_tshirt');
+      localStorage.removeItem('hl_products_shoes');
+      localStorage.removeItem('hl_products_jeans');
+      localStorage.removeItem('hl_products_jacket');
+      localStorage.removeItem('hl_offers');
+      showToast('تم مسح البيانات القديمة');
+      location.reload();
     }
 
     function addProductColor() {
@@ -2085,7 +2101,7 @@
       const promises = sections.map(async (s) => {
         try {
           const result = await fetchFromAPI(s.action);
-          if (result?.[s.dataKey] && Array.isArray(result[s.dataKey]) && result[s.dataKey].length > 0) {
+          if (result?.[s.dataKey]) {
             localStorage.setItem(s.key, JSON.stringify(result[s.dataKey]));
             renderGrid(s.grid, s.key);
             const sectionEl = document.getElementById(s.section);
@@ -2093,18 +2109,8 @@
               sectionEl.classList.remove('section-hidden');
               sectionEl.classList.add('section-visible');
             }
-          } else {
-            const grid = document.getElementById(s.grid);
-            grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>';
-            const sectionEl = document.getElementById(s.section);
-            if (sectionEl) {
-              sectionEl.classList.remove('section-hidden');
-              sectionEl.classList.add('section-visible');
-            }
           }
-        } catch(e) { 
-          console.error('Error loading ' + s.action + ':', e); 
-        }
+        } catch(e) { console.error(e); }
       });
 
       await Promise.all(promises);
@@ -2117,7 +2123,11 @@
       const grid = document.getElementById(gridId);
       const items = JSON.parse(localStorage.getItem(storageKey)||'[]');
       grid.innerHTML = items.length===0 ? '<p style="text-align:center;color:var(--text-muted);padding:20px 0;width:100%;">لا توجد منتجات</p>' : '';
-      items.forEach(item => renderProductCard(item, grid));
+      items.forEach(item => {
+        const isOffer = storageKey === 'hl_offers';
+        if (isOffer) renderOfferCard(item, grid);
+        else renderProductCard(item, grid);
+      });
     }
 
     function selectSize(btn) {
