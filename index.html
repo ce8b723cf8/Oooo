@@ -489,9 +489,10 @@
 
     .main-gallery img {
       width: 100%;
-      height: 400px;
+      height: auto;
+      aspect-ratio: 3 / 4;
       object-fit: cover;
-      object-position: top center;
+      object-position: center;
       border-radius: 8px;
     }
 
@@ -1112,7 +1113,7 @@
       .order-form-container .form-row { grid-template-columns: 1fr; gap: 0; }
       .offer-image, .product-image { height: 200px; }
       .offer-card, .product { min-width: 180px; max-width: 200px; }
-      .main-gallery img { height: 250px; }
+      .main-gallery img { height: auto; }
       .floating-card { width: 340px; height: 440px; }
       .floating-bg { width: 324px; height: 424px; }
       .free-shipping-bar { font-size: 13px; }
@@ -1209,12 +1210,12 @@
         <input type="text" id="newProductIcon" placeholder="أيقونة المنتج">
         <input type="text" id="newProductVideoUrl" placeholder="رابط فيديو">
         <select id="newProductCategory">
-          <option value="Sherwal">شروال</option>
-          <option value="Shirt">قميص</option>
-          <option value="Tshirt">تيشيرت</option>
-          <option value="Shoes">أحذية</option>
-          <option value="Jeans">جينز</option>
-          <option value="Jacket">جاكت</option>
+          <option value="Sweatpants">Sweatpants</option>
+          <option value="Shirt">Shirt</option>
+          <option value="T-shirt">T-shirt</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Jeans">Jeans</option>
+          <option value="Jacket">Jacket</option>
         </select>
         <input type="number" id="newProductStock" placeholder="الكمية المتوفرة *" min="0">
         <div class="size-checkboxes">
@@ -1259,33 +1260,33 @@
     <div id="offersGrid" class="offers-grid"></div>
   </section>
 
-  <section class="products-section section-hidden" id="sherwalSection">
-    <h2 class="section-title">شروال</h2>
-    <div id="sherwalGrid" class="product-grid"></div>
+  <section class="products-section section-hidden" id="sweatpantsSection">
+    <h2 class="section-title">Sweatpants</h2>
+    <div id="sweatpantsGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="shirtSection">
-    <h2 class="section-title">قميص</h2>
+    <h2 class="section-title">Shirt</h2>
     <div id="shirtGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="tshirtSection">
-    <h2 class="section-title">تيشيرت</h2>
+    <h2 class="section-title">T-shirt</h2>
     <div id="tshirtGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="shoesSection">
-    <h2 class="section-title">أحذية</h2>
+    <h2 class="section-title">Shoes</h2>
     <div id="shoesGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="jeansSection">
-    <h2 class="section-title">جينز</h2>
+    <h2 class="section-title">Jeans</h2>
     <div id="jeansGrid" class="product-grid"></div>
   </section>
 
   <section class="products-section section-hidden" id="jacketSection">
-    <h2 class="section-title">جاكت</h2>
+    <h2 class="section-title">Jacket</h2>
     <div id="jacketGrid" class="product-grid"></div>
   </section>
 
@@ -1546,6 +1547,7 @@
     }
 
     function clearOldData() {
+      localStorage.removeItem('hl_products_sweatpants');
       localStorage.removeItem('hl_products_shirt');
       localStorage.removeItem('hl_products_tshirt');
       localStorage.removeItem('hl_products_shoes');
@@ -1792,7 +1794,7 @@
       document.getElementById('cartCount').textContent = count; 
     }
 
-    function addToCart(name, price, size, event, id = 0, category = 'Sherwal', image = '') {
+    function addToCart(name, price, size, event, id = 0, category = 'General', image = '') {
       const selectedSize = size || selectedSize || '';
       const existingItem = cart.find(item => item.name === name && item.size === selectedSize && String(item.id) === String(id) && item.category === category);
       if(existingItem) { existingItem.quantity += selectedQty; } 
@@ -1889,7 +1891,7 @@
 
     function searchProducts() {
       const query = document.getElementById('search').value.trim().toLowerCase();
-      const allSections = ['offersSection', 'sherwalSection', 'shirtSection', 'tshirtSection', 'shoesSection', 'jeansSection', 'jacketSection'];
+      const allSections = ['offersSection', 'sweatpantsSection', 'shirtSection', 'tshirtSection', 'shoesSection', 'jeansSection', 'jacketSection'];
       const searchSection = document.getElementById('searchResultsSection');
       const searchGrid = document.getElementById('searchResultsGrid');
       
@@ -1906,7 +1908,7 @@
       searchGrid.innerHTML = '';
 
       const allProducts = [];
-      ['hl_products_sherwal','hl_products_shirt','hl_products_tshirt','hl_products_shoes','hl_products_jeans','hl_products_jacket'].forEach(key => {
+      ['hl_products_sweatpants','hl_products_shirt','hl_products_tshirt','hl_products_shoes','hl_products_jeans','hl_products_jacket'].forEach(key => {
         JSON.parse(localStorage.getItem(key)||'[]').forEach(item => allProducts.push({...item, category: key.replace('hl_products_','')}));
       });
       JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_OFFERS)||'[]').forEach(item => allProducts.push({...item, category: 'Offer', name: item.title}));
@@ -1945,7 +1947,7 @@
       const final = disc > 0 ? Math.round(price - (price * disc / 100)) : price;
       const media = item.media || [];
       const mainImage = media.length > 0 ? media[0] : '';
-      const category = String(item.category || 'Sherwal').trim();
+      const category = String(item.category || 'General').trim();
       const stock = getLocalStock(category, item);
       const itemId = String(item.id || '0');
       const itemName = String(item.name || '').replace(/'/g, "\\'");
@@ -2104,12 +2106,12 @@
     function renderAdminStock() {
       const container = document.getElementById('adminStockList');
       const sections = [
-        {key: 'hl_products_sherwal', category: 'Sherwal', title: 'شروال'},
-        {key: 'hl_products_shirt', category: 'Shirt', title: 'قميص'},
-        {key: 'hl_products_tshirt', category: 'Tshirt', title: 'تيشيرت'},
-        {key: 'hl_products_shoes', category: 'Shoes', title: 'أحذية'},
-        {key: 'hl_products_jeans', category: 'Jeans', title: 'جينز'},
-        {key: 'hl_products_jacket', category: 'Jacket', title: 'جاكت'}
+        {key: 'hl_products_sweatpants', category: 'Sweatpants', title: 'Sweatpants'},
+        {key: 'hl_products_shirt', category: 'Shirt', title: 'Shirt'},
+        {key: 'hl_products_tshirt', category: 'T-shirt', title: 'T-shirt'},
+        {key: 'hl_products_shoes', category: 'Shoes', title: 'Shoes'},
+        {key: 'hl_products_jeans', category: 'Jeans', title: 'Jeans'},
+        {key: 'hl_products_jacket', category: 'Jacket', title: 'Jacket'}
       ];
       let html = '';
       sections.forEach(section => {
@@ -2200,7 +2202,14 @@
         return;
       }
       
-      const actionMap = {Sherwal:'addSherwal', Shirt:'addShirt', Tshirt:'addTshirt', Shoes:'addShoes', Jeans:'addJeans', Jacket:'addJacket'};
+      const actionMap = {
+        Sweatpants:'addSweatpants',
+        Shirt:'addShirt',
+        'T-shirt':'addTshirt',
+        Shoes:'addShoes',
+        Jeans:'addJeans',
+        Jacket:'addJacket'
+      };
       const result = await callAPI(actionMap[category], {name, price, discount, icon, sizes, colors: productColors, media: uploadedImages, videoUrl, stock});
       if(result.success) { 
         showToast('تم إضافة المنتج بنجاح!'); 
@@ -2219,9 +2228,9 @@
 
     async function loadAllData() {
       const sections = [
-        {action: 'getSherwal', key: 'hl_products_sherwal', grid: 'sherwalGrid', section: 'sherwalSection', dataKey: 'sherwal', category: 'Sherwal'},
+        {action: 'getSweatpants', key: 'hl_products_sweatpants', grid: 'sweatpantsGrid', section: 'sweatpantsSection', dataKey: 'sweatpants', category: 'Sweatpants'},
         {action: 'getShirt', key: 'hl_products_shirt', grid: 'shirtGrid', section: 'shirtSection', dataKey: 'shirt', category: 'Shirt'},
-        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt', category: 'Tshirt'},
+        {action: 'getTshirt', key: 'hl_products_tshirt', grid: 'tshirtGrid', section: 'tshirtSection', dataKey: 'tshirt', category: 'T-shirt'},
         {action: 'getShoes', key: 'hl_products_shoes', grid: 'shoesGrid', section: 'shoesSection', dataKey: 'shoes', category: 'Shoes'},
         {action: 'getJeans', key: 'hl_products_jeans', grid: 'jeansGrid', section: 'jeansSection', dataKey: 'jeans', category: 'Jeans'},
         {action: 'getJacket', key: 'hl_products_jacket', grid: 'jacketGrid', section: 'jacketSection', dataKey: 'jacket', category: 'Jacket'},
@@ -2268,7 +2277,7 @@
         : '';
         
       items.forEach(item => {
-        const cat = category || item.category || 'Sherwal';
+        const cat = category || item.category || 'General';
         if (cat === 'Offer') {
           renderOfferCard(item, grid);
         } else {
@@ -2397,7 +2406,7 @@
         showToast('تم إرسال الطلبية بنجاح!');
         
         cart.forEach(item => {
-          const category = item.category || 'Sherwal';
+          const category = item.category || 'General';
           const storageKey = category === 'Offer' ? 'hl_offers' : `hl_products_${category.toLowerCase()}`;
           const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
           const targetItem = items.find(i => String(i.id) === String(item.id));
