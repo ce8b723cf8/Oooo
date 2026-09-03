@@ -46,17 +46,6 @@
       background: var(--bg-main);
       color: var(--text-main);
       overflow-x: hidden;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-    }
-
-    input, textarea, select {
-      -webkit-user-select: text;
-      -moz-user-select: text;
-      -ms-user-select: text;
-      user-select: text;
     }
 
     .free-shipping-bar {
@@ -171,7 +160,7 @@
 
     .login-btn.hidden, .logout-btn.hidden { display: none !important; }
 
-    .close-modal, .cart-close-btn, .admin-controls button, .add-image-btn, .payment-method-btn {
+    .close-modal, .cart-close-btn, .admin-controls button, .add-image-btn {
       position: relative;
       border: 1px solid #E50914;
       cursor: pointer;
@@ -190,37 +179,10 @@
       overflow: hidden;
     }
 
-    .close-modal:hover, .cart-close-btn:hover, .admin-controls button:hover, .add-image-btn:hover, .payment-method-btn:hover {
+    .close-modal:hover, .cart-close-btn:hover, .admin-controls button:hover, .add-image-btn:hover {
       background: #E50914;
       color: #FFFFFF;
       box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
-    }
-
-    .payment-method-btn {
-      padding: 14px 24px;
-      border: 2px solid #111215;
-      border-radius: 12px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 15px;
-      transition: var(--transition);
-      background: #FFFFFF;
-      color: #111215;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .payment-method-btn.selected {
-      background: #111215;
-      color: #FFFFFF;
-      border-color: #E50914;
-      box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
-    }
-
-    .payment-method-btn:hover {
-      border-color: #E50914;
-      transform: translateY(-2px);
     }
 
     .search-bar { padding: 0 6% 16px; }
@@ -350,11 +312,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      -moz-user-drag: none;
-      -ms-user-drag: none;
-      user-drag: none;
     }
 
     .product-image .main-media {
@@ -475,6 +432,7 @@
       pointer-events: none;
     }
 
+    /* صفحة تفاصيل المنتج */
     .product-details-page {
       position: fixed;
       top: 0;
@@ -536,11 +494,6 @@
       object-fit: cover;
       object-position: center;
       border-radius: 8px;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      -moz-user-drag: none;
-      -ms-user-drag: none;
-      user-drag: none;
     }
 
     .thumbs-list {
@@ -557,11 +510,6 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       cursor: pointer;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      -moz-user-drag: none;
-      -ms-user-drag: none;
-      user-drag: none;
     }
 
     .thumbs-list img.active {
@@ -775,11 +723,6 @@
       opacity: 0;
       transform: scale(1.06);
       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      -moz-user-drag: none;
-      -ms-user-drag: none;
-      user-drag: none;
     }
 
     .floating-slideshow img.active {
@@ -1181,11 +1124,6 @@
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid #E50914;
-      pointer-events: none;
-      -webkit-user-drag: none;
-      -moz-user-drag: none;
-      -ms-user-drag: none;
-      user-drag: none;
     }
 
     footer {
@@ -1221,25 +1159,6 @@
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    .custom-toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #111215;
-      color: #FFFFFF;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 15px;
-      z-index: 999999;
-      box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
-      animation: toastIn 0.3s ease-out;
-      text-align: center;
-      direction: rtl;
-      border: 1px solid #E50914;
-    }
-
     @media (max-width: 768px) {
       .top-header { padding: 12px 4%; }
       .logo { font-size: 26px; }
@@ -1251,7 +1170,6 @@
       .floating-card { width: 340px; height: 440px; }
       .floating-bg { width: 324px; height: 424px; }
       .free-shipping-bar { font-size: 13px; }
-      .payment-method-btn { padding: 10px 16px; font-size: 13px; }
     }
   </style>
 </head>
@@ -1449,29 +1367,15 @@
       </div>
       <div id="orderError" style="color:var(--red-main);margin-bottom:15px;font-weight:bold;text-align:center;"></div>
       
-      <div class="form-group">
-        <label>طريقة الدفع <span class="required">*</span></label>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button type="button" id="codPaymentBtn" class="payment-method-btn selected" onclick="selectPaymentMethod('cod')">
-            💵 الدفع نقدي عند الاستلام
-          </button>
-          <button type="button" id="onlinePaymentBtn" class="payment-method-btn" onclick="selectPaymentMethod('online')">
-            📱 الدفع الآن
-          </button>
+      <div class="transfer-info">
+        <div class="transfer-label">📱 رقم التحويل InstaPay / Vodafone Cash:</div>
+        <div class="transfer-number">
+          <span id="transferPhoneNumber">0112 221 9424</span>
+          <button class="copy-btn" onclick="copyTransferNumber()">نسخ الرقم</button>
         </div>
-      </div>
-
-      <div id="transferSection" style="display:none;">
-        <div class="transfer-info">
-          <div class="transfer-label">📱 رقم التحويل InstaPay / Vodafone Cash:</div>
-          <div class="transfer-number">
-            <span id="transferPhoneNumber">0112 221 9424</span>
-            <button class="copy-btn" onclick="copyTransferNumber()">نسخ الرقم</button>
-          </div>
-          <div class="file-upload-group">
-            <label style="font-weight:700;margin-bottom:6px;display:block;">📎 إرفاق صورة التحويل:</label>
-            <input type="file" id="transferImageInput" accept="image/*" onchange="previewTransferImage(this)">
-          </div>
+        <div class="file-upload-group">
+          <label style="font-weight:700;margin-bottom:6px;display:block;">📎 إرفاق صورة التحويل:</label>
+          <input type="file" id="transferImageInput" accept="image/*" onchange="previewTransferImage(this)">
         </div>
       </div>
 
@@ -1521,6 +1425,7 @@
     <p>© 2026 جميع الحقوق محفوظة | المتجر الرسمي</p>
   </footer>
 
+  <!-- صفحة تفاصيل المنتج -->
   <div id="productDetailsPage" class="product-details-page">
     <div class="details-header">
       <button class="back-btn" onclick="closeProductDetails()">✕</button>
@@ -1590,7 +1495,7 @@
 
   <script>
     const CONFIG = { 
-      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbynH5zgUnxN77YkjwxMn6HbClG9O5HUbUHJhUobgxLcCu0-jsdK25XqZO70AV2u6eNq/exec',
+      API_BASE_URL: 'https://script.google.com/macros/s/AKfycbx5JwSOZg5C4xagsiPmZdRlmkTwcmAVTrvzgFklEQX5Xn42ra0dGWFLghPMCOV6q57A/exec',
       STORE_NAME: 'Akone', 
       ADMIN_PHONE: '111', 
       ADMIN_PASSWORD: '111', 
@@ -1604,8 +1509,6 @@
     };
 
     const IMGBB_API_KEY = 'b61d706bd2139f3676166a0e6be68f0a';
-    const MAX_LOGIN_ATTEMPTS = 3;
-    const LOCK_TIME_MS = 5 * 60 * 1000;
 
     let cart = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY_CART) || '[]');
     let uploadedImages = [];
@@ -1619,9 +1522,6 @@
     let showcaseImages = [];
     let floatingSlideshowInterval = null;
     let transferImageUrl = '';
-    let selectedPaymentMethod = 'cod';
-    let lastOrderTime = 0;
-    const ORDER_COOLDOWN_MS = 10000;
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -1692,16 +1592,9 @@
       tbody.innerHTML = '';
       Object.keys(EGYPT_GOVERNORATES).forEach(gov => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${escapeHtml(gov)}</td><td><input type="number" class="shipping-cost-input" data-governorate="${escapeHtml(gov)}" value="${costs[gov]||0}" min="0"></td>`;
+        tr.innerHTML = `<td>${gov}</td><td><input type="number" class="shipping-cost-input" data-governorate="${gov}" value="${costs[gov]||0}" min="0"></td>`;
         tbody.appendChild(tr);
       });
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
     }
 
     function showToast(message, type = 'success') {
@@ -1744,11 +1637,6 @@
     function previewTransferImage(input) {
       if (input.files && input.files[0]) {
         const file = input.files[0];
-        if (file.size > 5 * 1024 * 1024) {
-          showToast('حجم الصورة يجب أن لا يتجاوز 5 ميجابايت', 'error');
-          input.value = '';
-          return;
-        }
         const formData = new FormData();
         formData.append('image', file);
         
@@ -1789,7 +1677,7 @@
       productColors.forEach((c, index) => {
         const tag = document.createElement('span');
         tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
-        tag.innerHTML = `${escapeHtml(c)} <span onclick="removeProductColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
+        tag.innerHTML = `${c} <span onclick="removeProductColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
         container.appendChild(tag);
       });
     }
@@ -1812,7 +1700,7 @@
       offerColors.forEach((c, index) => {
         const tag = document.createElement('span');
         tag.style.cssText = 'background:#E50914;color:#FFF;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;';
-        tag.innerHTML = `${escapeHtml(c)} <span onclick="removeOfferColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
+        tag.innerHTML = `${c} <span onclick="removeOfferColor(${index})" style="cursor:pointer;font-weight:900;">×</span>`;
         container.appendChild(tag);
       });
     }
@@ -1839,7 +1727,7 @@
       const btn = document.getElementById(btnId);
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = `<span class="loading-spinner"></span> ${escapeHtml(text)}`;
+        btn.innerHTML = `<span class="loading-spinner"></span> ${text}`;
       }
     }
 
@@ -1860,10 +1748,6 @@
       status.textContent = 'جاري رفع الصور...';
       for(let input of inputs) {
         if(input.files[0]) {
-          if (input.files[0].size > 5 * 1024 * 1024) {
-            status.textContent = 'حجم الصورة يجب أن لا يتجاوز 5 ميجابايت';
-            return false;
-          }
           const formData = new FormData();
           formData.append('image', input.files[0]);
           try {
@@ -1896,10 +1780,6 @@
       status.textContent = 'جاري رفع الصور...';
       for(let i = 0; i < inputs.length; i++) {
         if(inputs[i].files[0]) {
-          if (inputs[i].files[0].size > 5 * 1024 * 1024) {
-            status.textContent = 'حجم الصورة يجب أن لا يتجاوز 5 ميجابايت';
-            return false;
-          }
           const formData = new FormData();
           formData.append('image', inputs[i].files[0]);
           try {
@@ -1926,10 +1806,6 @@
       const input = document.getElementById('showcaseImageInput');
       const status = document.getElementById('showcaseUploadStatus');
       if(!input.files[0]) return showToast('اختر صورة أولاً', 'error');
-      if (input.files[0].size > 5 * 1024 * 1024) {
-        showToast('حجم الصورة يجب أن لا يتجاوز 5 ميجابايت', 'error');
-        return;
-      }
       status.textContent = 'جاري رفع الصورة...';
       const formData = new FormData();
       formData.append('image', input.files[0]);
@@ -1970,7 +1846,7 @@
         preview.appendChild(imgEl);
         const itemDiv = document.createElement('div');
         itemDiv.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:6px;';
-        itemDiv.innerHTML = `<img src="${escapeHtml(img.url)}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;"><button onclick="deleteShowcaseImage(${img.id})" style="background:#E50914;color:#FFF;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;">حذف</button>`;
+        itemDiv.innerHTML = `<img src="${img.url}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;"><button onclick="deleteShowcaseImage(${img.id})" style="background:#E50914;color:#FFF;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px;">حذف</button>`;
         list.appendChild(itemDiv);
       });
     }
@@ -2027,7 +1903,7 @@
       if(existingItem) { existingItem.quantity += selectedQty; } 
       else { cart.push({name, price, size: selectedSize, quantity: selectedQty, id: String(id), category: category, image: image}); }
       saveCart(); 
-      showToast(`تم إضافة ${escapeHtml(name)} إلى السلة`);
+      showToast(`تم إضافة ${name} إلى السلة`);
     }
 
     function removeFromCart(index) { 
@@ -2051,7 +1927,7 @@
         total += itemTotal;
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.innerHTML = `<span class="item-name">${escapeHtml(item.name)} ${item.size ? '('+escapeHtml(item.size)+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">×</button>`;
+        div.innerHTML = `<span class="item-name">${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">×</button>`;
         cartItemsList.appendChild(div);
       });
       cartTotal.textContent = total;
@@ -2085,31 +1961,11 @@
       orderTotalPrice.textContent = total;
       transferImageUrl = '';
       document.getElementById('transferImageInput').value = '';
-      selectPaymentMethod('cod');
     }
 
     function closeOrderForm() { 
       document.getElementById('orderFormPage').style.display = 'none'; 
       document.getElementById('orderFormPage').classList.remove('active'); 
-    }
-
-    function selectPaymentMethod(method) {
-      selectedPaymentMethod = method;
-      const codBtn = document.getElementById('codPaymentBtn');
-      const onlineBtn = document.getElementById('onlinePaymentBtn');
-      const transferSection = document.getElementById('transferSection');
-      
-      if (method === 'cod') {
-        codBtn.classList.add('selected');
-        onlineBtn.classList.remove('selected');
-        transferSection.style.display = 'none';
-        transferImageUrl = '';
-        document.getElementById('transferImageInput').value = '';
-      } else {
-        onlineBtn.classList.add('selected');
-        codBtn.classList.remove('selected');
-        transferSection.style.display = 'block';
-      }
     }
 
     async function callAPI(action, data = {}) {
@@ -2207,10 +2063,10 @@
 
       card.innerHTML = `
         <div class="product-image">
-          ${mainImage ? `<div class="main-media"><img src="${escapeHtml(mainImage)}" alt="${escapeHtml(itemName)}"></div>` : `<span class="product-icon">📦</span>`}
+          ${mainImage ? `<div class="main-media"><img src="${mainImage}" alt="${itemName}"></div>` : `<span class="product-icon">📦</span>`}
         </div>
         <div class="product-info">
-          <h3>${escapeHtml(itemName)}</h3>
+          <h3>${itemName}</h3>
           <div class="price">
             ${final} جنيه 
             ${disc > 0 ? `<span class="original-price">${price} جنيه</span> <span style="color:var(--red-main);font-size:11px;">(-${disc}%)</span>` : ''}
@@ -2236,7 +2092,7 @@
         openProductDetails({...offer, name: offerTitle, category, stock, id: offerId});
       };
       
-      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${escapeHtml(mainImage)}" alt="${escapeHtml(offerTitle)}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${escapeHtml(offerTitle)}</h3><p>${escapeHtml(offer.description||'')}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>'}</div>`;
+      div.innerHTML = `<div class="offer-image">${mainImage ? `<img src="${mainImage}" alt="${offerTitle}">` : `<span style="font-size:40px;">🎉</span>`}</div><div class="offer-info"><h3>${offerTitle}</h3><p>${offer.description||''}</p><div class="offer-price">${offer.price} جنيه ${offer.oldPrice ? `<span class="offer-old-price">${offer.oldPrice} جنيه</span>` : ''}</div>${stock > 0 ? `<div class="stock-info" style="color:${stock <= 5 ? 'var(--red-main)' : '#00cc00'};">${stock <= 5 ? 'متبقي ' + stock + ' فقط' : 'متوفر: ' + stock}</div>` : '<div class="stock-info" style="color:var(--red-main);">غير متوفر</div>'}</div>`;
       grid.appendChild(div);
     }
 
@@ -2260,22 +2116,22 @@
       const thumbs = document.getElementById('galleryThumbnails');
       const media = item.media && item.media.length ? item.media : ['https://via.placeholder.com/300'];
       
-      gallery.innerHTML = `<img src="${escapeHtml(media[0])}" id="mainGalleryImg" alt="${escapeHtml(item.name || item.title || '')}">`;
+      gallery.innerHTML = `<img src="${media[0]}" id="mainGalleryImg" alt="${item.name || item.title || ''}">`;
       thumbs.innerHTML = media.map((imgSrc, idx) => `
-        <img src="${escapeHtml(imgSrc)}" class="${idx === 0 ? 'active' : ''}" onclick="changeMainImage('${escapeHtml(imgSrc)}', this)" alt="صورة ${idx + 1}">
+        <img src="${imgSrc}" class="${idx === 0 ? 'active' : ''}" onclick="changeMainImage('${imgSrc}', this)" alt="صورة ${idx + 1}">
       `).join('');
       
       const sizes = item.sizes && item.sizes.length ? item.sizes : ['M (55:70 kg)', 'XL (85:100 kg)', '2XL (100:115 kg)'];
       const sizeGrid = document.getElementById('detailSizes');
       sizeGrid.innerHTML = sizes.map((size, idx) => `
-        <button class="size-pill ${idx === 0 ? 'selected' : ''}" onclick="selectSizeOption(this, '${escapeHtml(size)}')">${escapeHtml(size)}</button>
+        <button class="size-pill ${idx === 0 ? 'selected' : ''}" onclick="selectSizeOption(this, '${size}')">${size}</button>
       `).join('');
       document.getElementById('selectedSizeName').textContent = sizes[0];
       
       const colors = item.colors && item.colors.length ? item.colors : ['BLACK', 'GREY'];
       const colorGrid = document.getElementById('detailColors');
       colorGrid.innerHTML = colors.map((color, idx) => `
-        <button class="size-pill ${idx === 0 ? 'selected' : ''}" onclick="selectColorOption(this, '${escapeHtml(color)}')">${escapeHtml(color)}</button>
+        <button class="size-pill ${idx === 0 ? 'selected' : ''}" onclick="selectColorOption(this, '${color}')">${color}</button>
       `).join('');
       document.getElementById('selectedColorName').textContent = colors[0];
       
@@ -2367,7 +2223,7 @@
         const items = JSON.parse(localStorage.getItem(section.key)||'[]');
         html += `<h4 style="color:#FFF;margin:15px 0 10px;">${section.title}</h4>`;
         items.forEach(item => {
-          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${escapeHtml(item.name)} (ID: ${item.id}) - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" min="0" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually('${item.id}', '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
+          html += `<div class="admin-list-item" style="flex-wrap:wrap;gap:10px;"><span>${item.name} (ID: ${item.id}) - المخزون: <strong style="color:#E50914;">${item.stock||0}</strong></span><div style="display:flex;gap:6px;align-items:center;"><input type="number" id="stock_${item.id}_${section.category}" value="${item.stock||0}" min="0" style="width:70px;padding:6px;border:1px solid #E50914;border-radius:6px;background:#111215;color:#FFF;"><button onclick="updateStockManually('${item.id}', '${section.category}')" style="background:#E50914;color:#FFF;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;">تحديث</button></div></div>`;
         });
       });
       container.innerHTML = html || '<p style="text-align:center;color:rgba(255,255,255,0.5);">لا توجد منتجات</p>';
@@ -2565,7 +2421,6 @@
     function populateGovernorates() {
       const gov = document.getElementById('orderGovernorate');
       if(gov) {
-        gov.innerHTML = '<option value="">اختر المحافظة</option>';
         Object.keys(EGYPT_GOVERNORATES).forEach(g => { 
           const opt=document.createElement('option'); 
           opt.value=g; 
@@ -2575,55 +2430,18 @@
       }
     }
 
-    function getLoginAttempts() {
-      const data = JSON.parse(localStorage.getItem('hl_login_attempts') || '{}');
-      return data;
-    }
-
-    function saveLoginAttempts(data) {
-      localStorage.setItem('hl_login_attempts', JSON.stringify(data));
-    }
-
-    function checkLoginLock() {
-      const data = getLoginAttempts();
-      if (data.lockUntil && Date.now() < data.lockUntil) {
-        const remainingMin = Math.ceil((data.lockUntil - Date.now()) / 60000);
-        showToast(`تم قفل الدخول مؤقتاً. حاول بعد ${remainingMin} دقيقة`, 'error');
-        return true;
-      }
-      if (data.count >= MAX_LOGIN_ATTEMPTS) {
-        data.count = 0;
-        saveLoginAttempts(data);
-      }
-      return false;
-    }
-
-    function handleLogin() {
-      if (checkLoginLock()) return;
-      
+    async function handleLogin() {
       const phone = document.getElementById('loginPhone').value.trim();
       const password = document.getElementById('loginPassword').value.trim();
       if(!phone||!password) return showToast('يرجى إدخال رقم الهاتف وكلمة المرور.', 'error');
       if(phone === String(CONFIG.ADMIN_PHONE) && password === String(CONFIG.ADMIN_PASSWORD)) {
         showToast('مرحباً Admin!');
         localStorage.setItem('hl_admin','true');
-        saveLoginAttempts({count: 0, lockUntil: 0});
         checkAuth();
         closeLoginModal();
         return;
       }
-      
-      const data = getLoginAttempts();
-      data.count = (data.count || 0) + 1;
-      if (data.count >= MAX_LOGIN_ATTEMPTS) {
-        data.lockUntil = Date.now() + LOCK_TIME_MS;
-        data.count = 0;
-        saveLoginAttempts(data);
-        showToast('تم قفل الدخول لمدة 5 دقائق بسبب المحاولات المتكررة', 'error');
-      } else {
-        saveLoginAttempts(data);
-        showToast(`رقم الهاتف أو كلمة المرور غير صحيحة. متبقي ${MAX_LOGIN_ATTEMPTS - data.count} محاولات`, 'error');
-      }
+      showToast('رقم الهاتف أو كلمة المرور غير صحيحة.', 'error');
     }
 
     function handleLogout() {
@@ -2637,12 +2455,6 @@
     function handleSignup(){ showToast('سيتم تفعيل إنشاء الحساب قريباً', 'error'); }
 
     async function submitOrder() {
-      const now = Date.now();
-      if (now - lastOrderTime < ORDER_COOLDOWN_MS) {
-        document.getElementById('orderError').textContent = 'يرجى الانتظار قبل إرسال طلب آخر';
-        return;
-      }
-
       const name = document.getElementById('orderCustomerName').value.trim();
       const phone = document.getElementById('orderCustomerPhone').value.trim();
       const phone2 = document.getElementById('orderCustomerPhone2').value.trim();
@@ -2663,11 +2475,6 @@
 
       if(phone2 && !validatePhone(phone2)) {
         document.getElementById('orderError').textContent='رقم الهاتف الإضافي غير صحيح';
-        return;
-      }
-
-      if (selectedPaymentMethod === 'online' && !transferImageUrl) {
-        document.getElementById('orderError').textContent='يرجى إرفاق صورة التحويل لإتمام الدفع الإلكتروني';
         return;
       }
 
@@ -2693,7 +2500,6 @@
         notes: notes,
         products: productsList,
         totalPrice: totalPrice,
-        paymentMethod: selectedPaymentMethod === 'online' ? 'دفع إلكتروني' : 'دفع نقدي عند الاستلام',
         transferImageUrl: transferImageUrl,
         cartItems: cart.map(item => ({
           id: String(item.id),
@@ -2703,7 +2509,6 @@
       });
 
       if(result.success) {
-        lastOrderTime = Date.now();
         showToast('تم إرسال الطلبية بنجاح!');
         
         cart.forEach(item => {
@@ -2752,21 +2557,6 @@
       const shipping = getShippingCost(gov, cartTotal);
       document.getElementById('orderTotalPrice').textContent = cartTotal + shipping;
     }
-
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-      showToast('النسخ معطل', 'error');
-    });
-
-    document.addEventListener('copy', function(e) {
-      e.preventDefault();
-      showToast('النسخ معطل', 'error');
-    });
-
-    document.addEventListener('cut', function(e) {
-      e.preventDefault();
-      showToast('القص معطل', 'error');
-    });
 
     document.addEventListener('DOMContentLoaded', async () => {
       updateCartCount();
