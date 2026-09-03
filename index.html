@@ -46,6 +46,21 @@
       background: var(--bg-main);
       color: var(--text-main);
       overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    img {
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      user-drag: none;
+      pointer-events: none;
     }
 
     .free-shipping-bar {
@@ -432,7 +447,6 @@
       pointer-events: none;
     }
 
-    /* صفحة تفاصيل المنتج */
     .product-details-page {
       position: fixed;
       top: 0;
@@ -1486,7 +1500,6 @@
     <p>© 2026 جميع الحقوق محفوظة | المتجر الرسمي</p>
   </footer>
 
-  <!-- صفحة تفاصيل المنتج -->
   <div id="productDetailsPage" class="product-details-page">
     <div class="details-header">
       <button class="back-btn" onclick="closeProductDetails()">✕</button>
@@ -1555,6 +1568,42 @@
   </div>
 
   <script>
+    // ==================== نظام الأمان ====================
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      showToast('عذراً، النقر بزر الفأرة الأيمن غير مسموح', 'error');
+    });
+
+    document.addEventListener('copy', function(e) {
+      e.preventDefault();
+      showToast('عذراً، النسخ غير مسموح', 'error');
+    });
+
+    document.addEventListener('cut', function(e) {
+      e.preventDefault();
+      showToast('عذراً، القص غير مسموح', 'error');
+    });
+
+    document.addEventListener('dragstart', function(e) {
+      e.preventDefault();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if ((e.ctrlKey || e.metaKey) && ['c', 'x', 'u', 's', 'p'].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+        showToast('هذه العملية غير مسموحة', 'error');
+      }
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase()))) {
+        e.preventDefault();
+        showToast('أدوات المطور غير متاحة', 'error');
+      }
+    });
+
+    document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+    });
+    // ==================== نهاية نظام الأمان ====================
+
     const CONFIG = { 
       API_BASE_URL: 'https://script.google.com/macros/s/AKfycbx5JwSOZg5C4xagsiPmZdRlmkTwcmAVTrvzgFklEQX5Xn42ra0dGWFLghPMCOV6q57A/exec',
       STORE_NAME: 'Akone', 
@@ -2015,7 +2064,7 @@
         total += itemTotal;
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.innerHTML = `<span class="item-name">${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">×</button>`;
+        div.innerHTML = `<span class="item-name">${item.name} ${item.size ? '('+item.size+')' : ''} ${item.variant ? '('+item.variant+')' : ''} x${item.quantity}</span><span class="item-price">${itemTotal} جنيه</span><button class="remove-item" onclick="removeFromCart(${index})">×</button>`;
         cartItemsList.appendChild(div);
       });
       cartTotal.textContent = total;
@@ -2043,7 +2092,7 @@
         total += itemTotal;
         const div = document.createElement('div');
         div.className = 'item';
-        div.textContent = `${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity} = ${itemTotal} جنيه`;
+        div.textContent = `${item.name} ${item.size ? '('+item.size+')' : ''} ${item.variant ? '('+item.variant+')' : ''} x${item.quantity} = ${itemTotal} جنيه`;
         orderCartItems.appendChild(div);
       });
       orderTotalPrice.textContent = total;
@@ -2568,9 +2617,16 @@
         return;
       }
 
-      const productsList = cart.map(item => 
-        `${item.name} ${item.size ? '('+item.size+')' : ''} x${item.quantity}`
-      ).join(' | ');
+      const productsList = cart.map(item => {
+        let productDetails = item.name;
+        if (item.variant) {
+          productDetails += ` (${item.variant})`;
+        } else if (item.size) {
+          productDetails += ` (${item.size})`;
+        }
+        productDetails += ` x${item.quantity}`;
+        return productDetails;
+      }).join(' ] ');
       
       const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
       const shippingCost = getShippingCost(gov, cartTotal);
@@ -2594,7 +2650,8 @@
         cartItems: cart.map(item => ({
           id: String(item.id),
           category: item.category,
-          quantity: item.quantity
+          quantity: item.quantity,
+          variant: item.variant || item.size || ''
         }))
       });
 
