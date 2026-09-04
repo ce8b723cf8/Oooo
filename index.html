@@ -2305,7 +2305,7 @@
         <img src="${imgSrc}" class="thumb-img ${idx === 0 ? 'active' : ''}" onclick="changeGalleryImage(${idx})" alt="صورة ${idx + 1}">
       `).join('');
       
-      const sizes = item.sizes && item.sizes.length ? item.sizes : ['M (55:70 kg)', 'XL (85:100 kg)', '2XL (100:115 kg)'];
+      const sizes = item.sizes && item.sizes.length ? item.sizes : ['M', 'XL', '2XL'];
       const sizeGrid = document.getElementById('detailSizes');
       sizeGrid.innerHTML = sizes.map((size, idx) => `
         <button class="size-pill ${idx === 0 ? 'selected' : ''}" onclick="selectSizeOption(this, '${size}')">${size}</button>
