@@ -2257,8 +2257,20 @@
       
       gallery.innerHTML = `<img src="${media[0]}" id="mainGalleryImg" alt="${item.name || item.title || ''}">`;
       thumbs.innerHTML = media.map((imgSrc, idx) => `
-        <img src="${imgSrc}" class="${idx === 0 ? 'active' : ''}" onclick="changeMainImage('${imgSrc}', this)" alt="صورة ${idx + 1}">
+        <img src="${imgSrc}" data-src="${imgSrc}" class="thumb-img ${idx === 0 ? 'active' : ''}" alt="صورة ${idx + 1}">
       `).join('');
+      
+      // إضافة مستمعي الأحداث للصور المصغرة
+      document.querySelectorAll('.thumb-img').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          const mainImg = document.getElementById('mainGalleryImg');
+          if (mainImg) {
+            mainImg.src = this.getAttribute('data-src');
+          }
+          document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
       
       const sizes = item.sizes && item.sizes.length ? item.sizes : ['M (55:70 kg)', 'XL (85:100 kg)', '2XL (100:115 kg)'];
       const sizeGrid = document.getElementById('detailSizes');
@@ -2277,12 +2289,6 @@
       document.getElementById('productDetailsPage').classList.add('active');
       document.body.style.overflow = 'hidden';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function changeMainImage(src, elem) {
-      document.getElementById('mainGalleryImg').src = src;
-      document.querySelectorAll('#galleryThumbnails img').forEach(img => img.classList.remove('active'));
-      elem.classList.add('active');
     }
 
     function changeQty(delta) {
