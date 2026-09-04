@@ -63,6 +63,11 @@
       pointer-events: none;
     }
 
+    .thumbs-list img {
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
     .free-shipping-bar {
       background: linear-gradient(90deg, #111215, #E50914, #111215);
       color: #FFFFFF;
@@ -497,6 +502,7 @@
     }
 
     .gallery-wrapper {
+      position: relative;
       width: 100%;
       margin-bottom: 20px;
     }
@@ -508,6 +514,37 @@
       object-fit: cover;
       object-position: center;
       border-radius: 8px;
+    }
+
+    .gallery-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .gallery-nav:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .gallery-nav.prev {
+      right: 10px;
+    }
+
+    .gallery-nav.next {
+      left: 10px;
     }
 
     .thumbs-list {
@@ -1632,6 +1669,8 @@
     let showcaseImages = [];
     let floatingSlideshowInterval = null;
     let transferImageUrl = '';
+    let currentImageIndex = 0;
+    let currentMediaList = [];
 
     const EGYPT_GOVERNORATES = {
       'الشرقية':['بلبيس','انشاص الرمل','أولاد صقر','الحسينية','ديرب نجم','فاقوس','كفر صقر','مشتول السوق','منيا القمح','الصالحية القديمة','الصالحية الجديدة','صان الحجر','مدينة العاشر من رمضان'],
@@ -2240,6 +2279,7 @@
       selectedQty = 1;
       selectedSize = item.sizes && item.sizes.length ? item.sizes[0] : '';
       selectedColor = item.colors && item.colors.length ? item.colors[0] : '';
+      currentImageIndex = 0;
       
       document.getElementById('productQty').textContent = selectedQty;
       document.getElementById('detailTitle').textContent = item.name || item.title || '';
@@ -2253,24 +2293,17 @@
       
       const gallery = document.getElementById('productDetailsGallery');
       const thumbs = document.getElementById('galleryThumbnails');
-      const media = item.media && item.media.length ? item.media : ['https://via.placeholder.com/300'];
+      currentMediaList = item.media && item.media.length ? item.media : ['https://via.placeholder.com/300'];
       
-      gallery.innerHTML = `<img src="${media[0]}" id="mainGalleryImg" alt="${item.name || item.title || ''}">`;
-      thumbs.innerHTML = media.map((imgSrc, idx) => `
-        <img src="${imgSrc}" data-src="${imgSrc}" class="thumb-img ${idx === 0 ? 'active' : ''}" alt="صورة ${idx + 1}">
+      gallery.innerHTML = `
+        <button class="gallery-nav prev" onclick="changeGalleryImage(-1)">❮</button>
+        <img src="${currentMediaList[0]}" id="mainGalleryImg" alt="${item.name || item.title || ''}">
+        <button class="gallery-nav next" onclick="changeGalleryImage(1)">❯</button>
+      `;
+      
+      thumbs.innerHTML = currentMediaList.map((imgSrc, idx) => `
+        <img src="${imgSrc}" class="thumb-img ${idx === 0 ? 'active' : ''}" onclick="changeGalleryImage(${idx})" alt="صورة ${idx + 1}">
       `).join('');
-      
-      // إضافة مستمعي الأحداث للصور المصغرة
-      document.querySelectorAll('.thumb-img').forEach(thumb => {
-        thumb.addEventListener('click', function() {
-          const mainImg = document.getElementById('mainGalleryImg');
-          if (mainImg) {
-            mainImg.src = this.getAttribute('data-src');
-          }
-          document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
-          this.classList.add('active');
-        });
-      });
       
       const sizes = item.sizes && item.sizes.length ? item.sizes : ['M (55:70 kg)', 'XL (85:100 kg)', '2XL (100:115 kg)'];
       const sizeGrid = document.getElementById('detailSizes');
@@ -2289,6 +2322,31 @@
       document.getElementById('productDetailsPage').classList.add('active');
       document.body.style.overflow = 'hidden';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function changeGalleryImage(direction) {
+      if (!currentMediaList || currentMediaList.length === 0) return;
+      
+      if (direction === -1) {
+        currentImageIndex = (currentImageIndex - 1 + currentMediaList.length) % currentMediaList.length;
+      } else if (direction === 1) {
+        currentImageIndex = (currentImageIndex + 1) % currentMediaList.length;
+      } else {
+        currentImageIndex = direction;
+      }
+      
+      const mainImg = document.getElementById('mainGalleryImg');
+      if (mainImg) {
+        mainImg.src = currentMediaList[currentImageIndex];
+      }
+      
+      document.querySelectorAll('.thumb-img').forEach((thumb, idx) => {
+        if (idx === currentImageIndex) {
+          thumb.classList.add('active');
+        } else {
+          thumb.classList.remove('active');
+        }
+      });
     }
 
     function changeQty(delta) {
